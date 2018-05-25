@@ -1,0 +1,7 @@
+[Desktop Entry]
+Type=Application
+Name=PiGuider
+Terminal=true
+Icon=/home/pi/media/icons/sections-128x128/Guide.png
+Exec=/home/pi/PiGuider
+Path=/home/pi
