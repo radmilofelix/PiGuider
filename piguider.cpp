@@ -71,16 +71,14 @@ void PiGuider::updateStatus()
         else
             ui->ledLabelDSLR->setPixmap(ledred);
     }
-    if( guider.enabled != guider_status )
+    if( (guider.enabled || guider.refreshEnabled) != guider_status )
     {
-        guider_status=guider.enabled;
-        if(guider.enabled)
+        guider_status=(guider.enabled || guider.refreshEnabled);
+        if(guider.enabled || guider.refreshEnabled)
             ui->ledLabelGuider->setPixmap(ledgreen);
         else
         {
             ui->ledLabelGuider->setPixmap(ledred);
-//            QPixmap image("media/NightSky.png");
-//            ui->mainImageLabel->setPixmap(image);
         }
     }
     if( intervalometersoft.enabled != intervalometersoft_status )
@@ -108,7 +106,7 @@ void PiGuider::updateStatus()
         else
             ui->ledLabelHardIntervalometer->setPixmap(ledred);
     }
-    if(guider.enabled)
+    if(guider.enabled || guider.refreshEnabled)
     {
         guider.RefreshData();
         QPixmap guideimage("/run/shm/mat.jpg");

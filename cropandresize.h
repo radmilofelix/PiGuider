@@ -23,7 +23,8 @@ public:
     double relativeStarX, relativeStarY; //
     double relativeStarScaledX, relativeStarScaledY; //
     double absoluteStarX, absoluteStarY; //
-    double raDrift, declDrift;
+    double arcsecPerPixel;
+    double raDrift, declDrift, raDriftArcsec, declDriftArcsec;
     double raDriftScaled, declDriftScaled;
     double pi;
     double raSlope;

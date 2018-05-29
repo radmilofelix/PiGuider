@@ -69,7 +69,7 @@ RESOURCES += \
     images.qrc
 
 # Comment out if building for raspbian
-#CONFIG += PCRUN
+CONFIG += PCRUN
 
 PCRUN {
 # Ubuntu

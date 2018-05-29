@@ -27,6 +27,14 @@ CropAndResize::CropAndResize()
     relativeTargetScaledY=relativeTargetY*scaleY;
     slopeVertical=false;
     raSlope=0;
+    arcsecPerPixel=5;
+    raDrift=0;
+    declDrift=0;
+    raDriftArcsec=0;
+    declDriftArcsec=0;
+    raDriftScaled=0;
+    declDriftScaled=0;
+
 }
 
 void CropAndResize::CropToRectangle(Mat source, Mat *destination)
@@ -189,6 +197,8 @@ void CropAndResize::ComputeDrift()
     double tq = (relativeStarX-relativeTargetX)/cos(alpha);
 //    cout << "TQ = " << tq << endl;
     raDrift = tq+qd;
+    raDriftArcsec=raDrift*arcsecPerPixel;
+    declDriftArcsec=declDrift*arcsecPerPixel;
 }
 
 /*

@@ -39,9 +39,18 @@ Guider::Guider(QWidget *parent) :
     centerCoefficient=1;
     pincontrol.AscensionRelease();
     pincontrol.DeclinationRelease();
-    QPixmap image("media/icons/tools-32x32/led-red.png");
-    ui->ledLabel->setPixmap(image);
-//    QPixmap image("media/NightSky.png");
+    refreshEnabled=false;
+    claibrationEnabled=false;
+    ascensionMotorStatus=0;
+    QPixmap image("media/icons/tools-16x16/led-green.png");
+    ui->normalLedLabel->setPixmap(image);
+    image.load("media/icons/tools-16x16/led-red.png");
+    ui->slowLedLabel->setPixmap(image);
+    ui->fastLedLabel->setPixmap(image);
+    ui->refreshLedLabel->setPixmap(image);
+    image.load("media/icons/tools-32x32/led-red.png");
+    ui->MainLedLabel->setPixmap(image);
+//    image.load("media/NightSky.png");
 //    ui->guiderImageLabel->setPixmap(image);
     ui->horizontalGammaSlider->setRange(0, 2000);
     ui->horizontalGammaSlider->setValue(1000);
@@ -80,22 +89,77 @@ void Guider::on_enableButton_clicked()
     {
         enabled=false;
         QPixmap image("media/icons/tools-32x32/led-red.png");
-        ui->ledLabel->setPixmap(image);
+        ui->MainLedLabel->setPixmap(image);
 
     }
     else
     {
         enabled=true;
+        refreshEnabled=false;
         QPixmap image("media/icons/tools-32x32/led-green.png");
-        ui->ledLabel->setPixmap(image);
+        ui->MainLedLabel->setPixmap(image);
+        image.load("media/icons/tools-16x16/led-red.png");
+        ui->refreshLedLabel->setPixmap(image);
     }
     this->repaint();
 }
 
 void Guider::on_refreshButton_clicked()
 {
-    RefreshData();
+    if(refreshEnabled)
+    {
+        refreshEnabled=false;
+        QPixmap image("media/icons/tools-16x16/led-red.png");
+        ui->refreshLedLabel->setPixmap(image);
+    }
+    else
+    {
+        refreshEnabled=true;
+        enabled=false;
+        QPixmap image("media/icons/tools-16x16/led-green.png");
+        ui->refreshLedLabel->setPixmap(image);
+        image.load("media/icons/tools-32x32/led-red.png");
+        ui->MainLedLabel->setPixmap(image);
+
+        starsDetected=0;
+        targetSelected=false;
+
+
+        targetSelected=false;
+        guideStarSelected=false;
+//        cropresize.scaleX=1;
+//        cropresize.scaleY=1;
+        cropresize.scaleX=0.746875;
+        cropresize.scaleY=0.746878;
+        cropresize.offsetX=0;
+        cropresize.offsetY=-80;
+
+
+        cropresize.relativeWidth=478;
+        cropresize.relativeHeight=478;
+        cropresize.absoluteWidth=640;
+        cropresize.absoluteHeight=480;
+        cropresize.absoluteTargetX=cropresize.absoluteWidth/2;
+        cropresize.absoluteTargetY=cropresize.absoluteHeight/2;
+        cropresize.relativeTargetX=cropresize.relativeWidth/2;
+        cropresize.relativeTargetY=cropresize.relativeHeight/2;
+        cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
+        cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
+
+        ui->horizontalGammaSlider->setValue(1000);
+        ui->horizontalZoomSlider->setValue((int)cropresize.scaleX);
+        DisplayData();
+        NewCapture();
+        this->repaint();
+
+
+
+
+
+    }
     this->repaint();
+//    RefreshData();
+//    this->repaint();
 }
 
 
@@ -163,11 +227,28 @@ void Guider::DisplayData()
     rezMessage=QString::number((double)ui->horizontalGammaSlider->value()/1000);
     ui->labelGammaValue->setText(rezMessage);
 
+    rezMessage=QString::number(starsDetected);
+    ui->labelStarsDetected->setText(rezMessage);
+
     rezMessage=QString::number((double)cropresize.raDrift);
     ui->labelRaDriftValue->setText(rezMessage);
 
     rezMessage=QString::number((double)cropresize.declDrift);
     ui->labelDeclDriftValue->setText(rezMessage);
+
+    rezMessage=QString::number((double)cropresize.raDriftArcsec);
+    ui->labelRaDriftValueArcsec->setText(rezMessage);
+
+    rezMessage=QString::number((double)cropresize.declDriftArcsec);
+    ui->labelDeclDriftValueArcsec->setText(rezMessage);
+
+    if(cropresize.slopeVertical)
+        ui->labelSlopeValue->setText("V");
+    else
+    {
+        rezMessage=QString::number((double)cropresize.raSlope);
+        ui->labelSlopeValue->setText(rezMessage);
+    }
 
 //#ifdef DEBUG
 //    cout << "Zoom Slider value: " << ui->horizontalZoomSlider->value() << endl;
@@ -187,10 +268,16 @@ void Guider::RefreshData()
     cout << "File Index: " << fileIndex << endl;
 #endif
     NewCapture();
-    FindAndTrackStar();
+    if(enabled)
+        FindAndTrackStar();
+//    else
+//    {
+//        starsDetected=0;
+//        targetSelected=false;
+//    }
 #ifdef DEBUG
-    if(captureFlag)
-        CaptureImagesToFiles(); // capture guide scope images for simulation purposes
+//    if(captureFlag)
+//        CaptureImagesToFiles(); // capture guide scope images for simulation purposes
 #endif
 }
 
@@ -297,6 +384,10 @@ void Guider::NewCapture()
         SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,255,0));
         SetSlopeLine(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, cropresize.slopeVertical, cropresize.raSlope, Scalar(0,0,255));
     }
+    else
+    {
+        SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,0,255));
+    }
     if(starsDetected==0)
     {
         ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
@@ -340,12 +431,13 @@ void Guider::SetReticle(Mat *image, int x, int y, Scalar colour)
 
 void Guider::SetSlopeLine(Mat *image, int x, int y, bool slopeVertical,double slope, Scalar colour)
 {
-    if(slopeVertical)
-    {
-        return;
-    }
     int imageWidth=image->cols;
     int imageHeight=image->rows;
+    if(slopeVertical)
+    {
+        line(*image, Point(x,imageHeight), Point(imageWidth,y), colour,2,8,0);
+        return;
+    }
     int pointLeftX, pointLeftY, pointRightX, pointRightY;
     double slopeVerticalOffset=(double)y-(double)(slope*x);
     double slopeHorizontalOffset=(-slopeVerticalOffset)/slope;
@@ -381,15 +473,15 @@ void Guider::SetSlopeLine(Mat *image, int x, int y, bool slopeVertical,double sl
         {
             pointLeftX=slopeHorizontalOffset;
             pointLeftY=0;
-            if((widthOffset) > imageHeight || (widthOffset < 0) )
-            {
-                pointRightX=imageWidth;
-                pointRightY=widthOffset;
-            }
-            else
+            if((widthOffset > imageHeight) || (widthOffset < 0) )
             {
                 pointRightX=heightOffset;
                 pointRightY=imageHeight;
+            }
+            else
+            {
+                pointRightX=imageWidth;
+                pointRightY=widthOffset;
             }
         }
         else
@@ -415,10 +507,10 @@ void Guider::GammaCorrection(const Mat &img, const double gamma_, Mat *result)
     *result = img.clone();
     LUT(img, lookUpTable, *result);
     //![changing-contrast-brightness-gamma-correction]
-    QString gammaValue=QString::number(gamma_);
-    QString rzMessage="Gamma: " + gammaValue;
-    ui->labelMessages->setText(rzMessage);
-    ui->labelMessages->adjustSize();
+//    QString gammaValue=QString::number(gamma_);
+//    QString rzMessage="Gamma: " + gammaValue;
+//    ui->labelMessages->setText(rzMessage);
+//    ui->labelMessages->adjustSize();
 }
 
 void Guider::ImageBlur(int blurType, int maxKernelLength)
@@ -667,20 +759,20 @@ void Guider::FindAndTrackStar()
         int oldStarsDetected=starsDetected;
         starsDetected=keypoints.size();
 //        size_t x=keypoints.size();
-        if(starsDetected==0)
-        {
-            ui->labelMessages->setText("No star detected!");
-            ui->labelMessages->adjustSize();
-            this->repaint();
-            return;
-        }
-        else
-        {
-            QString nstars=QString::number(starsDetected);
-            QString rzMessage=nstars+" stars found.";
-            ui->labelMessages->setText(rzMessage);
-            ui->labelMessages->adjustSize();
-        }
+//        if(starsDetected==0)
+//        {
+//            ui->labelMessages->setText("No star detected!");
+//            ui->labelMessages->adjustSize();
+//            this->repaint();
+//            return;
+//        }
+//        else
+//        {
+//            QString nstars=QString::number(starsDetected);
+//            QString rzMessage=nstars+" stars found.";
+//            ui->labelMessages->setText(rzMessage);
+//            ui->labelMessages->adjustSize();
+//        }
         // Draw keypoints on the keypoint_image
         FindClosestStarToTarget();
 //        drawKeypoints( im, keypoints, myImage, Scalar(255,0,0), DrawMatchesFlags::DRAW_RICH_KEYPOINTS );
@@ -915,4 +1007,39 @@ void Guider::on_saveButton_clicked()
         ui->labelMessages->setText("File saving toggled ON.");
     }
     ui->labelMessages->adjustSize();
+}
+
+void Guider::on_slowButton_clicked()
+{
+    pincontrol.AscensionMinus();
+    QPixmap image("media/icons/tools-16x16/led-green.png");
+    ui->slowLedLabel->setPixmap(image);
+    image.load("media/icons/tools-16x16/led-red.png");
+    ui->normalLedLabel->setPixmap(image);
+    ui->fastLedLabel->setPixmap(image);
+}
+
+void Guider::on_normalButton_clicked()
+{
+    pincontrol.AscensionRelease();
+    QPixmap image("media/icons/tools-16x16/led-green.png");
+    ui->normalLedLabel->setPixmap(image);
+    image.load("media/icons/tools-16x16/led-red.png");
+    ui->slowLedLabel->setPixmap(image);
+    ui->fastLedLabel->setPixmap(image);
+}
+
+void Guider::on_fastButton_clicked()
+{
+    pincontrol.AscensionPlus();
+    QPixmap image("media/icons/tools-16x16/led-green.png");
+    ui->fastLedLabel->setPixmap(image);
+    image.load("media/icons/tools-16x16/led-red.png");
+    ui->normalLedLabel->setPixmap(image);
+    ui->slowLedLabel->setPixmap(image);
+}
+
+void Guider::on_calibrateButton_clicked()
+{
+
 }

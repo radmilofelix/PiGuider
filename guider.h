@@ -33,6 +33,9 @@ public:
     bool guideStarSelected;
     bool targetSelected;
     cv::VideoCapture cap;
+    bool refreshEnabled;
+    bool claibrationEnabled;
+    int ascensionMotorStatus;
     cv::Mat myImage, srcImage, processImage, im;
     CropAndResize cropresize;
     QPoint targetPosition;
@@ -88,6 +91,10 @@ private slots:
     void on_snapButton_clicked();
 
     void on_saveButton_clicked();
+    void on_slowButton_clicked();
+    void on_normalButton_clicked();
+    void on_fastButton_clicked();
+    void on_calibrateButton_clicked();
 
 private:
     Ui::Guider *ui;
