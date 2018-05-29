@@ -37,6 +37,8 @@ Guider::Guider(QWidget *parent) :
     targetPosition.setY(478/2);
     starsDetected=0;
     centerCoefficient=1;
+    pincontrol.AscensionRelease();
+    pincontrol.DeclinationRelease();
     QPixmap image("media/icons/tools-32x32/led-red.png");
     ui->ledLabel->setPixmap(image);
 //    QPixmap image("media/NightSky.png");
@@ -45,6 +47,9 @@ Guider::Guider(QWidget *parent) :
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalGammaSlider->setVisible(true);
     captureIndex=0;
+#ifdef DEBUG
+    captureFlag=false;
+#endif
 #ifdef CAPTUREFROMFILE
 //    fileIndex=59;
     fileIndex=0;
@@ -184,7 +189,8 @@ void Guider::RefreshData()
     NewCapture();
     FindAndTrackStar();
 #ifdef DEBUG
-    //    CaptureImagesToFiles(); // capture guide scope images for simulation purposes
+    if(captureFlag)
+        CaptureImagesToFiles(); // capture guide scope images for simulation purposes
 #endif
 }
 
@@ -715,6 +721,7 @@ void Guider::SnapToNearestStar()
     guideStarSelected=true;
 }
 
+#ifdef DEBUG
 void Guider::CaptureImagesToFiles()
 {
     if(captureIndex%2)
@@ -726,11 +733,10 @@ void Guider::CaptureImagesToFiles()
         strcpy(filename, fileSuffix);
         strcat(filename,".jpg");
         imwrite(filename, srcImage);
-        ui->labelMessages->setText("File saved.");
-        ui->labelMessages->adjustSize();
     }
     captureIndex++;
 }
+#endif
 
 void Guider::on_testButton_clicked()
 {
@@ -894,5 +900,19 @@ void Guider::on_snapButton_clicked()
 
 void Guider::on_saveButton_clicked()
 {
-    CaptureImagesToFiles();
+    if(captureFlag)
+    {
+        captureFlag=false;
+        pincontrol.AscensionRelease();
+        ui->labelMessages->setText("File saving toggled OFF.");
+    }
+    else
+    {
+        captureFlag=true;
+//        pincontrol.AscensionRelease(); // record normal guidespeed
+        pincontrol.AscensionPlus(); // record accelerated guide speed
+//        pincontrol.AscensionMinus(); // record decelerated guide speed
+        ui->labelMessages->setText("File saving toggled ON.");
+    }
+    ui->labelMessages->adjustSize();
 }

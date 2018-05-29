@@ -1049,7 +1049,8 @@
     </rect>
    </property>
    <property name="text">
-    <string>SAVE</string>
+    <string>Toggle
+SAVE</string>
    </property>
   </widget>
  </widget>

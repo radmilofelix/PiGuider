@@ -7,7 +7,7 @@
 #include "dslr.h"
 #include "intervalometerhard.h"
 #include "intervalometersoft.h"
-#include "pincontrolpi.h"
+//#include "pincontrolpi.h"
 
 namespace Ui {
 class PiGuider;
@@ -39,7 +39,7 @@ private:
     Guider guider;
     IntervalometerSoft intervalometersoft;
     IntervalometerHard intervalometerhard;
-    PinControlPi pincontrol;
+//    PinControlPi pincontrol;
     bool buttonpressed;
     bool dslr_status, guider_status, intervalometersoft_status, intervalometerhard_status;
     void updateStatus();

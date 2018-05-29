@@ -14,6 +14,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/features2d/features2d.hpp>
 
+#include "pincontrolpi.h"
 #include "cropandresize.h"
 
 
@@ -38,6 +39,7 @@ public:
     std::vector<cv::KeyPoint> keypoints;
     size_t starsDetected;
     float centerCoefficient;
+    PinControlPi pincontrol;
     void Flush(cv::VideoCapture& camera);
     void DisplayData();
     void RefreshData();
@@ -53,8 +55,11 @@ public:
     void FindClosestStarToTarget();
     void FindAndTrackStar();
     void SnapToNearestStar();
+#ifdef DEBUG
     void CaptureImagesToFiles();
     int captureIndex;
+    bool captureFlag;
+#endif
 #ifdef CAPTUREFROMFILE
     int fileIndex;
     int numberOfFiles;

@@ -15,9 +15,6 @@
 #include "globalsettings.h"
 
 
-#ifndef RUNONPC
-//#include <wiringPi.h>
-#endif
 
 using namespace cv;
 
@@ -138,7 +135,7 @@ void PiGuider::on_pushButton_clicked()
 {
     buttonpressed=false;
 //    pincontrol.CameraRelease(IVL1);
-    pincontrol.AscensionRelease();
+//    pincontrol.AscensionRelease();
 //    usleep(2000000);
 //    pincontrol.DeclinationRelease();
 }
@@ -153,7 +150,7 @@ else
 //    usleep(2000000);
 //    pincontrol.DeclinationPlus();
 //    usleep(2000000);
-    pincontrol.AscensionPlus();
+//    pincontrol.AscensionPlus();
 //    usleep(2000000);
 //    pincontrol.DeclinationMinus();
 }
