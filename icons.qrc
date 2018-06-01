@@ -96,5 +96,15 @@
         <file>media/icons/tools-512x512/led-red-sq.png</file>
         <file>media/icons/tools-512x512/light-green.png</file>
         <file>media/icons/tools-512x512/light-red.png</file>
+        <file>media/icons/tools-512x512/calibration.png</file>
+        <file>media/icons/tools-512x512/calibration-pressed.png</file>
+        <file>media/icons/tools-512x512/gearNeutral.png</file>
+        <file>media/icons/tools-512x512/gearNeutral-pressed.png</file>
+        <file>media/icons/tools-512x512/search.png</file>
+        <file>media/icons/tools-512x512/search1.png</file>
+        <file>media/icons/tools-512x512/search1-pressed.png</file>
+        <file>media/icons/tools-512x512/search-pressed.png</file>
+        <file>media/icons/tools-512x512/calibration1.png</file>
+        <file>media/icons/tools-512x512/calibration1-pressed.png</file>
     </qresource>
 </RCC>

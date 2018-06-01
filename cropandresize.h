@@ -24,6 +24,7 @@ public:
     double relativeStarScaledX, relativeStarScaledY; //
     double absoluteStarX, absoluteStarY; //
     double arcsecPerPixel;
+    double normalTrackingSpeed, acceleratedTrackingSpeed, deceleratedTrackingSpeed; // arcsec/second
     double raDrift, declDrift, raDriftArcsec, declDriftArcsec;
     double raDriftScaled, declDriftScaled;
     double pi;
@@ -40,6 +41,7 @@ public:
     void ZoomAbsolute(float zoomValue);
     void Zoom(float coefficient);
     void ZoomCalculations();
+    void RecalculateTarget();
     void StarCalculations();
     void ComputeRaSlope();
     void ComputeDrift();

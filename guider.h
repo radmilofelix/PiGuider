@@ -34,8 +34,8 @@ public:
     bool targetSelected;
     cv::VideoCapture cap;
     bool refreshEnabled;
-    bool claibrationEnabled;
-    int ascensionMotorStatus;
+//    bool calibrationEnabled;
+    int calibrationStatus;
     cv::Mat myImage, srcImage, processImage, im;
     CropAndResize cropresize;
     QPoint targetPosition;
@@ -43,6 +43,7 @@ public:
     size_t starsDetected;
     float centerCoefficient;
     PinControlPi pincontrol;
+    double leftStarX, leftStarY;
     void Flush(cv::VideoCapture& camera);
     void DisplayData();
     void RefreshData();
@@ -58,6 +59,7 @@ public:
     void FindClosestStarToTarget();
     void FindAndTrackStar();
     void SnapToNearestStar();
+    void DoGuide();
 #ifdef DEBUG
     void CaptureImagesToFiles();
     int captureIndex;

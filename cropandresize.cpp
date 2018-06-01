@@ -28,6 +28,10 @@ CropAndResize::CropAndResize()
     slopeVertical=false;
     raSlope=0;
     arcsecPerPixel=5;
+    normalTrackingSpeed=15; // arcsec per second (Earth angular rotation speed)
+    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
+    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
+
     raDrift=0;
     declDrift=0;
     raDriftArcsec=0;
@@ -38,7 +42,7 @@ CropAndResize::CropAndResize()
 }
 
 void CropAndResize::CropToRectangle(Mat source, Mat *destination)
-{
+{ // crop the source image to a rectangle that will be later scaled to the image window control rectangle
     cv::Rect roi;
     roi.x = offsetX;
     roi.y = offsetY;
@@ -48,8 +52,8 @@ void CropAndResize::CropToRectangle(Mat source, Mat *destination)
 }
 
 void CropAndResize::Resize(Mat source, Mat *destination)
-{
-    cv::Size mSize(relativeWidth,relativeHeight);//the dst image size,e.g.100x100
+{ // resize the image to the dimensions of the image window control
+    cv::Size mSize(relativeWidth,relativeHeight);
     cv::resize( source, *destination, mSize);
 }
 
@@ -155,6 +159,14 @@ void CropAndResize::ZoomCalculations()
     relativeStarScaledY=relativeStarY*scaleY;
 }
 
+void CropAndResize::RecalculateTarget()
+{
+    relativeTargetX=absoluteTargetX-offsetX;
+    relativeTargetY=absoluteTargetY-offsetY;
+    relativeTargetScaledX=relativeTargetX*scaleX;
+    relativeTargetScaledY=relativeTargetY*scaleY;
+}
+
 void CropAndResize::StarCalculations()
 {
     relativeStarScaledX=relativeStarX*scaleX;
@@ -168,10 +180,10 @@ void CropAndResize::ComputeRaSlope()
     if(relativeTargetX==relativeStarX)
     {
         slopeVertical=true;
-        if(relativeStarY > relativeTargetX)
+//        if(relativeStarY > relativeTargetY)
             alpha = pi/2;
-        else
-            alpha = 3*pi/2;
+//        else
+//            alpha = 3*pi/2;
         return;
     }
     slopeVertical=false;
@@ -183,67 +195,27 @@ void CropAndResize::ComputeDrift()
 {
     double yq;
     if(slopeVertical)
-        yq = 0;
+    {
+        raDrift=relativeStarY-relativeTargetY;
+        declDrift=-(relativeStarX-relativeTargetX)*sin(alpha);
+    }
     else
+    {
         yq = raSlope*(relativeStarX-relativeTargetX);
-//    cout << "Xs = " << relativeStarX-relativeTargetX << endl;
-//    cout << "Ys = " << relativeStarY-relativeTargetY << endl;
-//    cout << "Yq = " << yq << endl;
-    double sq = relativeStarY-relativeTargetY-yq;
-//    cout << "SQ = " << sq << endl;
-    declDrift = sq * cos(alpha);
-    double qd = sq * sin(alpha);
-//    cout << "QD = " << qd << endl;
-    double tq = (relativeStarX-relativeTargetX)/cos(alpha);
-//    cout << "TQ = " << tq << endl;
-    raDrift = tq+qd;
+        double sq = relativeStarY-relativeTargetY-yq;
+        declDrift = sq * cos(alpha);
+        double qd = sq * sin(alpha);
+        double tq = (relativeStarX-relativeTargetX)/cos(alpha);
+        raDrift = tq+qd;
+    }
     raDriftArcsec=raDrift*arcsecPerPixel;
     declDriftArcsec=declDrift*arcsecPerPixel;
 }
-
-/*
-void CropAndResize::ComputeDrift1()
-{
-    double slopeLinePointX, slopeLinePointY;
-    if(relativeTargetX==relativeStarX) // new slope is vertical
-    {
-        if(slopeVertical)
-        {
-            raDrift=relativeStarY-relativeTargetY;
-            declDrift=0;
-            return;
-        }
-//        else
-//        {
-//            inverseSlopeOffset=relativeStarY+relativeStarX*raSlope;
-//            slopeLinePointX=(relativeStarY-relativeTargetY+(relativeStarX-relativeTargetX)*raSlope)/2/raSlope;
-//            slopeLinePointY=slopePointX*raSlope+relativeTargetY;
-//        }
-    }
-    else
-    {
-        if(slopeVertical)
-        {
-            declDrift=relativeTargetX-relativeStarX;
-            raDrift=relativeStarY-relativeTargetY;
-            return;
-        }
-    }
-    slopeLinePointX=(relativeStarY-relativeTargetY+(relativeStarX-relativeTargetX)*raSlope)/2/raSlope;
-    slopeLinePointY=slopeLinePointX*raSlope+relativeTargetY;
-    slopeLinePointX+=relativeTargetX;
-    declDrift = sqrt( ( pow(slopeLinePointX-relativeStarX, 2) + pow(slopeLinePointY-relativeStarY, 2) ) );
-    raDrift = sqrt( ( pow(slopeLinePointX-relativeTargetX, 2) + pow(slopeLinePointY-relativeTargetY, 2) ) );
-    cout << "SlopeLinePointX=" << slopeLinePointX << endl;
-    cout << "SlopeLinePointY=" << slopeLinePointY << endl;
-}
-*/
 
 void CropAndResize::SnapToClosestStar()
 {
 
 }
-
 
 void CropAndResize::CropAroundSelection(Mat source, Mat *destination, Mat *intermediary, int relativeX, int relativeY, bool changeAbsoluteTarget)
 {
@@ -298,8 +270,9 @@ void CropAndResize::CropResize(Mat source, Mat *destination, Mat *intermediary)
 {
     sourceWidth = source.cols;
     sourceHeight = source.rows;
-    CropToRectangle(source, intermediary);
-    Resize(*intermediary, destination);
+    CropToRectangle(source, intermediary); // intermediary file has the same scale factor as the source
+                                           // file, it is just cropped to a rectangle
+    Resize(*intermediary, destination); // resized rectangle to be shown in the image window
 }
 
 #ifdef DEBUG
