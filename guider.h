@@ -3,20 +3,20 @@
 
 #include <QWidget>
 
-//#include <opencv2/opencv.hpp>
-
 
 #include <opencv2/opencv.hpp>
-//#include <opencv2\opencv.hpp>
 #include <opencv2/core.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/features2d/features2d.hpp>
+#include <ctime>
+#include <QElapsedTimer>
 
 #include "pincontrolpi.h"
 #include "cropandresize.h"
 
+#define TRIGGERGUIDE 2 // arcseconds - if drift is under this value guiding will not be triggered
 
 namespace Ui {
 class Guider;
@@ -34,7 +34,7 @@ public:
     bool targetSelected;
     cv::VideoCapture cap;
     bool refreshEnabled;
-//    bool calibrationEnabled;
+    bool interfaceWindowOpen;
     int calibrationStatus;
     cv::Mat myImage, srcImage, processImage, im;
     CropAndResize cropresize;
@@ -43,7 +43,17 @@ public:
     size_t starsDetected;
     float centerCoefficient;
     PinControlPi pincontrol;
-    double leftStarX, leftStarY;
+    double pi;
+    double leftStarX, leftStarY, resolutionComputeX, resolutionComputeY;
+    double arcsecPerPixel;
+    double normalTrackingSpeed, acceleratedTrackingSpeed, deceleratedTrackingSpeed; // arcsec/second
+    double raDrift, declDrift, raDriftArcsec, declDriftArcsec;
+//    double raDriftScaled, declDriftScaled;
+    double raSlope;
+    double alpha;
+    bool slopeVertical;
+    double timeToGuide;
+    QElapsedTimer guideTimer;
     void Flush(cv::VideoCapture& camera);
     void DisplayData();
     void RefreshData();
@@ -59,6 +69,9 @@ public:
     void FindClosestStarToTarget();
     void FindAndTrackStar();
     void SnapToNearestStar();
+    void ComputeRaSlope();
+    void ComputeDrift();
+    void Calibration();
     void DoGuide();
 #ifdef DEBUG
     void CaptureImagesToFiles();
@@ -84,13 +97,13 @@ private slots:
     void Mouse_pressed();
     void Mouse_left();
 
-    void on_resetButton_clicked();
+//    void on_resetButton_clicked();
     void on_testButton_clicked();
     void on_horizontalZoomSlider_valueChanged(int value);
     void on_horizontalGammaSlider_valueChanged(int value);
     void on_horizontalGammaSlider_sliderReleased();
-    void on_raSlopeButton_clicked();
-    void on_snapButton_clicked();
+//    void on_raSlopeButton_clicked();
+//    void on_snapButton_clicked();
 
     void on_saveButton_clicked();
     void on_slowButton_clicked();

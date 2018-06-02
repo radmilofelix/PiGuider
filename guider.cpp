@@ -5,7 +5,7 @@
 #include <string>
 #include <chrono>
 #include <math.h>
-#include <ctime>
+
 
 //#include <opencv2/opencv.hpp>
 //#include <opencv2/core.hpp>
@@ -13,9 +13,8 @@
 //#include <opencv2/imgcodecs.hpp>
 //#include <opencv2/imgproc/imgproc.hpp>
 
-#include <QElapsedTimer>
-#include <QMouseEvent>
 
+#include <QMouseEvent>
 #include "imagelabel.h"
 
 
@@ -33,6 +32,7 @@ Guider::Guider(QWidget *parent) :
     enabled=false;
     guideStarSelected=false;
     targetSelected=false;
+    pi=3.14159265358979323846;
     targetPosition.setX(478/2);
     targetPosition.setY(478/2);
     starsDetected=0;
@@ -40,8 +40,22 @@ Guider::Guider(QWidget *parent) :
     pincontrol.AscensionRelease();
     pincontrol.DeclinationRelease();
     refreshEnabled=false;
-//    calibrationEnabled=false;
     calibrationStatus=0;
+    interfaceWindowOpen=false;
+    slopeVertical=false;
+    raSlope=0;
+    arcsecPerPixel=5;
+    normalTrackingSpeed=15; // arcsec per second (Earth angular rotation speed)
+    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
+    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
+
+    raDrift=0;
+    declDrift=0;
+    raDriftArcsec=0;
+    declDriftArcsec=0;
+//    raDriftScaled=0;
+//    declDriftScaled=0;
+
     QPixmap image("media/icons/tools-16x16/led-green.png");
     ui->normalLedLabel->setPixmap(image);
     image.load("media/icons/tools-16x16/led-red.png");
@@ -81,6 +95,7 @@ Guider::~Guider()
 
 void Guider::on_closeButton_clicked()
 {
+    interfaceWindowOpen=false;
     close();
 }
 
@@ -89,6 +104,7 @@ void Guider::on_enableButton_clicked()
     if(enabled)
     {
         enabled=false;
+        on_normalButton_clicked();
         QPixmap image("media/icons/tools-32x32/led-red.png");
         ui->MainLedLabel->setPixmap(image);
 
@@ -141,27 +157,19 @@ void Guider::on_refreshButton_clicked()
         cropresize.relativeTargetY=cropresize.relativeHeight/2;
         cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
         cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
-        cropresize.raDrift=0;
-        cropresize.raDriftScaled=0;
-        cropresize.raDriftArcsec=0;
-        cropresize.declDrift=0;
-        cropresize.declDriftScaled=0;
-        cropresize.declDriftArcsec=0;
+        raDrift=0;
+//        raDriftScaled=0;
+        raDriftArcsec=0;
+        declDrift=0;
+//        declDriftScaled=0;
+        declDriftArcsec=0;
 
         ui->horizontalGammaSlider->setValue(1000);
         ui->horizontalZoomSlider->setValue((int)cropresize.scaleX);
         DisplayData();
         NewCapture();
         this->repaint();
-
-
-
-
-
     }
-    this->repaint();
-//    RefreshData();
-//    this->repaint();
 }
 
 
@@ -232,39 +240,32 @@ void Guider::DisplayData()
     rezMessage=QString::number(starsDetected);
     ui->labelStarsDetected->setText(rezMessage);
 
-    rezMessage=QString::number((double)cropresize.raDrift);
+    rezMessage=QString::number((double)raDrift);
     ui->labelRaDriftValue->setText(rezMessage);
 
-    rezMessage=QString::number((double)cropresize.declDrift);
+    rezMessage=QString::number((double)declDrift);
     ui->labelDeclDriftValue->setText(rezMessage);
 
-    rezMessage=QString::number((double)cropresize.raDriftArcsec);
+    rezMessage=QString::number((double)raDriftArcsec);
     ui->labelRaDriftValueArcsec->setText(rezMessage);
 
-    rezMessage=QString::number((double)cropresize.declDriftArcsec);
+    rezMessage=QString::number((double)declDriftArcsec);
     ui->labelDeclDriftValueArcsec->setText(rezMessage);
 
-    if(cropresize.slopeVertical)
+    if(slopeVertical)
         ui->labelSlopeValue->setText("V");
     else
     {
-        rezMessage=QString::number((double)cropresize.raSlope);
+        rezMessage=QString::number((double)raSlope);
         ui->labelSlopeValue->setText(rezMessage);
     }
-
-//#ifdef DEBUG
-//    cout << "Zoom Slider value: " << ui->horizontalZoomSlider->value() << endl;
-//    cout << "Zoom Slider position: " << ui->horizontalZoomSlider->sliderPosition() << endl;
-//    cout << "Gamma Slider value: " << ui->horizontalGammaSlider->value() << endl;
-//    cout << "Gamma Slider position: " << ui->horizontalGammaSlider->sliderPosition() << endl;
-//#endif
 }
 
 void Guider::RefreshData() // called by main interface if enabled=true or refreshEnabled=true
 {
 #ifdef CAPTUREFROMFILE
-//    if(fileIndex < (numberOfFiles-1))
-    if(fileIndex < (60))
+    if(fileIndex < (numberOfFiles-1))
+//    if(fileIndex < (60))
         fileIndex++;
     else
         fileIndex=0;
@@ -274,110 +275,9 @@ void Guider::RefreshData() // called by main interface if enabled=true or refres
     if(enabled)
     {
         FindAndTrackStar();
-        if(calibrationStatus)
-        {
-            double moveFactor;
-            QPixmap image("media/icons/tools-16x16/led-blue.png");
-            switch(calibrationStatus)
-            {
-            case 1:
-                moveFactor=0.2;
-                if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
-                    (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
-                    (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
-                    (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
-                { // guider star has moved
-                    cropresize.ComputeRaSlope();
-                    calibrationStatus=2;
-//                    image.load("media/icons/tools-16x16/led-green.png");
-//                    ui->calibrateLedLabel->setPixmap(image);
-                    ui->labelMessages->setText("C A L I B R A T I O N");
-                    ui->labelMessages->adjustSize();
-                }
-                break;
-            case 2:
-                moveFactor=0.6;
-                if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
-                    (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
-                    (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
-                    (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
-                { // guider star is close to edge
-                    leftStarX=cropresize.absoluteStarX;
-                    leftStarY=cropresize.absoluteStarY;
-//                    leftStarX=cropresize.relativeStarX;
-//                    leftStarY=cropresize.relativeStarY;
-                    cropresize.ComputeRaSlope();
-                    image.load("media/icons/tools-16x16/minus.png");
-                    ui->calibrateLedLabel->setPixmap(image);
-                    ui->labelMessages->setText("C A L I B R A T I O N\nTurn off tracking!");
-                    ui->labelMessages->adjustSize();
-                    on_normalButton_clicked();
-                    calibrationStatus=3;
-                }
-                break;
-            case 3:
-                moveFactor=0.2;
-                if( (cropresize.relativeStarX <  cropresize.relativeTargetX*(1+moveFactor)) && \
-                    (cropresize.relativeStarX >  cropresize.relativeTargetX*(1-moveFactor)) && \
-                    (cropresize.relativeStarY <  cropresize.relativeTargetY*(1+moveFactor)) && \
-                    (cropresize.relativeStarY >  cropresize.relativeTargetY*(1-moveFactor)))
-                    // guide star is close to target position
-                {
-                    image.load("media/icons/tools-16x16/led-green.png");
-                    ui->calibrateLedLabel->setPixmap(image);
-                    ui->labelMessages->setText("C A L I B R A T I O N");
-                    ui->labelMessages->adjustSize();
-                    calibrationStatus=4;
-                }
-                break;
-            case 4:
-                moveFactor=0.6;
-                if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
-                    (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
-                    (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
-                    (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
-                { // guider star is close to edge
-                    image.load("media/icons/tools-16x16/plus.png");
-                    ui->calibrateLedLabel->setPixmap(image);
-                    ui->labelMessages->setText("C A L I B R A T I O N\nTurn on tracking!");
-                    ui->labelMessages->adjustSize();
-                    double saveTargetX=cropresize.absoluteTargetX;
-                    double saveTargetY=cropresize.absoluteTargetY;
-                    cropresize.absoluteTargetX=leftStarX;
-                    cropresize.absoluteTargetY=leftStarY;
-                    cropresize.RecalculateTarget();
-                    cropresize.ComputeRaSlope();
-                    cropresize.absoluteTargetX=saveTargetX;
-                    cropresize.absoluteTargetY=saveTargetY;
-                    cropresize.RecalculateTarget();
-                    calibrationStatus=5;
-                    on_fastButton_clicked();
-                }
-                break;
-            case 5:
-                moveFactor=0.1;
-                if( (cropresize.relativeStarX <  cropresize.relativeTargetX*(1+moveFactor)) && \
-                    (cropresize.relativeStarX >  cropresize.relativeTargetX*(1-moveFactor)) && \
-                    (cropresize.relativeStarY <  cropresize.relativeTargetY*(1+moveFactor)) && \
-                    (cropresize.relativeStarY >  cropresize.relativeTargetY*(1-moveFactor)))
-                    // guide star is close to target position
-                {
-                    ui->labelMessages->setText("C A L I B R A T I O N\nEnd of calibration.\nPress calibration buton to exit.");
-                    ui->labelMessages->adjustSize();
-                    on_normalButton_clicked();
-                    image.load("media/icons/tools-16x16/led-green.png");
-                    ui->calibrateLedLabel->setPixmap(image);
-                    calibrationStatus=6;
-                }
-                break;
-            }
-        }
+        Calibration();
+        DoGuide();
     }
-//    else
-//    {
-//        starsDetected=0;
-//        targetSelected=false;
-//    }
 #ifdef DEBUG
 //    if(captureFlag)
 //        CaptureImagesToFiles(); // capture guide scope images for simulation purposes
@@ -404,12 +304,6 @@ void Guider::LoadUnchanged()
         cropresize.scaleY=(double)newy/(double)srcImage.rows;
         cropresize.scaleX=cropresize.scaleY;
     }
-//#ifdef DEBUG
-//    cout << "newx: " << newx << endl;
-//    cout << "newy: " << newy << endl;
-//    cout << "scaleX: " << cropresize.scaleX << endl;
-//    cout << "scaleY: " << cropresize.scaleY << endl;
-//#endif
     cropresize.relativeTargetX=cropresize.absoluteTargetX-cropresize.offsetX;
     cropresize.relativeTargetY=cropresize.absoluteTargetY-cropresize.offsetY;
     cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
@@ -478,7 +372,8 @@ void Guider::NewCapture()
             cropresize.CropResize(srcImage, &myImage, &processImage);
         }
     }
-    DisplayData();
+    if(interfaceWindowOpen)
+        DisplayData();
 
     imwrite("/run/shm/src.jpg", srcImage);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
@@ -486,7 +381,7 @@ void Guider::NewCapture()
     {
         SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,255,0));
         if(!refreshEnabled)
-            SetSlopeLine(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, cropresize.slopeVertical, cropresize.raSlope, Scalar(0,0,255));
+            SetSlopeLine(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, slopeVertical, raSlope, Scalar(0,0,255));
     }
     else
     {
@@ -494,11 +389,13 @@ void Guider::NewCapture()
     }
     if(starsDetected==0 || refreshEnabled)
     {
-        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
+        if(interfaceWindowOpen)
+            ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
         cvtColor(myImage, myImage, CV_BGR2RGB);
         imwrite("/run/shm/mat.jpg", myImage);
     }
-    this->repaint();
+    if(interfaceWindowOpen)
+        this->repaint();
 }
 
 void Guider::SetReticle(Mat *image, int x, int y, Scalar colour)
@@ -860,19 +757,21 @@ void Guider::FindAndTrackStar()
 
     StarDetector();
         //the total no of keypoints detected are:
-        int oldStarsDetected=starsDetected;
-        starsDetected=keypoints.size();
-        FindClosestStarToTarget();
-        if(!refreshEnabled)
-            cropresize.ComputeDrift();
-        DisplayData();
-        if(oldStarsDetected==0)
-            cvtColor(myImage, myImage, CV_BGR2RGB);
-        if(guideStarSelected)
-            SetReticle(&myImage, cropresize.relativeStarScaledX, cropresize.relativeStarScaledY, Scalar(255,0,0));
-        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
+    int oldStarsDetected=starsDetected;
+    starsDetected=keypoints.size();
+    FindClosestStarToTarget();
+    if(!refreshEnabled)
+        ComputeDrift();
+    DisplayData();
+    if(oldStarsDetected==0)
         cvtColor(myImage, myImage, CV_BGR2RGB);
-        imwrite("/run/shm/mat.jpg", myImage);
+    if(guideStarSelected)
+        SetReticle(&myImage, cropresize.relativeStarScaledX, cropresize.relativeStarScaledY, Scalar(255,0,0));
+    if(interfaceWindowOpen)
+        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
+    cvtColor(myImage, myImage, CV_BGR2RGB);
+    imwrite("/run/shm/mat.jpg", myImage);
+    if(interfaceWindowOpen)
         this->repaint();
 }
 
@@ -886,15 +785,183 @@ void Guider::SnapToNearestStar()
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,255,0));
 //    SetReticle(&myImage, cropresize.relativeStarScaledX, cropresize.relativeStarScaledY, Scalar(255,0,0));
-    ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
-    DisplayData();
-    this->repaint();
+    if(interfaceWindowOpen)
+    {
+        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
+        DisplayData();
+        this->repaint();
+    }
     guideStarSelected=true;
+}
+
+void Guider::ComputeRaSlope()
+{
+    if(cropresize.relativeTargetX==cropresize.relativeStarX)
+    {
+        slopeVertical=true;
+        if(cropresize.relativeStarY > cropresize.relativeTargetY)
+            alpha = pi/2;
+        else
+            alpha = 3*pi/2;
+        return;
+    }
+    slopeVertical=false;
+    raSlope=(cropresize.relativeStarY-cropresize.relativeTargetY)/(cropresize.relativeStarX-cropresize.relativeTargetX);
+    alpha = atan(raSlope);}
+
+void Guider::ComputeDrift()
+{
+    double yq;
+    if(slopeVertical)
+    {
+        raDrift=cropresize.relativeStarY-cropresize.relativeTargetY;
+        declDrift=-(cropresize.relativeStarX-cropresize.relativeTargetX)*sin(alpha);
+    }
+    else
+    {
+        yq = raSlope*(cropresize.relativeStarX-cropresize.relativeTargetX);
+        double sq = cropresize.relativeStarY-cropresize.relativeTargetY-yq;
+        declDrift = sq * cos(alpha);
+        double qd = sq * sin(alpha);
+        double tq = (cropresize.relativeStarX-cropresize.relativeTargetX)/cos(alpha);
+        raDrift = tq+qd;
+    }
+    raDriftArcsec=raDrift*arcsecPerPixel;
+    declDriftArcsec=declDrift*arcsecPerPixel;
+}
+
+void Guider::Calibration()
+{
+    if(!calibrationStatus)
+        return;
+    double moveFactor;
+    QPixmap image("media/icons/tools-16x16/led-blue.png");
+    switch(calibrationStatus)
+    {
+    case 1:
+        moveFactor=0.2;
+        if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
+            (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
+            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
+            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
+        { // guider star has moved
+            ComputeRaSlope();
+            calibrationStatus=2;
+//                    image.load("media/icons/tools-16x16/led-green.png");
+//                    ui->calibrateLedLabel->setPixmap(image);
+            ui->labelMessages->setText("C A L I B R A T I O N");
+            ui->labelMessages->adjustSize();
+        }
+        break;
+    case 2:
+        moveFactor=0.6;
+        if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
+            (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
+            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
+            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
+        { // guider star is close to edge
+            leftStarX=cropresize.absoluteStarX;
+            leftStarY=cropresize.absoluteStarY;
+//                    leftStarX=cropresize.relativeStarX;
+//                    leftStarY=cropresize.relativeStarY;
+            ComputeRaSlope();
+            image.load("media/icons/tools-16x16/minus.png");
+            ui->calibrateLedLabel->setPixmap(image);
+            ui->labelMessages->setText("C A L I B R A T I O N\nTurn off tracking!");
+            ui->labelMessages->adjustSize();
+            on_normalButton_clicked();
+            calibrationStatus=3;
+        }
+        break;
+    case 3:
+        moveFactor=0.2;
+        if( (cropresize.relativeStarX <  cropresize.relativeTargetX*(1+moveFactor)) && \
+            (cropresize.relativeStarX >  cropresize.relativeTargetX*(1-moveFactor)) && \
+            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1+moveFactor)) && \
+            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1-moveFactor)))
+            // guide star is close to target position
+        {
+            image.load("media/icons/tools-16x16/led-green.png");
+            ui->calibrateLedLabel->setPixmap(image);
+            ui->labelMessages->setText("C A L I B R A T I O N");
+            ui->labelMessages->adjustSize();
+            calibrationStatus=4;
+            resolutionComputeX=cropresize.absoluteStarX;
+            resolutionComputeY=cropresize.absoluteStarY;
+            guideTimer.start();
+        }
+        break;
+    case 4:
+        moveFactor=0.6;
+        if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
+            (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
+            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
+            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
+        { // guider star is close to edge
+            image.load("media/icons/tools-16x16/plus.png");
+            ui->calibrateLedLabel->setPixmap(image);
+            double saveTargetX=cropresize.absoluteTargetX;
+            double saveTargetY=cropresize.absoluteTargetY;
+            cropresize.absoluteTargetX=leftStarX;
+            cropresize.absoluteTargetY=leftStarY;
+            cropresize.RecalculateTarget();
+            ComputeRaSlope();
+            cropresize.absoluteTargetX=saveTargetX;
+            cropresize.absoluteTargetY=saveTargetY;
+            cropresize.RecalculateTarget();
+            double resolutionDistance=sqrt((resolutionComputeX-cropresize.absoluteStarX) * (resolutionComputeX-cropresize.absoluteStarX) \
+                        + (resolutionComputeY-cropresize.absoluteStarY) * (resolutionComputeY-cropresize.absoluteStarY));
+            arcsecPerPixel=guideTimer.elapsed()*normalTrackingSpeed/resolutionDistance/1000;
+            QString rezMessage="C A L I B R A T I O N\nResolution: ";
+            rezMessage+=QString::number((double)arcsecPerPixel);
+            rezMessage+=" arcsec/pixel\nTurn on tracking!\nPress calibration buton when done.";
+            ui->labelMessages->setText(rezMessage);
+            ui->labelMessages->adjustSize();
+            calibrationStatus=5;
+        }
+        break;
+    case 6:
+        moveFactor=0.1;
+        if( (cropresize.relativeStarX <  cropresize.relativeTargetX*(1+moveFactor)) && \
+            (cropresize.relativeStarX >  cropresize.relativeTargetX*(1-moveFactor)) && \
+            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1+moveFactor)) && \
+            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1-moveFactor)))
+            // guide star is close to target position
+        {
+            ui->labelMessages->setText("C A L I B R A T I O N\nEnd of calibration.\nPress calibration buton to exit.");
+            ui->labelMessages->adjustSize();
+            on_normalButton_clicked();
+            image.load("media/icons/tools-16x16/led-green.png");
+            ui->calibrateLedLabel->setPixmap(image);
+            calibrationStatus=7;
+        }
+        break;
+    }
 }
 
 void Guider::DoGuide()
 {
-
+    double reductionCoefficient=0.8;
+    if(calibrationStatus || !targetSelected)
+        return;
+    if(raDriftArcsec > TRIGGERGUIDE)
+    {
+        timeToGuide=raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
+        on_normalButton_clicked();
+        if(starsDetected)
+            on_fastButton_clicked();
+        guideTimer.start();
+    }
+    if(raDriftArcsec < -TRIGGERGUIDE)
+    {
+        timeToGuide=-raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
+        on_normalButton_clicked();
+        if(starsDetected)
+            on_slowButton_clicked();
+        guideTimer.start();
+    }
+    if(guideTimer.elapsed()/1000 > timeToGuide)
+        on_normalButton_clicked();
 }
 
 #ifdef DEBUG
@@ -918,8 +985,6 @@ void Guider::on_testButton_clicked()
 {
     FindAndTrackStar();
 }
-
-
 
 void Guider::on_plusButton_clicked()
 {
@@ -1000,7 +1065,7 @@ void Guider::Mouse_left()
 
 }
 
-
+/*
 void Guider::on_resetButton_clicked()
 {
     targetSelected=false;
@@ -1009,26 +1074,13 @@ void Guider::on_resetButton_clicked()
     cropresize.scaleY=1;
     cropresize.offsetX=0;
     cropresize.offsetY=0;
-
-/*
-    cropresize.relativeWidth=478;
-    cropresize.relativeHeight=478;
-    cropresize.absoluteWidth=478;
-    cropresize.absoluteHeight=478;
-    cropresize.absoluteTargetX=cropresize.absoluteWidth/2;
-    cropresize.absoluteTargetY=cropresize.absoluteHeight/2;
-    cropresize.relativeTargetX=cropresize.relativeWidth/2;
-    cropresize.relativeTargetY=cropresize.relativeHeight/2;
-    cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
-    cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
-*/
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalZoomSlider->setValue((int)cropresize.scaleX);
     DisplayData();
     NewCapture();
     this->repaint();
 }
-
+*/
 
 void Guider::on_horizontalZoomSlider_valueChanged(int value)
 {
@@ -1061,18 +1113,22 @@ void Guider::on_horizontalGammaSlider_sliderReleased()
 //    this->repaint();
 }
 
+/*
 void Guider::on_raSlopeButton_clicked()
 {
-    cropresize.ComputeRaSlope();
+    ComputeRaSlope();
 //    cout << "RA Slope: " << cropresize.raSlope << endl;
 //    cout << "Slope Vertical: " << cropresize.slopeVertical << endl;
 //    cout << "Alpha: " << cropresize.alpha << endl;
 }
+*/
 
+/*
 void Guider::on_snapButton_clicked()
 {
     SnapToNearestStar();
 }
+*/
 
 void Guider::on_saveButton_clicked()
 {
@@ -1096,31 +1152,40 @@ void Guider::on_saveButton_clicked()
 void Guider::on_slowButton_clicked()
 {
     pincontrol.AscensionMinus();
-    QPixmap image("media/icons/tools-16x16/led-green.png");
-    ui->slowLedLabel->setPixmap(image);
-    image.load("media/icons/tools-16x16/led-red.png");
-    ui->normalLedLabel->setPixmap(image);
-    ui->fastLedLabel->setPixmap(image);
+    if(interfaceWindowOpen)
+    {
+        QPixmap image("media/icons/tools-16x16/led-green.png");
+        ui->slowLedLabel->setPixmap(image);
+        image.load("media/icons/tools-16x16/led-red.png");
+        ui->normalLedLabel->setPixmap(image);
+        ui->fastLedLabel->setPixmap(image);
+    }
 }
 
 void Guider::on_normalButton_clicked()
 {
     pincontrol.AscensionRelease();
-    QPixmap image("media/icons/tools-16x16/led-green.png");
-    ui->normalLedLabel->setPixmap(image);
-    image.load("media/icons/tools-16x16/led-red.png");
-    ui->slowLedLabel->setPixmap(image);
-    ui->fastLedLabel->setPixmap(image);
+    if(interfaceWindowOpen)
+    {
+        QPixmap image("media/icons/tools-16x16/led-green.png");
+        ui->normalLedLabel->setPixmap(image);
+        image.load("media/icons/tools-16x16/led-red.png");
+        ui->slowLedLabel->setPixmap(image);
+        ui->fastLedLabel->setPixmap(image);
+    }
 }
 
 void Guider::on_fastButton_clicked()
 {
     pincontrol.AscensionPlus();
-    QPixmap image("media/icons/tools-16x16/led-green.png");
-    ui->fastLedLabel->setPixmap(image);
-    image.load("media/icons/tools-16x16/led-red.png");
-    ui->normalLedLabel->setPixmap(image);
-    ui->slowLedLabel->setPixmap(image);
+    if(interfaceWindowOpen)
+    {
+        QPixmap image("media/icons/tools-16x16/led-green.png");
+        ui->fastLedLabel->setPixmap(image);
+        image.load("media/icons/tools-16x16/led-red.png");
+        ui->normalLedLabel->setPixmap(image);
+        ui->slowLedLabel->setPixmap(image);
+    }
 }
 
 void Guider::on_calibrateButton_clicked()
@@ -1150,7 +1215,15 @@ void Guider::on_calibrateButton_clicked()
         ui->refreshLedLabel->setPixmap(image);
         on_fastButton_clicked();
         break;
-    case 6:
+    case 5:
+        calibrationStatus=6;
+        image.load("media/icons/tools-16x16/led-green.png");
+        ui->calibrateLedLabel->setPixmap(image);
+        ui->labelMessages->setText("C A L I B R A T I O N\nReturning guide star to center.");
+        ui->labelMessages->adjustSize();
+        on_fastButton_clicked();
+        break;
+    case 7:
         calibrationStatus=0;
         image.load("media/icons/tools-16x16/led-red.png");
         ui->calibrateLedLabel->setPixmap(image);

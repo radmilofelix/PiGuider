@@ -23,15 +23,15 @@ public:
     double relativeStarX, relativeStarY; //
     double relativeStarScaledX, relativeStarScaledY; //
     double absoluteStarX, absoluteStarY; //
-    double arcsecPerPixel;
-    double normalTrackingSpeed, acceleratedTrackingSpeed, deceleratedTrackingSpeed; // arcsec/second
-    double raDrift, declDrift, raDriftArcsec, declDriftArcsec;
-    double raDriftScaled, declDriftScaled;
-    double pi;
-    double raSlope;
-    double alpha;
-    bool slopeVertical;
-    int verticalDirection;
+//    double arcsecPerPixel;
+//    double normalTrackingSpeed, acceleratedTrackingSpeed, deceleratedTrackingSpeed; // arcsec/second
+//    double raDrift, declDrift, raDriftArcsec, declDriftArcsec;
+//    double raDriftScaled, declDriftScaled;
+//    double pi;
+//    double raSlope;
+//    double alpha;
+//    bool slopeVertical;
+//    int verticalDirection;
     int offsetX, offsetY; //relative to source
     int relativeWidth, relativeHeight;
     int absoluteWidth, absoluteHeight;
@@ -43,8 +43,8 @@ public:
     void ZoomCalculations();
     void RecalculateTarget();
     void StarCalculations();
-    void ComputeRaSlope();
-    void ComputeDrift();
+//    void ComputeRaSlope();
+//    void ComputeDrift();
 //    void ComputeDrift1();
     void SnapToClosestStar();
     void CropAroundSelection(cv::Mat source, cv::Mat *destination, cv::Mat *intermediary, int relativeX, int relativeY, bool changeAbsoluteTarget);

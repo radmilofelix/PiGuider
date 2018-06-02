@@ -109,8 +109,11 @@ void PiGuider::updateStatus()
     if(guider.enabled || guider.refreshEnabled)
     {
         guider.RefreshData();
-        QPixmap guideimage("/run/shm/mat.jpg");
-        ui->mainImageLabel->setPixmap(guideimage);
+        if(!guider.interfaceWindowOpen)
+        {
+            QPixmap guideimage("/run/shm/mat.jpg");
+            ui->mainImageLabel->setPixmap(guideimage);
+        }
     }
 //    else
 //    {
@@ -162,7 +165,8 @@ else
 
 void PiGuider::on_guideButton_clicked()
 {
-        guider.show();
+    guider.interfaceWindowOpen=true;
+    guider.show();
 }
 
 void PiGuider::on_focusButton_clicked()

@@ -1,15 +1,31 @@
 #include "dslr.h"
 #include "ui_dslr.h"
 
-//#include <unistd.h>
-//#include <stdlib.h>
-//#include <sys/types.h>
-//#include <sys/stat.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 #include <fcntl.h>
-//#include <stdio.h>
-//#include <stdarg.h>
+#include <stdio.h>
+#include <stdarg.h>
 //#include <string.h>
 #include "globalsettings.h"
+
+#include <iostream>
+#include <string>
+//#include <chrono>
+//#include <math.h>
+
+/*
+#include <opencv2/opencv.hpp>
+#include <opencv2/core.hpp>
+#include <opencv2/highgui.hpp>
+#include <opencv2/imgcodecs.hpp>
+#include <opencv2/imgproc/imgproc.hpp>
+*/
+
+using namespace cv;
+using namespace std;
 
 
 
@@ -26,6 +42,88 @@ DSLR::DSLR(QWidget *parent) :
 DSLR::~DSLR()
 {
     delete ui;
+}
+
+void DSLR::NewCapture()
+{
+    srcImage = imread("/run/shm/srcDslr.jpg", CV_LOAD_IMAGE_UNCHANGED);
+    if(srcImage.empty())
+    {
+        ui->labelMessages->setText("Could not open or find camera image");
+        ui->labelMessages->adjustSize();
+        return;
+    }
+
+    if(cropresize.scaleX<=1)
+    {
+        LoadUnchanged();
+    }
+    else
+    {
+        if(cropresize.offsetY < 0)
+            LoadUnchanged();
+        else
+        {
+            cropresize.CropResize(srcImage, &myImage, &processImage);
+        }
+    }
+//    if(interfaceWindowOpen)
+//        DisplayData();
+
+//    imwrite("/run/shm/srcDslr.jpg", srcImage);
+//    GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
+    if(targetSelected)
+    {
+//        SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,255,0));
+//        if(!refreshEnabled)
+//            SetSlopeLine(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, slopeVertical, raSlope, Scalar(0,0,255));
+    }
+    else
+    {
+//        SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,0,255));
+    }
+//    if(starsDetected==0 || refreshEnabled)
+//    {
+//        if(interfaceWindowOpen)
+            ui->dslrImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
+        cvtColor(myImage, myImage, CV_BGR2RGB);
+        imwrite("/run/shm/matDslr.jpg", myImage);
+//    }
+//    if(interfaceWindowOpen)
+        this->repaint();}
+
+void DSLR::LoadUnchanged()
+{
+    int newx,newy;
+    if(srcImage.cols > srcImage.rows)
+    {
+        newx=ui->dslrImageLabel->width();
+        newy=srcImage.rows*newx/srcImage.cols;
+        cropresize.scaleX=(double)newx/(double)srcImage.cols;
+        cropresize.scaleY=cropresize.scaleX;
+#ifdef IMAGELABELSVERTIACALALIGNMENTMIDDLE
+        cropresize.offsetY=(newy - ui->dslrImageLabel->height())/2/cropresize.scaleY;
+#endif
+    }
+    else
+    {
+        newy=ui->dslrImageLabel->height();
+        newx=srcImage.cols*newy/srcImage.rows;
+        cropresize.scaleY=(double)newy/(double)srcImage.rows;
+        cropresize.scaleX=cropresize.scaleY;
+    }
+    cropresize.relativeTargetX=cropresize.absoluteTargetX-cropresize.offsetX;
+    cropresize.relativeTargetY=cropresize.absoluteTargetY-cropresize.offsetY;
+    cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
+#ifdef IMAGELABELSVERTIACALALIGNMENTMIDDLE
+    // see vertical alignment of the image label controls in piguider.ui and guider.ui
+    cropresize.relativeTargetScaledY=cropresize.absoluteTargetY*cropresize.scaleY;
+#else
+    cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
+#endif
+    cv::Size mSize(newx,newy);//the dst image size,e.g.100x100
+    cv::resize( srcImage, myImage, mSize);
+    processImage=myImage;
 }
 
 void DSLR::on_closeButton_clicked()
@@ -51,14 +149,77 @@ void DSLR::on_enableButton_clicked()
 }
 
 
-
-
 int DSLR::_lookup_widget(CameraWidget*widget, const char *key, CameraWidget **child) {
     int ret;
     ret = gp_widget_get_child_by_name (widget, key, child);
     if (ret < GP_OK)
         ret = gp_widget_get_child_by_label (widget, key, child);
     return ret;
+}
+
+void DSLR::camera_tether(Camera *camera, GPContext *context,  char *fn)
+{
+    int fd, retval;
+    CameraFile *file;
+    CameraEventType	evttype;
+    CameraFilePath	*path;
+    void	*evtdata;
+
+    printf("Tethering...\n");
+
+    while (1)
+    {
+        retval = gp_camera_wait_for_event (camera, 1000, &evttype, &evtdata, context);
+        if (retval != GP_OK)
+            break;
+        switch (evttype) {
+
+        case GP_EVENT_FILE_ADDED:
+            path = (CameraFilePath*)evtdata;
+            printf("File added on the camera: %s/%s\n", path->folder, path->name);
+
+            fd = open(fn, O_CREAT | O_WRONLY, 0644);
+//            fd = open (path->name, O_CREAT | O_WRONLY, 0644);
+            retval = gp_file_new_from_fd(&file, fd);
+            printf("  Downloading %s...\n", path->name);
+            retval = gp_camera_file_get(camera, path->folder, path->name,
+                     GP_FILE_TYPE_NORMAL, file, context);
+
+            printf("  Deleting %s on camera...\n", path->name);
+            retval = gp_camera_file_delete(camera, path->folder, path->name, context);
+            gp_file_free(file);
+            free(evtdata);
+            return;
+            break;
+
+        case GP_EVENT_FOLDER_ADDED:
+            path = (CameraFilePath*)evtdata;
+            printf("Folder added on camera: %s / %s\n", path->folder, path->name);
+            free(evtdata);
+            break;
+//        case GP_EVENT_FILE_CHANGED:
+//            path = (CameraFilePath*)evtdata;
+//            printf("File changed on camera: %s / %s\n", path->folder, path->name);
+//            free(evtdata);
+//            break;
+        case GP_EVENT_CAPTURE_COMPLETE:
+            printf("Capture Complete.\n");
+            break;
+        case GP_EVENT_TIMEOUT:
+            printf("Timeout.\n");
+            break;
+        case GP_EVENT_UNKNOWN:
+            if (evtdata) {
+                printf("Unknown event: %s.\n", (char*)evtdata);
+            } else {
+                printf("Unknown event.\n");
+            }
+            break;
+        default:
+            printf("Type %d?\n", evttype);
+            break;
+        }
+    }
 }
 
 // calls the Nikon DSLR or Canon DSLR autofocus method.
@@ -265,9 +426,6 @@ out:
     gp_widget_free (widget);
     return ret;
 }
-
-
-
 
 
 
@@ -512,7 +670,8 @@ void set_capturetarget(Camera *canon, GPContext *canoncontext) {
 }
 
 
-    void DSLR::capture_to_file(Camera *canon, GPContext *canoncontext, char *fn) {
+    void DSLR::capture_to_file(Camera *canon, GPContext *canoncontext, char *fn)
+    {
     int fd, retval;
     CameraFile *canonfile;
     CameraFilePath camera_file_path;
@@ -541,8 +700,8 @@ void set_capturetarget(Camera *canon, GPContext *canoncontext) {
 
 void DSLR::on_pushButton_clicked()
 {
-
-
+    ui->labelMessages->setText(" Initialising camera... ");
+    ui->labelMessages->adjustSize();
     Camera	*canon;
     int	i, retval;
 
@@ -561,20 +720,34 @@ void DSLR::on_pushButton_clicked()
 //     is partly why it takes so long.
 //     (Marcus: the ptp2 driver does this by default currently.)
 //
-    printf("Camera init.  Takes about 10 seconds.\n");
+
+    ui->labelMessages->setText(" Initialising camera... \nTakes about 10 seconds.");
+    ui->labelMessages->adjustSize();
     retval = gp_camera_init(canon, canoncontext);
-    if (retval != GP_OK) {
-        printf("  Retval: %d\n", retval);
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not initialise camera.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
         return;
     }
+
+
+
+
+
+
+
 // ??????????????????????????????????????????????????????????????????????????????
 //	canon_enable_capture(canon, TRUE, canoncontext);
 //    set_capturetarget(canon, canoncontext);
 
 
-    printf("Taking 100 previews and saving them to snapshot-XXX.jpg ...\n");
+//    printf("Taking 100 previews and saving them to snapshot-XXX.jpg ...\n");
     int canonFocus=-3;
-    for (i=0;i<10;i++) {
+    for (i=0;i<10;i++)
+    {
         CameraFile *file;
         char output_file[32];
 
@@ -644,6 +817,114 @@ void DSLR::on_pushButton_clicked()
     gp_camera_exit(canon, canoncontext);
 //    return 0;
 
+}
 
+void DSLR::on_CapturePreviewButton_clicked()
+{
+    ui->labelMessages->setText(" Initialising camera... ");
+    ui->labelMessages->adjustSize();
+    Camera	*canon;
+    int	i, retval;
 
+// ????????????????????????????????????????????????
+//	GPContext *canoncontext = sample_create_context();
+    GPContext *canoncontext = gp_context_new();
+    gp_camera_new(&canon);
+
+//	gp_log_add_func(GP_LOG_ERROR, errordumper, NULL);
+
+//     When I set GP_LOG_DEBUG instead of GP_LOG_ERROR above, I noticed that the
+//     init function seems to traverse the entire filesystem on the camera.  This
+//     is partly why it takes so long.
+//     (Marcus: the ptp2 driver does this by default currently.)
+//
+
+    ui->labelMessages->setText(" Initialising camera... \nTakes about 10 seconds.");
+    ui->labelMessages->adjustSize();
+    retval = gp_camera_init(canon, canoncontext);
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not initialise camera.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
+        return;
+    }
+    ui->labelMessages->setText(" OK.");
+    ui->labelMessages->adjustSize();
+    CameraFile *file;
+    retval = gp_file_new(&file);
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not create CameraFile object.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
+        return;
+    }
+    retval = gp_camera_capture_preview(canon, file, canoncontext);
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not capture camera preview.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
+        return;
+    }
+    retval = gp_file_save(file, "/run/shm/srcDslr.jpg");
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not save camera preview.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
+        return;
+    }
+    gp_file_unref(file);
+    gp_camera_exit(canon, canoncontext);
+    gp_camera_unref(canon);
+
+    NewCapture();
+}
+
+void DSLR::on_CaptureImage_clicked()
+{
+    ui->labelMessages->setText(" Initialising camera... ");
+    ui->labelMessages->adjustSize();
+    Camera	*canon;
+    int	i, retval;
+    GPContext *canoncontext = gp_context_new();
+    gp_camera_new(&canon);
+    ui->labelMessages->setText(" Initialising camera... \nTakes about 10 seconds.");
+    ui->labelMessages->adjustSize();
+    retval = gp_camera_init(canon, canoncontext);
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not initialise camera.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
+        return;
+    }
+    ui->labelMessages->setText(" OK.");
+    ui->labelMessages->adjustSize();
+    CameraFile *file;
+    retval = gp_file_new(&file);
+    if (retval != GP_OK)
+    {
+        QString rezMessage="Could not create CameraFile object.\nError code: ";
+        rezMessage+=QString::number(retval);
+        ui->labelMessages->setText(rezMessage);
+        ui->labelMessages->adjustSize();
+        return;
+    }
+//    capture_to_file(canon, canoncontext,"/run/shm/srcDslr.jpg");
+
+    set_config_value_string (canon, "eosremoterelease", "Immediate", canoncontext);
+    sleep(3);
+    set_config_value_string (canon, "eosremoterelease", "Release Full", canoncontext);
+    camera_tether(canon, canoncontext,"/run/shm/srcDslr.cr2");
+    gp_camera_exit(canon, canoncontext);
+    gp_camera_unref(canon);
+    NewCapture();
 }

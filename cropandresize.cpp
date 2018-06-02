@@ -10,7 +10,7 @@ CropAndResize::CropAndResize()
 {
 //    sourceWidth=640;
 //    sourceHeight=480;
-    pi=3.14159265358979323846;
+//    pi=3.14159265358979323846;
     scaleX=1;
     scaleY=1;
     offsetX=0;
@@ -25,19 +25,19 @@ CropAndResize::CropAndResize()
     relativeTargetY=relativeHeight/2;
     relativeTargetScaledX=relativeTargetX*scaleX;
     relativeTargetScaledY=relativeTargetY*scaleY;
-    slopeVertical=false;
-    raSlope=0;
-    arcsecPerPixel=5;
-    normalTrackingSpeed=15; // arcsec per second (Earth angular rotation speed)
-    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
-    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
+//    slopeVertical=false;
+//    raSlope=0;
+//    arcsecPerPixel=5;
+//    normalTrackingSpeed=15; // arcsec per second (Earth angular rotation speed)
+//    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
+//    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
 
-    raDrift=0;
-    declDrift=0;
-    raDriftArcsec=0;
-    declDriftArcsec=0;
-    raDriftScaled=0;
-    declDriftScaled=0;
+//    raDrift=0;
+//    declDrift=0;
+//    raDriftArcsec=0;
+//    declDriftArcsec=0;
+//    raDriftScaled=0;
+//    declDriftScaled=0;
 
 }
 
@@ -175,22 +175,26 @@ void CropAndResize::StarCalculations()
     absoluteStarY=relativeStarY+offsetY;
 }
 
+/*
 void CropAndResize::ComputeRaSlope()
 {
     if(relativeTargetX==relativeStarX)
     {
         slopeVertical=true;
-//        if(relativeStarY > relativeTargetY)
+        if(relativeStarY > relativeTargetY)
             alpha = pi/2;
-//        else
-//            alpha = 3*pi/2;
+        else
+            alpha = 3*pi/2;
         return;
     }
     slopeVertical=false;
     raSlope=(relativeStarY-relativeTargetY)/(relativeStarX-relativeTargetX);
     alpha = atan(raSlope);
 }
+*/
 
+
+/*
 void CropAndResize::ComputeDrift()
 {
     double yq;
@@ -211,7 +215,7 @@ void CropAndResize::ComputeDrift()
     raDriftArcsec=raDrift*arcsecPerPixel;
     declDriftArcsec=declDrift*arcsecPerPixel;
 }
-
+*/
 void CropAndResize::SnapToClosestStar()
 {
 
