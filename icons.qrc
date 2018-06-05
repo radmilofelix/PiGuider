@@ -106,5 +106,13 @@
         <file>media/icons/tools-512x512/search-pressed.png</file>
         <file>media/icons/tools-512x512/calibration1.png</file>
         <file>media/icons/tools-512x512/calibration1-pressed.png</file>
+        <file>media/icons/tools-512x512/connect.png</file>
+        <file>media/icons/tools-512x512/connect1.png</file>
+        <file>media/icons/tools-512x512/connect1-pressed.png</file>
+        <file>media/icons/tools-512x512/connect2.png</file>
+        <file>media/icons/tools-512x512/connect2-pressed.png</file>
+        <file>media/icons/tools-512x512/connect-pressed.png</file>
+        <file>media/icons/tools-512x512/reset.png</file>
+        <file>media/icons/tools-512x512/reset-pressed.png</file>
     </qresource>
 </RCC>

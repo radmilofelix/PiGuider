@@ -78,12 +78,12 @@ Guider::Guider(QWidget *parent) :
 //    fileIndex=59;
     fileIndex=0;
 #else
-    cap.open(0);// 0 = first camera, 1 = second camera...
-//    cap.open(1);// 0 = first camera, 1 = second camera...
+//    cap.open(0);// 0 = first camera, 1 = second camera...
+    cap.open("/dev/video0");// 0 = first camera, 1 = second camera...
 #endif
     NewCapture();
     ui->horizontalZoomSlider->setRange(10, 1000);
-    ui->horizontalZoomSlider->setValue((int)cropresize.scaleX);
+    ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
     ui->horizontalZoomSlider->setVisible(true);
 
 }
@@ -141,22 +141,22 @@ void Guider::on_refreshButton_clicked()
         starsDetected=0;
         targetSelected=false;
         guideStarSelected=false;
-        cropresize.scaleX=0.746875;
-        cropresize.scaleY=0.746878;
-        cropresize.offsetX=0;
-        cropresize.offsetY=-80;
-        cropresize.relativeWidth=478;
-        cropresize.relativeHeight=478;
-//        cropresize.absoluteWidth=478;
-//        cropresize.absoluteHeight=478;
-        cropresize.absoluteWidth=640;
-        cropresize.absoluteHeight=480;
-        cropresize.absoluteTargetX=cropresize.absoluteWidth/2;
-        cropresize.absoluteTargetY=cropresize.absoluteHeight/2;
-        cropresize.relativeTargetX=cropresize.relativeWidth/2;
-        cropresize.relativeTargetY=cropresize.relativeHeight/2;
-        cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
-        cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
+        dgeometry.scaleX=0.746875;
+        dgeometry.scaleY=0.746878;
+        dgeometry.offsetX=0;
+        dgeometry.offsetY=-80;
+        dgeometry.relativeWidth=478;
+        dgeometry.relativeHeight=478;
+//        dgeometry.absoluteWidth=478;
+//        dgeometry.absoluteHeight=478;
+        dgeometry.absoluteWidth=640;
+        dgeometry.absoluteHeight=480;
+        dgeometry.sourceTargetX=dgeometry.absoluteWidth/2;
+        dgeometry.sourceTargetY=dgeometry.absoluteHeight/2;
+        dgeometry.absoluteTargetX=dgeometry.relativeWidth/2;
+        dgeometry.absoluteTargetY=dgeometry.relativeHeight/2;
+        dgeometry.relativeTargetX=dgeometry.absoluteTargetX*dgeometry.scaleX;
+        dgeometry.relativeTargetY=dgeometry.absoluteTargetY*dgeometry.scaleY;
         raDrift=0;
 //        raDriftScaled=0;
         raDriftArcsec=0;
@@ -165,7 +165,7 @@ void Guider::on_refreshButton_clicked()
         declDriftArcsec=0;
 
         ui->horizontalGammaSlider->setValue(1000);
-        ui->horizontalZoomSlider->setValue((int)cropresize.scaleX);
+        ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
         DisplayData();
         NewCapture();
         this->repaint();
@@ -216,20 +216,20 @@ void Guider::DisplayData()
     QString valY;
     QString rezMessage;
 
-    valX=QString::number(cropresize.scaleX);
-    valY=QString::number(cropresize.scaleY);
+    valX=QString::number(dgeometry.scaleX);
+    valY=QString::number(dgeometry.scaleY);
     rezMessage=valX+", ";
     rezMessage=rezMessage+valY;
     ui->labelScaleValue->setText(rezMessage);
 
-    valX=QString::number((int)cropresize.absoluteTargetX);
-    valY=QString::number((int)cropresize.absoluteTargetY);
+    valX=QString::number((int)dgeometry.sourceTargetX);
+    valY=QString::number((int)dgeometry.sourceTargetY);
     rezMessage=valX+", ";
     rezMessage=rezMessage+valY;
     ui->labelTargetValue->setText(rezMessage);
 
-    valX=QString::number((int)cropresize.offsetX);
-    valY=QString::number((int)cropresize.offsetY);
+    valX=QString::number((int)dgeometry.offsetX);
+    valY=QString::number((int)dgeometry.offsetY);
     rezMessage=valX+", ";
     rezMessage=rezMessage+valY;
     ui->labelOffsetValue->setText(rezMessage);
@@ -291,27 +291,27 @@ void Guider::LoadUnchanged()
     {
         newx=ui->guiderImageLabel->width();
         newy=srcImage.rows*newx/srcImage.cols;
-        cropresize.scaleX=(double)newx/(double)srcImage.cols;
-        cropresize.scaleY=cropresize.scaleX;
+        dgeometry.scaleX=(double)newx/(double)srcImage.cols;
+        dgeometry.scaleY=dgeometry.scaleX;
 #ifdef IMAGELABELSVERTIACALALIGNMENTMIDDLE
-        cropresize.offsetY=(newy - ui->guiderImageLabel->height())/2/cropresize.scaleY;
+        dgeometry.offsetY=(newy - ui->guiderImageLabel->height())/2/dgeometry.scaleY;
 #endif
     }
     else
     {
         newy=ui->guiderImageLabel->height();
         newx=srcImage.cols*newy/srcImage.rows;
-        cropresize.scaleY=(double)newy/(double)srcImage.rows;
-        cropresize.scaleX=cropresize.scaleY;
+        dgeometry.scaleY=(double)newy/(double)srcImage.rows;
+        dgeometry.scaleX=dgeometry.scaleY;
     }
-    cropresize.relativeTargetX=cropresize.absoluteTargetX-cropresize.offsetX;
-    cropresize.relativeTargetY=cropresize.absoluteTargetY-cropresize.offsetY;
-    cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
+    dgeometry.absoluteTargetX=dgeometry.sourceTargetX-dgeometry.offsetX;
+    dgeometry.absoluteTargetY=dgeometry.sourceTargetY-dgeometry.offsetY;
+    dgeometry.relativeTargetX=dgeometry.absoluteTargetX*dgeometry.scaleX;
 #ifdef IMAGELABELSVERTIACALALIGNMENTMIDDLE
     // see vertical alignment of the image label controls in piguider.ui and guider.ui
-    cropresize.relativeTargetScaledY=cropresize.absoluteTargetY*cropresize.scaleY;
+    dgeometry.relativeTargetY=dgeometry.sourceTargetY*dgeometry.scaleY;
 #else
-    cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
+    dgeometry.relativeTargetY=dgeometry.absoluteTargetY*dgeometry.scaleY;
 #endif
     cv::Size mSize(newx,newy);//the dst image size,e.g.100x100
     cv::resize( srcImage, myImage, mSize);
@@ -323,7 +323,7 @@ void Guider::NewCapture()
 #ifndef CAPTUREFROMFILE
     if(!cap.isOpened())  // check if we succeeded
     {
-        cout <<  "Could not open USB camera for capture" << std::endl ;
+        cout <<  "Could not open USB camera for capture" << endl ;
         ui->labelMessages->setText("Could not open USB camera for capture");
         ui->labelMessages->adjustSize();
         srcImage = imread("media/NightSky.png");
@@ -359,40 +359,40 @@ void Guider::NewCapture()
     }
 #endif
 
-    if(cropresize.scaleX<=1)
+    if(dgeometry.scaleX<=1)
     {
         LoadUnchanged();
     }
     else
     {
-        if(cropresize.offsetY < 0)
+        if(dgeometry.offsetY < 0)
             LoadUnchanged();
         else
         {
-            cropresize.CropResize(srcImage, &myImage, &processImage);
+            dgeometry.CropResize(srcImage, &myImage, &processImage);
         }
     }
     if(interfaceWindowOpen)
         DisplayData();
 
-    imwrite("/run/shm/src.jpg", srcImage);
+    imwrite("/run/shm/GuiderSourceImage.jpg", srcImage);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     if(targetSelected)
     {
-        SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,255,0));
+        SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(0,255,0));
         if(!refreshEnabled)
-            SetSlopeLine(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, slopeVertical, raSlope, Scalar(0,0,255));
+            SetSlopeLine(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, slopeVertical, raSlope, Scalar(0,0,255));
     }
     else
     {
-        SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,0,255));
+        SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(0,0,255));
     }
     if(starsDetected==0 || refreshEnabled)
     {
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
+        cvtColor(myImage, myImage, CV_BGR2RGB);
         if(interfaceWindowOpen)
             ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
-        cvtColor(myImage, myImage, CV_BGR2RGB);
-        imwrite("/run/shm/mat.jpg", myImage);
     }
     if(interfaceWindowOpen)
         this->repaint();
@@ -508,10 +508,6 @@ void Guider::GammaCorrection(const Mat &img, const double gamma_, Mat *result)
     *result = img.clone();
     LUT(img, lookUpTable, *result);
     //![changing-contrast-brightness-gamma-correction]
-//    QString gammaValue=QString::number(gamma_);
-//    QString rzMessage="Gamma: " + gammaValue;
-//    ui->labelMessages->setText(rzMessage);
-//    ui->labelMessages->adjustSize();
 }
 
 void Guider::ImageBlur(int blurType, int maxKernelLength)
@@ -701,8 +697,8 @@ void Guider::FindStarCenter(Point2f startPoint, int kpSize)
             }
         }
     }
-    cropresize.relativeStarX = maxPositionX;
-    cropresize.relativeStarY = maxPositionY;
+    dgeometry.absoluteStarX = maxPositionX;
+    dgeometry.absoluteStarY = maxPositionY;
 }
 */
 void Guider::FindClosestStarToTarget()
@@ -714,27 +710,27 @@ void Guider::FindClosestStarToTarget()
     double distance;
     double minDistance=60000;
     int searchIndex=-1;
-    for( int i=0; i<numberOfKeypoints; i++ )
+    for( int i=0; i<(int)numberOfKeypoints; i++ )
     {
         point = keypoints[i].pt;
-        distance = sqrt( ( pow((double)point.x-cropresize.relativeTargetX, 2) + pow((double)point.y-cropresize.relativeTargetY, 2) ) );
+        distance = sqrt( ( pow((double)point.x-dgeometry.absoluteTargetX, 2) + pow((double)point.y-dgeometry.absoluteTargetY, 2) ) );
         if(distance < minDistance)
         {
             searchIndex=i;
             minDistance=distance;
         }
     }
-    int keypointSize=keypoints[searchIndex].size;
+//    int keypointSize=keypoints[searchIndex].size;
     point = keypoints.at(searchIndex).pt;
 
 //    FindStarCenter(point, keypointSize);
-    cropresize.relativeStarX = point.x;
-    cropresize.relativeStarY = point.y;
+    dgeometry.absoluteStarX = point.x;
+    dgeometry.absoluteStarY = point.y;
 
-//    cropresize.relativeStarX = point.x+keypointSize*centerCoefficient;
-//    cropresize.relativeStarY = point.y+keypointSize*centerCoefficient;
+//    dgeometry.absoluteStarX = point.x+keypointSize*centerCoefficient;
+//    dgeometry.absoluteStarY = point.y+keypointSize*centerCoefficient;
 
-    cropresize.StarCalculations();
+    dgeometry.RecalculateStarFromAbsolutePosition();
 }
 
 void Guider::FindAndTrackStar()
@@ -744,47 +740,49 @@ void Guider::FindAndTrackStar()
     im=processImage; // search will be done in the intermediary file (rectangle having the same scale as the original)
     GammaCorrection(im, (double)ui->horizontalGammaSlider->value()/1000, &im);
     cvtColor(im, im, CV_BGR2GRAY);
-
 //    ImageBlur(2,3);
 
 //    int contrast=8;
 //    int brightness=-2;
 //    BasicLinearTransform(im, contrast, brightness, &im);
 
-    imwrite("/run/shm/detect.jpg", im);
+    imwrite("/run/shm/StarDetect.jpg", im);
     //    imshow("original",im);
     //    waitKey();
 
     StarDetector();
         //the total no of keypoints detected are:
-    int oldStarsDetected=starsDetected;
+//    int oldStarsDetected=starsDetected;
     starsDetected=keypoints.size();
     FindClosestStarToTarget();
     if(!refreshEnabled)
         ComputeDrift();
     DisplayData();
-    if(oldStarsDetected==0)
-        cvtColor(myImage, myImage, CV_BGR2RGB);
+//    if(oldStarsDetected==0)
+//        cvtColor(myImage, myImage, CV_BGR2RGB);
     if(guideStarSelected)
-        SetReticle(&myImage, cropresize.relativeStarScaledX, cropresize.relativeStarScaledY, Scalar(255,0,0));
-    if(interfaceWindowOpen)
-        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
-    cvtColor(myImage, myImage, CV_BGR2RGB);
-    imwrite("/run/shm/mat.jpg", myImage);
-    if(interfaceWindowOpen)
-        this->repaint();
+        SetReticle(&myImage, dgeometry.relativeStarX, dgeometry.relativeStarY, Scalar(255,0,0));
+    if(starsDetected)
+    {
+        cvtColor(myImage, myImage, CV_BGR2RGB);
+        if(interfaceWindowOpen)
+            ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
+        if(interfaceWindowOpen)
+            this->repaint();
+    }
 }
 
 void Guider::SnapToNearestStar()
 {
-    cropresize.relativeTargetX=cropresize.relativeStarX;
-    cropresize.relativeTargetScaledX=cropresize.relativeTargetX*cropresize.scaleX;
-    cropresize.relativeTargetY=cropresize.relativeStarY;
-    cropresize.relativeTargetScaledY=cropresize.relativeTargetY*cropresize.scaleY;
-    cropresize.CropAroundSelection(srcImage, &myImage, &processImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, true);
+    dgeometry.absoluteTargetX=dgeometry.absoluteStarX;
+    dgeometry.relativeTargetX=dgeometry.absoluteTargetX*dgeometry.scaleX;
+    dgeometry.absoluteTargetY=dgeometry.absoluteStarY;
+    dgeometry.relativeTargetY=dgeometry.absoluteTargetY*dgeometry.scaleY;
+    dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, true);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
-    SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(0,255,0));
-//    SetReticle(&myImage, cropresize.relativeStarScaledX, cropresize.relativeStarScaledY, Scalar(255,0,0));
+    SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(0,255,0));
+//    SetReticle(&myImage, dgeometry.relativeStarX, dgeometry.relativeStarY, Scalar(255,0,0));
     if(interfaceWindowOpen)
     {
         ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
@@ -796,17 +794,17 @@ void Guider::SnapToNearestStar()
 
 void Guider::ComputeRaSlope()
 {
-    if(cropresize.relativeTargetX==cropresize.relativeStarX)
+    if(dgeometry.absoluteTargetX==dgeometry.absoluteStarX)
     {
         slopeVertical=true;
-        if(cropresize.relativeStarY > cropresize.relativeTargetY)
+        if(dgeometry.absoluteStarY > dgeometry.absoluteTargetY)
             alpha = pi/2;
         else
             alpha = 3*pi/2;
         return;
     }
     slopeVertical=false;
-    raSlope=(cropresize.relativeStarY-cropresize.relativeTargetY)/(cropresize.relativeStarX-cropresize.relativeTargetX);
+    raSlope=(dgeometry.absoluteStarY-dgeometry.absoluteTargetY)/(dgeometry.absoluteStarX-dgeometry.absoluteTargetX);
     alpha = atan(raSlope);}
 
 void Guider::ComputeDrift()
@@ -814,16 +812,16 @@ void Guider::ComputeDrift()
     double yq;
     if(slopeVertical)
     {
-        raDrift=cropresize.relativeStarY-cropresize.relativeTargetY;
-        declDrift=-(cropresize.relativeStarX-cropresize.relativeTargetX)*sin(alpha);
+        raDrift=dgeometry.absoluteStarY-dgeometry.absoluteTargetY;
+        declDrift=-(dgeometry.absoluteStarX-dgeometry.absoluteTargetX)*sin(alpha);
     }
     else
     {
-        yq = raSlope*(cropresize.relativeStarX-cropresize.relativeTargetX);
-        double sq = cropresize.relativeStarY-cropresize.relativeTargetY-yq;
+        yq = raSlope*(dgeometry.absoluteStarX-dgeometry.absoluteTargetX);
+        double sq = dgeometry.absoluteStarY-dgeometry.absoluteTargetY-yq;
         declDrift = sq * cos(alpha);
         double qd = sq * sin(alpha);
-        double tq = (cropresize.relativeStarX-cropresize.relativeTargetX)/cos(alpha);
+        double tq = (dgeometry.absoluteStarX-dgeometry.absoluteTargetX)/cos(alpha);
         raDrift = tq+qd;
     }
     raDriftArcsec=raDrift*arcsecPerPixel;
@@ -840,10 +838,10 @@ void Guider::Calibration()
     {
     case 1:
         moveFactor=0.2;
-        if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
-            (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
-            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
-            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
+        if( (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1+moveFactor)) || \
+            (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1-moveFactor)) || \
+            (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1+moveFactor)) || \
+            (dgeometry.absoluteStarY <  dgeometry.absoluteTargetY*(1-moveFactor)))
         { // guider star has moved
             ComputeRaSlope();
             calibrationStatus=2;
@@ -855,15 +853,15 @@ void Guider::Calibration()
         break;
     case 2:
         moveFactor=0.6;
-        if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
-            (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
-            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
-            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
+        if( (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1+moveFactor)) || \
+            (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1-moveFactor)) || \
+            (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1+moveFactor)) || \
+            (dgeometry.absoluteStarY <  dgeometry.absoluteTargetY*(1-moveFactor)))
         { // guider star is close to edge
-            leftStarX=cropresize.absoluteStarX;
-            leftStarY=cropresize.absoluteStarY;
-//                    leftStarX=cropresize.relativeStarX;
-//                    leftStarY=cropresize.relativeStarY;
+            leftStarX=dgeometry.sourceStarX;
+            leftStarY=dgeometry.sourceStarY;
+//                    leftStarX=dgeometry.absoluteStarX;
+//                    leftStarY=dgeometry.absoluteStarY;
             ComputeRaSlope();
             image.load("media/icons/tools-16x16/minus.png");
             ui->calibrateLedLabel->setPixmap(image);
@@ -875,10 +873,10 @@ void Guider::Calibration()
         break;
     case 3:
         moveFactor=0.2;
-        if( (cropresize.relativeStarX <  cropresize.relativeTargetX*(1+moveFactor)) && \
-            (cropresize.relativeStarX >  cropresize.relativeTargetX*(1-moveFactor)) && \
-            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1+moveFactor)) && \
-            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1-moveFactor)))
+        if( (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1+moveFactor)) && \
+            (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1-moveFactor)) && \
+            (dgeometry.absoluteStarY <  dgeometry.absoluteTargetY*(1+moveFactor)) && \
+            (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1-moveFactor)))
             // guide star is close to target position
         {
             image.load("media/icons/tools-16x16/led-green.png");
@@ -886,31 +884,31 @@ void Guider::Calibration()
             ui->labelMessages->setText("C A L I B R A T I O N");
             ui->labelMessages->adjustSize();
             calibrationStatus=4;
-            resolutionComputeX=cropresize.absoluteStarX;
-            resolutionComputeY=cropresize.absoluteStarY;
+            resolutionComputeX=dgeometry.sourceStarX;
+            resolutionComputeY=dgeometry.sourceStarY;
             guideTimer.start();
         }
         break;
     case 4:
         moveFactor=0.6;
-        if( (cropresize.relativeStarX >  cropresize.relativeTargetX*(1+moveFactor)) || \
-            (cropresize.relativeStarX <  cropresize.relativeTargetX*(1-moveFactor)) || \
-            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1+moveFactor)) || \
-            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1-moveFactor)))
+        if( (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1+moveFactor)) || \
+            (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1-moveFactor)) || \
+            (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1+moveFactor)) || \
+            (dgeometry.absoluteStarY <  dgeometry.absoluteTargetY*(1-moveFactor)))
         { // guider star is close to edge
             image.load("media/icons/tools-16x16/plus.png");
             ui->calibrateLedLabel->setPixmap(image);
-            double saveTargetX=cropresize.absoluteTargetX;
-            double saveTargetY=cropresize.absoluteTargetY;
-            cropresize.absoluteTargetX=leftStarX;
-            cropresize.absoluteTargetY=leftStarY;
-            cropresize.RecalculateTarget();
+            double saveTargetX=dgeometry.sourceTargetX;
+            double saveTargetY=dgeometry.sourceTargetY;
+            dgeometry.sourceTargetX=leftStarX;
+            dgeometry.sourceTargetY=leftStarY;
+            dgeometry.RecalculateTarget();
             ComputeRaSlope();
-            cropresize.absoluteTargetX=saveTargetX;
-            cropresize.absoluteTargetY=saveTargetY;
-            cropresize.RecalculateTarget();
-            double resolutionDistance=sqrt((resolutionComputeX-cropresize.absoluteStarX) * (resolutionComputeX-cropresize.absoluteStarX) \
-                        + (resolutionComputeY-cropresize.absoluteStarY) * (resolutionComputeY-cropresize.absoluteStarY));
+            dgeometry.sourceTargetX=saveTargetX;
+            dgeometry.sourceTargetY=saveTargetY;
+            dgeometry.RecalculateTarget();
+            double resolutionDistance=sqrt((resolutionComputeX-dgeometry.sourceStarX) * (resolutionComputeX-dgeometry.sourceStarX) \
+                        + (resolutionComputeY-dgeometry.sourceStarY) * (resolutionComputeY-dgeometry.sourceStarY));
             arcsecPerPixel=guideTimer.elapsed()*normalTrackingSpeed/resolutionDistance/1000;
             QString rezMessage="C A L I B R A T I O N\nResolution: ";
             rezMessage+=QString::number((double)arcsecPerPixel);
@@ -922,10 +920,10 @@ void Guider::Calibration()
         break;
     case 6:
         moveFactor=0.1;
-        if( (cropresize.relativeStarX <  cropresize.relativeTargetX*(1+moveFactor)) && \
-            (cropresize.relativeStarX >  cropresize.relativeTargetX*(1-moveFactor)) && \
-            (cropresize.relativeStarY <  cropresize.relativeTargetY*(1+moveFactor)) && \
-            (cropresize.relativeStarY >  cropresize.relativeTargetY*(1-moveFactor)))
+        if( (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1+moveFactor)) && \
+            (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1-moveFactor)) && \
+            (dgeometry.absoluteStarY <  dgeometry.absoluteTargetY*(1+moveFactor)) && \
+            (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1-moveFactor)))
             // guide star is close to target position
         {
             ui->labelMessages->setText("C A L I B R A T I O N\nEnd of calibration.\nPress calibration buton to exit.");
@@ -971,7 +969,7 @@ void Guider::CaptureImagesToFiles()
     {
         time_t currentTime=time(0);
         char fileSuffix[90];
-        snprintf(fileSuffix, sizeof(fileSuffix), "%d", currentTime);
+        snprintf(fileSuffix, sizeof(fileSuffix), "%d", (int)currentTime);
         char filename[500];
         strcpy(filename, fileSuffix);
         strcat(filename,".jpg");
@@ -988,37 +986,38 @@ void Guider::on_testButton_clicked()
 
 void Guider::on_plusButton_clicked()
 {
-//    ui->horizontalSlider->setValue((int)(cropresize.scaleX*10*1.1));
-    cropresize.Zoom(1.1);
-    cropresize.CropAroundSelection(srcImage, &myImage, &processImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, false);
+//    ui->horizontalSlider->setValue((int)(dgeometry.scaleX*10*1.1));
+    dgeometry.Zoom(1.1);
+    dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, false);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
-    imwrite("/run/shm/mat.jpg", myImage);
-//    cvtColor(myImage, myImage, CV_BGR2RGB);
+    imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
+    cvtColor(myImage, myImage, CV_BGR2RGB);
     ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
     DisplayData();
-    ui->horizontalZoomSlider->setValue((int)cropresize.scaleX*10);
+    ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX*10);
     this->repaint();
 }
 
 void Guider::on_minusButton_clicked()
 {
-    cropresize.Zoom(0.9);
-    cropresize.CropAroundSelection(srcImage, &myImage, &processImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, false);
+    dgeometry.Zoom(0.9);
+    dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, false);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
-    imwrite("/run/shm/mat.jpg", myImage);
-//    cvtColor(myImage, myImage, CV_BGR2RGB);
+    imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
+    cvtColor(myImage, myImage, CV_BGR2RGB);
     ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
     DisplayData();
-    ui->horizontalZoomSlider->setValue((int)cropresize.scaleX*10);
+    ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX*10);
     this->repaint();
 }
 
 void Guider::on_targetButton_clicked()
 {
+    dgeometry.DisplayGeometryData("target button clicked");
     targetSelected=true;
 //    cout << "Target X: " << targetPosition.x() << endl;
 //    cout << "Target Y: " << targetPosition.y() << endl;
-    cropresize.CropAroundSelection(srcImage, &myImage, &processImage, targetPosition.x(), targetPosition.y(), true);
+    dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, targetPosition.x(), targetPosition.y(), true);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     DisplayData();
     FindAndTrackStar();
@@ -1032,10 +1031,10 @@ void Guider::on_targetButton_clicked()
     {
         ui->labelMessages->setText("Could not find any guide star!");
         ui->labelMessages->adjustSize();
-        SetReticle(&myImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, Scalar(255,0,0));
-        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
+        SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(255,0,0));
         cvtColor(myImage, myImage, CV_BGR2RGB);
-        imwrite("/run/shm/mat.jpg", myImage);
+        ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
     }
     this->repaint();
 }
@@ -1059,7 +1058,6 @@ void Guider::Mouse_pressed()
 //#endif
 }
 
-
 void Guider::Mouse_left()
 {
 
@@ -1070,12 +1068,12 @@ void Guider::on_resetButton_clicked()
 {
     targetSelected=false;
     guideStarSelected=false;
-    cropresize.scaleX=1;
-    cropresize.scaleY=1;
-    cropresize.offsetX=0;
-    cropresize.offsetY=0;
+    dgeometry.scaleX=1;
+    dgeometry.scaleY=1;
+    dgeometry.offsetX=0;
+    dgeometry.offsetY=0;
     ui->horizontalGammaSlider->setValue(1000);
-    ui->horizontalZoomSlider->setValue((int)cropresize.scaleX);
+    ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
     DisplayData();
     NewCapture();
     this->repaint();
@@ -1084,29 +1082,29 @@ void Guider::on_resetButton_clicked()
 
 void Guider::on_horizontalZoomSlider_valueChanged(int value)
 {
-    cropresize.ZoomAbsolute((float)(value/10));
-//    cropresize.CropResize(srcImage, &myImage, &processImage);
-    cropresize.CropAroundSelection(srcImage, &myImage, &processImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY, false);
+    dgeometry.ZoomAbsolute((float)(value/10));
+//    dgeometry.CropResize(srcImage, &myImage, &processImage);
+    dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, false);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
-    imwrite("/run/shm/mat.jpg", myImage);
-//    cvtColor(myImage, myImage, CV_BGR2RGB);
+    imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
+    cvtColor(myImage, myImage, CV_BGR2RGB);
     ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
     DisplayData();
     this->repaint();
 }
 
-void Guider::on_horizontalGammaSlider_valueChanged(int value)
+void Guider::on_horizontalGammaSlider_valueChanged()
 {
     DisplayData();
 }
 
 void Guider::on_horizontalGammaSlider_sliderReleased()
 {
-//    cropresize.ZoomAbsolute(cropresize.scaleX);
-//    cropresize.CropAroundSelection(srcImage, &myImage, &processImage, cropresize.relativeTargetScaledX, cropresize.relativeTargetScaledY);
+//    dgeometry.ZoomAbsolute(dgeometry.scaleX);
+//    dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY);
 //    GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
 //       BasicLinearTransform(myImage, (double)value/1000, 50, &myImage);
-//       imwrite("/run/shm/mat.jpg", myImage);
+//       imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
 //       ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
 //       DisplayData();
     NewCapture();
@@ -1117,9 +1115,9 @@ void Guider::on_horizontalGammaSlider_sliderReleased()
 void Guider::on_raSlopeButton_clicked()
 {
     ComputeRaSlope();
-//    cout << "RA Slope: " << cropresize.raSlope << endl;
-//    cout << "Slope Vertical: " << cropresize.slopeVertical << endl;
-//    cout << "Alpha: " << cropresize.alpha << endl;
+//    cout << "RA Slope: " << dgeometry.raSlope << endl;
+//    cout << "Slope Vertical: " << dgeometry.slopeVertical << endl;
+//    cout << "Alpha: " << dgeometry.alpha << endl;
 }
 */
 

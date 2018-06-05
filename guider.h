@@ -10,11 +10,11 @@
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/features2d/features2d.hpp>
-#include <ctime>
+//#include <ctime>
 #include <QElapsedTimer>
 
 #include "pincontrolpi.h"
-#include "cropandresize.h"
+#include "displaygeometry.h"
 
 #define TRIGGERGUIDE 2 // arcseconds - if drift is under this value guiding will not be triggered
 
@@ -37,7 +37,7 @@ public:
     bool interfaceWindowOpen;
     int calibrationStatus;
     cv::Mat myImage, srcImage, processImage, im;
-    CropAndResize cropresize;
+    DisplayGeometry dgeometry;
     QPoint targetPosition;
     std::vector<cv::KeyPoint> keypoints;
     size_t starsDetected;
@@ -100,7 +100,7 @@ private slots:
 //    void on_resetButton_clicked();
     void on_testButton_clicked();
     void on_horizontalZoomSlider_valueChanged(int value);
-    void on_horizontalGammaSlider_valueChanged(int value);
+    void on_horizontalGammaSlider_valueChanged();
     void on_horizontalGammaSlider_sliderReleased();
 //    void on_raSlopeButton_clicked();
 //    void on_snapButton_clicked();

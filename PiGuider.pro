@@ -31,10 +31,10 @@ SOURCES += \
     intervalometerhard.cpp \
     intervalometersoft.cpp \
     imagelabel.cpp \
-    cropandresize.cpp \
     test.cpp \
     pincontrolpi.cpp \
-    wiringpiss.cpp
+    wiringpiss.cpp \
+    displaygeometry.cpp
 
 HEADERS += \
     piguider.h \
@@ -44,7 +44,6 @@ HEADERS += \
     intervalometersoft.h \
     globalsettings.h \
     imagelabel.h \
-    cropandresize.h \
     test.h \
     pincontrolpi.h \
     wiringpiss.h \
@@ -55,7 +54,8 @@ HEADERS += \
     capture-04.h \
     capture-05.h \
     capture-06.h \
-    capture-07.h
+    capture-07.h \
+    displaygeometry.h
 
 FORMS += \
     piguider.ui \
@@ -69,7 +69,7 @@ RESOURCES += \
     images.qrc
 
 # Comment out if building for raspbian
-#CONFIG += PCRUN
+CONFIG += PCRUN
 
 PCRUN {
 # Ubuntu

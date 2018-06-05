@@ -425,6 +425,9 @@
     </disabled>
    </palette>
   </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
   <property name="windowTitle">
    <string>Hard Intervalometer</string>
   </property>

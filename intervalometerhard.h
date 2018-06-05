@@ -16,10 +16,12 @@ public:
     ~IntervalometerHard();
     bool enabled;
     void updateStatus();
+    QPoint targetPosition;
 
 private slots:
     void on_closeButton_clicked();
     void on_enableButton_clicked();
+
 private:
     Ui::IntervalometerHard *ui;
 };

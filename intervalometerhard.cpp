@@ -1,6 +1,7 @@
 #include "intervalometerhard.h"
 #include "ui_intervalometerhard.h"
 
+
 IntervalometerHard::IntervalometerHard(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::IntervalometerHard)
@@ -51,3 +52,4 @@ void IntervalometerHard::on_enableButton_clicked()
         ui->ledLabel->setPixmap(image);
     }
 }
+

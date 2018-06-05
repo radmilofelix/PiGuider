@@ -7,7 +7,6 @@
 #include "dslr.h"
 #include "intervalometerhard.h"
 #include "intervalometersoft.h"
-//#include "pincontrolpi.h"
 
 namespace Ui {
 class PiGuider;
@@ -31,15 +30,12 @@ private slots:
     void on_intervalometerHardButton_clicked();
 
 private:
-//    Camera	*canon;
-//    GPContext *canoncontext;
     Ui::PiGuider *ui;
     QTimer *timerMain;
     DSLR dslr;
     Guider guider;
     IntervalometerSoft intervalometersoft;
     IntervalometerHard intervalometerhard;
-//    PinControlPi pincontrol;
     bool buttonpressed;
     bool dslr_status, guider_status, intervalometersoft_status, intervalometerhard_status;
     void updateStatus();

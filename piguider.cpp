@@ -1,7 +1,7 @@
 #include "piguider.h"
 #include "ui_piguider.h"
 #include <QTimer>
-#include <QTime>
+//#include <QTime>
 
 
 #include <unistd.h>
@@ -16,7 +16,7 @@
 
 
 
-using namespace cv;
+//using namespace cv;
 
 
 PiGuider::PiGuider(QWidget *parent) :
@@ -71,6 +71,7 @@ void PiGuider::updateStatus()
         else
             ui->ledLabelDSLR->setPixmap(ledred);
     }
+
     if( (guider.enabled || guider.refreshEnabled) != guider_status )
     {
         guider_status=(guider.enabled || guider.refreshEnabled);
@@ -81,6 +82,7 @@ void PiGuider::updateStatus()
             ui->ledLabelGuider->setPixmap(ledred);
         }
     }
+
     if( intervalometersoft.enabled != intervalometersoft_status )
     {
         intervalometersoft_status=intervalometersoft.enabled;
@@ -106,12 +108,13 @@ void PiGuider::updateStatus()
         else
             ui->ledLabelHardIntervalometer->setPixmap(ledred);
     }
+
     if(guider.enabled || guider.refreshEnabled)
     {
         guider.RefreshData();
         if(!guider.interfaceWindowOpen)
         {
-            QPixmap guideimage("/run/shm/mat.jpg");
+            QPixmap guideimage("/run/shm/GuiderWorkingImage.jpg");
             ui->mainImageLabel->setPixmap(guideimage);
         }
     }
@@ -120,7 +123,9 @@ void PiGuider::updateStatus()
 //        QPixmap image("media/NightSky.png");
 //        ui->mainImageLabel->setPixmap(image);
 //    }
+
 }
+
 
 void PiGuider::on_exitButton_clicked()
 {
@@ -172,8 +177,8 @@ void PiGuider::on_guideButton_clicked()
 void PiGuider::on_focusButton_clicked()
 {
     dslr.show();
-    QPixmap image("media/focus-img.png");
-    ui->mainImageLabel->setPixmap(image);
+//    QPixmap image("media/focus-img.png");
+//    ui->mainImageLabel->setPixmap(image);
 }
 
 

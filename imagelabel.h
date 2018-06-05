@@ -16,7 +16,7 @@ class ImageLabel : public QLabel
  {
     Q_OBJECT
 public:
-    ImageLabel(QWidget *parent = 0);
+    explicit ImageLabel(QWidget *parent = 0);
     virtual ~ImageLabel();
     int x, y;
     void mouseMoveEvent(QMouseEvent *event);

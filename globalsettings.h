@@ -4,13 +4,16 @@
 
 // Enable if building for PC, also enable CONFIG += PCRUN in the project file
 #ifndef RUNONPC
-//#define RUNONPC
+#define RUNONPC
 #endif
 
 #ifndef DEBUG
 #define DEBUG
     #ifndef CAPTUREFROMFILE
-//    #define CAPTUREFROMFILE
+    #define CAPTUREFROMFILE
+    #endif
+    #ifndef NODSLR
+//    #define NODSLR
     #endif
 #endif
 
