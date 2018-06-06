@@ -55,6 +55,12 @@ DSLR::DSLR(QWidget *parent) :
     enabled=false;
     targetSelected=false;
     fromCamera=false;
+    magnification=1;
+    eosZoomScale=EOSZOOMSCALEDEFAULT;
+    eosZoomWindowWidth=1065;
+    eosZoomWindowHeight=710;
+    eosZoomPositionX=0;
+    eosZoomPositionY=0;
     QPixmap image("media/icons/tools-32x32/led-red.png");
     ui->ledLabel->setPixmap(image);
 //    image.load("media/NightSky.png");
@@ -70,6 +76,8 @@ DSLR::DSLR(QWidget *parent) :
     ui->horizontalZoomSlider->setVisible(true);
     image.load("media/icons/tools-16x16/led-red.png");
     ui->resetLedLabel->setPixmap(image);
+    image.load("media/icons/tools-16x16/led-blue.png");
+    ui->x1x10LedLabel->setPixmap(image);
 }
 
 DSLR::~DSLR()
@@ -103,6 +111,9 @@ void DSLR::NewCapture(bool fromCamera)
         ui->labelMessages->adjustSize();
         return;
     }
+//    dgeometry.sourceWidth=srcImage.cols;
+//    dgeometry.sourceHeight=srcImage.rows;
+    dgeometry.CheckSourceDimensions(srcImage);
     if(dgeometry.scaleX==0)
     {
         dgeometry.init(srcImage.cols, srcImage.rows);
@@ -202,14 +213,14 @@ void DSLR::CameraRelease()
 
 void DSLR::Mouse_current_pos()
 {
-//    cout << "X: " << ui->dslrImageLabel->x << endl;
-//    cout << "Y: " << ui->dslrImageLabel->y << endl;
 }
 
 void DSLR::Mouse_pressed()
 {
     targetPosition.setX(ui->dslrImageLabel->x);
     targetPosition.setY(ui->dslrImageLabel->y);
+    cout << "X: " << ui->dslrImageLabel->x << endl;
+    cout << "Y: " << ui->dslrImageLabel->y << endl;
 }
 
 void DSLR::Mouse_left()
@@ -219,6 +230,8 @@ void DSLR::Mouse_left()
 
 void DSLR::on_closeButton_clicked()
 {
+    if(isCamera && isCameraFile)
+        on_connectButton_clicked();
     close();
 }
 
@@ -809,122 +822,6 @@ void set_capturetarget(Camera *canon, GPContext *canoncontext) {
     gp_file_free(canonfile);
 }
 
-void DSLR::on_pushButton_clicked()
-{
-    ui->labelMessages->setText(" Initialising camera... ");
-    ui->labelMessages->adjustSize();
-    Camera	*canon;
-    int	i, retval;
-
-// ????????????????????????????????????????????????
-//	GPContext *canoncontext = sample_create_context();
-    GPContext *canoncontext = gp_context_new();
-    gp_camera_new(&canon);
-
-
-//	gp_log_add_func(GP_LOG_ERROR, errordumper, NULL);
-
-//     When I set GP_LOG_DEBUG instead of GP_LOG_ERROR above, I noticed that the
-//     init function seems to traverse the entire filesystem on the camera.  This
-//     is partly why it takes so long.
-//     (Marcus: the ptp2 driver does this by default currently.)
-//
-
-    ui->labelMessages->setText(" Initialising camera... \nTakes about 10 seconds.");
-    ui->labelMessages->adjustSize();
-    retval = gp_camera_init(canon, canoncontext);
-    if (retval != GP_OK)
-    {
-        QString rezMessage="Could not initialise camera.\nError code: ";
-        rezMessage+=QString::number(retval);
-        ui->labelMessages->setText(rezMessage);
-        ui->labelMessages->adjustSize();
-        return;
-    }
-
-
-// ??????????????????????????????????????????????????????????????????????????????
-//	canon_enable_capture(canon, TRUE, canoncontext);
-//    set_capturetarget(canon, canoncontext);
-
-
-//    printf("Taking 100 previews and saving them to snapshot-XXX.jpg ...\n");
-    int canonFocus=-3;
-    for (i=0;i<10;i++)
-    {
-        CameraFile *file;
-        char output_file[32];
-
-        fprintf(stderr,"preview %d\n", i);
-        retval = gp_file_new(&file);
-        if (retval != GP_OK) {
-            fprintf(stderr,"gp_file_new: %d\n", retval);
-            return;
-        }
-
-//        autofocus every 10 shots
-//		if (i%10 == 9) {
-//			camera_auto_focus (canon, canoncontext);
-//			camera_auto_focus (canon, canoncontext,0);
-//		} else {
-//			camera_manual_focus (canon, (i/10-5)/2, canoncontext);
-//		}
-
-// Canon: successively focus from -3 to 3
-//		camera_manual_focus (canon, canonFocus, canoncontext);
-        if(canonFocus>3)
-            canonFocus=-3;
-        else
-            canonFocus++;
-
-
-    set_config_value_string (canon, "eoszoom", "10", canoncontext);
- //   set_config_value_string (canon, "eoszoom", "5", canoncontext);
- //   set_config_value_string (canon, "eoszoom", "5", canoncontext);
-
-
-
-#if 0 // testcase for EOS zooming
-        {
-//			char buf[20];
-//			if (i<10) set_config_value_string (canon, "eoszoom", "5", canoncontext);
-            if (i==2)
-            {
-                set_config_value_string (canon, "eoszoom", "5", canoncontext);
-                set_config_value_string (canon, "eoszoom", "10", canoncontext);
-            }
-//			sprintf(buf,"%d,%d",(i&0x1f)*64,(i>>5)*64);
-//			fprintf(stderr, "%d - %s\n", i, buf);
-//			set_config_value_string (canon, "eoszoomposition", buf, canoncontext);
-        }
-#endif
-        retval = gp_camera_capture_preview(canon, file, canoncontext);
-        if (retval != GP_OK) {
-            fprintf(stderr,"gp_camera_capture_preview(%d): %d\n", i, retval);
-            return;
-        }
-        sprintf(output_file, "snapshot-%03d.jpg", i);
-        retval = gp_file_save(file, output_file);
-        if (retval != GP_OK) {
-            fprintf(stderr,"gp_camera_capture_preview(%d): %d\n", i, retval);
-            return;
-        }
-        gp_file_unref(file);
-
-//        sprintf(output_file, "image-%03d.jpg", i);
-//            capture_to_file(canon, canoncontext, output_file);
-
-    }
-    gp_camera_exit(canon, canoncontext);
-//    return 0;
-
-}
-
-void DSLR::on_CapturePreviewButton_clicked()
-{
-    CaptureCameraPreview();
-}
-
 void DSLR::on_CaptureImage_clicked()
 {
     if(!isCamera && !isCameraFile)
@@ -941,25 +838,14 @@ void DSLR::on_CaptureImage_clicked()
     NewCapture(fromCamera);
 }
 
-void DSLR::on_grabButton_clicked()
-{
-    CameraGrab();
-}
-
-void DSLR::on_releaseButton_clicked()
-{
-    CameraRelease();
-}
-
 void DSLR::on_targetButton_clicked()
 {
     targetSelected=true;
-//    cout << "Target X: " << targetPosition.x() << endl;
-//    cout << "Target Y: " << targetPosition.y() << endl;
     dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, targetPosition.x(), targetPosition.y(), true);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     NewCapture(fromCamera);
-//    DisplayData();
+    if(magnification==1)
+        ComputeEosZoomOrigin();
     ui->dslrImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
 //    cvtColor(myImage, myImage, CV_BGR2RGB);
     imwrite("/run/shm/DSLR-WorkingImage.jpg", myImage);
@@ -1021,19 +907,16 @@ void DSLR::on_focusMinus3Button_clicked()
 
 void DSLR::on_focusMinus2Button_clicked()
 {
-    set_config_value_string (canonCamera, "eoszoom", "1", canonContext);
     MoveCameraFocus(-3); // near 2
 }
 
 void DSLR::on_focusMinus1Button_clicked()
 {
-    set_config_value_string (canonCamera, "eoszoom", "5", canonContext);
     MoveCameraFocus(-4); // near 1
 }
 
 void DSLR::on_focusPlus1Button_clicked()
 {
-    set_config_value_string (canonCamera, "eoszoom", "10", canonContext);
     MoveCameraFocus(0); // Far 1
 }
 
@@ -1107,37 +990,31 @@ void DSLR::CaptureCameraPreview()
     NewCapture(fromCamera);
 }
 
+void DSLR::ComputeEosZoomOrigin()
+{
+    if(!isCamera || !isCameraFile)
+        return;
+    eosZoomPositionX=dgeometry.sourceTargetX*eosZoomScale-eosZoomWindowWidth/2;
+    eosZoomPositionY=dgeometry.sourceTargetY*eosZoomScale-eosZoomWindowHeight/2;
+    if(eosZoomPositionX<0)
+        eosZoomPositionX=0;
+    if(eosZoomPositionY<0)
+        eosZoomPositionY=0;
+    eosZoomPositionString=QString::number((int)eosZoomPositionX)+","+QString::number((int)eosZoomPositionY);
+    char bufferString[30];
+    strcpy(bufferString,eosZoomPositionString.toLatin1());
+    set_config_value_string (canonCamera, "eoszoomposition", eosZoomPositionString.toLatin1(), canonContext);
+}
+
 void DSLR::on_resetButton_clicked()
 {
     targetSelected=false;
     dgeometry.scaleX=0;
     dgeometry.scaleY=0;
-
-//    dgeometry.sourceWidth=srcImage.cols;
-//    dgeometry.sourceHeight=srcImage.rows;
-//    dgeometry.absoluteWidth=srcImage.cols;
-//    dgeometry.absoluteHeight=srcImage.rows;
-//    dgeometry.scaleY=(double)dgeometry.relativeHeight/(double)dgeometry.absoluteHeight;
-//    dgeometry.scaleX=dgeometry.scaleY;
-//    dgeometry.scaleX=0.746875;
-//    dgeometry.scaleY=0.746878;
-//    dgeometry.offsetX=0;
-//    dgeometry.offsetY=0;
-//#ifdef IMAGELABELSVERTIACALALIGNMENTMIDDLE
-//    if(dgeometry.absoluteWidth > dgeometry.absoluteHeight)
-//        dgeometry.offsetY=(dgeometry.sourceHeight/dgeometry.sourceWidth*dgeometry.relativeWidth -\
-//                           dgeometry.relativeHeight)/2/dgeometry.scaleY;
-//#endif
-//    dgeometry.sourceTargetX=dgeometry.absoluteWidth/2+dgeometry.offsetX;
-//    dgeometry.sourceTargetY=dgeometry.absoluteHeight/2+dgeometry.offsetY;
-//    dgeometry.absoluteTargetX=dgeometry.sourceTargetX-dgeometry.offsetX;
-//    dgeometry.absoluteTargetY=dgeometry.sourceTargetY-dgeometry.offsetY;
-//    dgeometry.relativeTargetX=dgeometry.absoluteTargetX*dgeometry.scaleX;
-//    dgeometry.relativeTargetY=dgeometry.absoluteTargetY*dgeometry.scaleY;
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
-//    dgeometry.DisplayGeometryData("After DSLR::reset");
-    NewCapture(fromCamera);
+    CaptureCameraPreview();
+    //    NewCapture(fromCamera);
     this->repaint();
 }
 
@@ -1145,6 +1022,7 @@ void DSLR::on_connectButton_clicked()
 {
     if(isCamera && isCameraFile)
     {
+        set_config_value_string (canonCamera, "eoszoom", "1", canonContext);
         CameraRelease();
         if(!isCamera || !isCameraFile)
         {
@@ -1159,7 +1037,43 @@ void DSLR::on_connectButton_clicked()
         {
             QPixmap image("media/icons/tools-16x16/led-green.png");
             ui->resetLedLabel->setPixmap(image);
+            CaptureCameraPreview();
         }
     }
+}
 
+void DSLR::on_x1x10Button_clicked()
+{
+    QPixmap image("media/icons/tools-16x16/led-red.png");
+    switch (magnification)
+    {
+    case 1:
+        magnification=10;
+        eosZoomScale=EOSZOOMSCALEDEFAULT/1.25;
+        set_config_value_string (canonCamera, "eoszoom", "10", canonContext);
+        image.load("media/icons/tools-16x16/led-green.png");
+        ui->x1x10LedLabel->setPixmap(image);
+        CaptureCameraPreview();
+        CaptureCameraPreview();
+        break;
+/*
+    // magnification X5 seems not to work
+    case 5:
+        magnification=10;
+        set_config_value_string (canonCamera, "eoszoom", "5", canonContext);
+        image.load("media/icons/tools-16x16/led-green.png");
+        ui->x1x10LedLabel->setPixmap(image);
+        CaptureCameraPreview();
+        CaptureCameraPreview();
+        break;
+*/
+    default:
+        magnification=1;
+        eosZoomScale=EOSZOOMSCALEDEFAULT;
+        set_config_value_string (canonCamera, "eoszoom", "1", canonContext);
+        ui->x1x10LedLabel->setPixmap(image);
+        CaptureCameraPreview();
+        CaptureCameraPreview();
+        break;
+    }
 }

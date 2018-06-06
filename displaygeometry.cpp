@@ -48,7 +48,21 @@ void DisplayGeometry::CropToRectangle(Mat source, Mat *destination)
         roi.height = sourceHeight;
 
     }
-    *destination = source(roi);
+#ifdef DEBUG
+    DisplayGeometryData("CropToRectangle");
+cout << "roi.x: " << roi.x << endl;
+cout << "roi.y: " << roi.y << endl;
+cout << "roi.width: " << roi.width << endl;
+cout << "roi.height: " << roi.height << endl;
+#endif
+*destination = source(roi);
+}
+
+void DisplayGeometry::CheckSourceDimensions(cv::Mat source)
+{
+    if(source.cols == sourceWidth && source.rows == sourceHeight)
+        return;
+    init(source.cols, source.rows);
 }
 
 void DisplayGeometry::Resize(Mat source, Mat *destination)

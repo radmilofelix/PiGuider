@@ -13,6 +13,7 @@
 #include <opencv2/features2d/features2d.hpp>
 #include "displaygeometry.h"
 
+#define EOSZOOMSCALEDEFAULT 6
 
 namespace Ui {
 class DSLR;
@@ -31,6 +32,11 @@ public:
     bool fromCamera;
     int cameraFocus;
     bool focusTowardsPlus;
+    int magnification;
+    float eosZoomScale;
+    double eosZoomPositionX, eosZoomPositionY;
+    double eosZoomWindowWidth, eosZoomWindowHeight;
+    QString eosZoomPositionString;
     cv::Mat myImage, srcImage, processImage;
     DisplayGeometry dgeometry;
     Camera	*canonCamera;
@@ -47,6 +53,7 @@ public:
     void FrameMessage(QString message);
     void MoveCameraFocus(int value);
     void CaptureCameraPreview();
+    void ComputeEosZoomOrigin();
 
 private slots:
     void Mouse_current_pos();
@@ -55,13 +62,8 @@ private slots:
 
     void on_closeButton_clicked();
     void on_enableButton_clicked();
-    void on_pushButton_clicked();
 
-    void on_CapturePreviewButton_clicked();
     void on_CaptureImage_clicked();
-
-    void on_grabButton_clicked();
-    void on_releaseButton_clicked();
 
     void on_targetButton_clicked();
     void on_plusButton_clicked();
@@ -69,16 +71,15 @@ private slots:
     void on_horizontalZoomSlider_valueChanged(int value);
     void on_horizontalGammaSlider_valueChanged(int value);
     void on_horizontalGammaSlider_sliderReleased();
-
     void on_focusMinus3Button_clicked();
     void on_focusMinus2Button_clicked();
     void on_focusMinus1Button_clicked();
     void on_focusPlus1Button_clicked();
     void on_focusPlus2Button_clicked();
     void on_focusPlus3Button_clicked();
-
     void on_resetButton_clicked();
     void on_connectButton_clicked();
+    void on_x1x10Button_clicked();
 
 private:
     Ui::DSLR *ui;

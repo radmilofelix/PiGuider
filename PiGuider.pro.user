@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE QtCreatorProject>
-<!-- Written by QtCreator 4.6.1, 2018-06-06T02:48:06. -->
+<!-- Written by QtCreator 4.6.1, 2018-06-06T19:39:01. -->
 <qtcreator>
  <data>
   <variable>EnvironmentId</variable>
@@ -532,8 +532,8 @@
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.DisplayName"></value>
       <value type="QString" key="ProjectExplorer.ProjectConfiguration.Id">RemoteLinux.DirectUploadStep</value>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedFiles">
-       <value type="QString">/home/rmf/gcc/build-PiGuider-Raspbian-Debug/PiGuider</value>
        <value type="QString">/home/rmf/gcc/build-PiGuider-Raspbian-Profile/PiGuider</value>
+       <value type="QString">/home/rmf/gcc/build-PiGuider-Raspbian-Debug/PiGuider</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedHosts">
        <value type="QString">192.168.111.27</value>
@@ -548,8 +548,8 @@
        <value type="QString">/home/rmf/raspi/sysroot</value>
       </valuelist>
       <valuelist type="QVariantList" key="ProjectExplorer.RunConfiguration.LastDeployedTimes">
-       <value type="QDateTime">2018-06-02T03:21:54</value>
        <value type="QDateTime">2018-06-04T09:55:21</value>
+       <value type="QDateTime">2018-06-02T03:21:54</value>
       </valuelist>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.IgnoreMissingFiles">false</value>
       <value type="bool" key="RemoteLinux.GenericDirectUploadStep.Incremental">true</value>

@@ -27,6 +27,7 @@ public:
     int relativeWidth, relativeHeight;
     int absoluteWidth, absoluteHeight;
     void CropToRectangle(cv::Mat source, cv::Mat *destination); //crop to rectangle area
+    void CheckSourceDimensions(cv::Mat source);
     void Resize(cv::Mat source, cv::Mat *destination);
     void ResizeToFit();
     void init(double sourceImageWidth, double sourceImageHeight);
