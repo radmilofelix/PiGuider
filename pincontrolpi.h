@@ -20,6 +20,7 @@ class PinControlPi
 {
 public:
     PinControlPi();
+    ~ PinControlPi();
     void CameraFocus(int intervalometerNo);
     void CameraShoot(int intervalometerNo);
     void CameraRelease(int intervalometerNo);

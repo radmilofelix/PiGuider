@@ -44,17 +44,12 @@ DSLR::DSLR(QWidget *parent) :
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Pos()), this, SLOT(Mouse_current_pos()));
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Pressed()), this, SLOT(Mouse_pressed()));
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Left()), this, SLOT(Mouse_left()));
-
-    isCamera=false;
-    isCameraFile=false;
     cameraFocus=0;
 //    pi=3.14159265358979323846;
     targetPosition.setX(478/2);
     targetPosition.setY(478/2);
-//    ui->setupUi(this);
     enabled=false;
     targetSelected=false;
-    fromCamera=false;
     magnification=1;
     eosZoomScale=EOSZOOMSCALEDEFAULT;
     eosZoomWindowWidth=1065;
@@ -70,13 +65,13 @@ DSLR::DSLR(QWidget *parent) :
     ui->horizontalGammaSlider->setVisible(true);
     dgeometry.scaleX=0;
     dgeometry.scaleY=0;
-    NewCapture(fromCamera);
+    NewCapture(dslrCamera.fromCamera);
     ui->horizontalZoomSlider->setRange(10, 1000);
     ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
     ui->horizontalZoomSlider->setVisible(true);
     image.load("media/icons/tools-16x16/led-red.png");
     ui->resetLedLabel->setPixmap(image);
-    image.load("media/icons/tools-16x16/led-blue.png");
+//    image.load("media/icons/tools-16x16/led-blue.png");
     ui->x1x10LedLabel->setPixmap(image);
 }
 
@@ -111,13 +106,10 @@ void DSLR::NewCapture(bool fromCamera)
         ui->labelMessages->adjustSize();
         return;
     }
-//    dgeometry.sourceWidth=srcImage.cols;
-//    dgeometry.sourceHeight=srcImage.rows;
     dgeometry.CheckSourceDimensions(srcImage);
     if(dgeometry.scaleX==0)
     {
         dgeometry.init(srcImage.cols, srcImage.rows);
-        dgeometry.DisplayGeometryData("DSLR-after init");
         dgeometry.CropResize(srcImage, &myImage, &processImage);
     }
     else
@@ -130,86 +122,6 @@ void DSLR::NewCapture(bool fromCamera)
     ui->labelMessages->adjustSize();
     this->repaint();
 }
-
-void DSLR::CameraGrab()
-{
-    dslrMessage="";
-    int	retval;
-    if(!isCamera)
-    {
-        ui->labelMessages->setText(" Initialising camera... \nTakes about 10 seconds.");
-        ui->labelMessages->adjustSize();
-        canonContext = gp_context_new();
-        gp_camera_new(&canonCamera);
-        retval = gp_camera_init(canonCamera, canonContext);
-        if (retval != GP_OK)
-        {
-            QString rezMessage="Could not initialise camera.\nError code: ";
-            rezMessage+=QString::number(retval);
-            ui->labelMessages->setText(rezMessage);
-            ui->labelMessages->adjustSize();
-            return;
-            }
-        isCamera=true;
-        dslrMessage+="Camera initialised.";
-    }
-    else
-        dslrMessage+="Camera already initialised.";
-    if(!isCameraFile)
-    {
-        retval = gp_file_new(&canonFile);
-        if (retval != GP_OK)
-        {
-            QString rezMessage="Could not create CameraFile object.\nError code: ";
-            rezMessage+=QString::number(retval);
-            ui->labelMessages->setText(rezMessage);
-            ui->labelMessages->adjustSize();
-            return;
-        }
-        isCameraFile=true;
-        dslrMessage+="\nCamera file created.";
-    }
-    else
-    {
-        dslrMessage+="\nCamera file already exists.";
-        ui->labelMessages->adjustSize();
-    }
-    ui->labelMessages->setText(dslrMessage);
-    ui->labelMessages->adjustSize();
-    if(isCamera && isCameraFile)
-        fromCamera=true;
-    else
-        fromCamera=false;
-}
-
-void DSLR::CameraRelease()
-{
-    dslrMessage="";
-    if(isCameraFile)
-    {
-        gp_file_unref(canonFile);
-        isCameraFile=false;
-        dslrMessage+="Camera file released.\n";
-    }
-    else
-        dslrMessage+="Camera file already released.";
-    if(isCamera)
-    {
-        gp_camera_exit(canonCamera, canonContext);
-        gp_camera_unref(canonCamera);
-        isCamera=false;
-        dslrMessage+="Camera object released";
-    }
-    else
-        dslrMessage+="\nCamera object already released.";
-    ui->labelMessages->setText(dslrMessage);
-    ui->labelMessages->adjustSize();
-    if(isCamera && isCameraFile)
-        fromCamera=true;
-    else
-        fromCamera=false;
-}
-
 
 void DSLR::Mouse_current_pos()
 {
@@ -230,7 +142,7 @@ void DSLR::Mouse_left()
 
 void DSLR::on_closeButton_clicked()
 {
-    if(isCamera && isCameraFile)
+    if(dslrCamera.isCamera && dslrCamera.isCameraFile)
         on_connectButton_clicked();
     close();
 }
@@ -253,589 +165,14 @@ void DSLR::on_enableButton_clicked()
 }
 
 
-int DSLR::_lookup_widget(CameraWidget *widget, const char *key, CameraWidget **child)
-{
-    int ret;
-    ret = gp_widget_get_child_by_name (widget, key, child);
-    if (ret < GP_OK)
-        ret = gp_widget_get_child_by_label (widget, key, child);
-    return ret;
-}
-
-
-void DSLR::camera_tether(Camera *camera, GPContext *context,  char *fn)
-{
-    int fd, retval;
-//    CameraFile *file;
-    CameraEventType	evttype;
-    CameraFilePath	*path;
-    void	*evtdata;
-
-    printf("Tethering...\n");
-
-    while (1)
-    {
-        retval = gp_camera_wait_for_event (camera, 1000, &evttype, &evtdata, context);
-        if (retval != GP_OK)
-            break;
-        char saveFile[500];
-        strcpy (saveFile,"/run/shm/");
-        switch (evttype) {
-
-        case GP_EVENT_FILE_ADDED:
-            path = (CameraFilePath*)evtdata;
-            strcat(saveFile,path->name);
-            printf("File added on the camera: %s/%s\n", path->folder, path->name);
-
-//            if(fn)
-//                fd = open(fn, O_CREAT | O_WRONLY, 0644);
-//            else
-//                fd = open(fn, O_CREAT | O_WRONLY, 0644);
-            fd = open (saveFile, O_CREAT | O_WRONLY, 0644);
-            retval = gp_file_new_from_fd(&canonFile, fd);
-            printf("  Downloading %s...\n", path->name);
-            retval = gp_camera_file_get(camera, path->folder, path->name,
-                     GP_FILE_TYPE_NORMAL, canonFile, context);
-
-//            printf("  Deleting %s on camera...\n", path->name);
-//            retval = gp_camera_file_delete(camera, path->folder, path->name, context);
-//            gp_file_free(file);
-            free(evtdata);
-
-            return;
-            break;
-
-        case GP_EVENT_FOLDER_ADDED:
-            path = (CameraFilePath*)evtdata;
-            printf("Folder added on camera: %s / %s\n", path->folder, path->name);
-            free(evtdata);
-            break;
-//        case GP_EVENT_FILE_CHANGED:
-//            path = (CameraFilePath*)evtdata;
-//            printf("File changed on camera: %s / %s\n", path->folder, path->name);
-//            free(evtdata);
-//            break;
-        case GP_EVENT_CAPTURE_COMPLETE:
-            printf("Capture Complete.\n");
-            break;
-        case GP_EVENT_TIMEOUT:
-            printf("Timeout.\n");
-            break;
-        case GP_EVENT_UNKNOWN:
-            if (evtdata) {
-                printf("Unknown event: %s.\n", (char*)evtdata);
-            } else {
-                printf("Unknown event.\n");
-            }
-            break;
-        default:
-            printf("Type %d?\n", evttype);
-            break;
-        }
-    }
-}
-
-
-/*
-// calls the Nikon DSLR or Canon DSLR autofocus method.
-int DSLR::camera_eosviewfinder(Camera *camera, GPContext *context, int onoff) {
-    CameraWidget		*widget = NULL, *child = NULL;
-    CameraWidgetType	type;
-    int			ret,val;
-
-    ret = gp_camera_get_config (camera, &widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "camera_get_config failed: %d\n", ret);
-        return ret;
-    }
-    ret = _lookup_widget (widget, "eosviewfinder", &child);
-    if (ret < GP_OK) {
-        fprintf (stderr, "lookup 'eosviewfinder' failed: %d\n", ret);
-        goto out;
-    }
-
-    // check that this is a toggle
-    ret = gp_widget_get_type (child, &type);
-    if (ret < GP_OK) {
-        fprintf (stderr, "widget get type failed: %d\n", ret);
-        goto out;
-    }
-    switch (type) {
-        case GP_WIDGET_TOGGLE:
-        break;
-    default:
-        fprintf (stderr, "widget has bad type %d\n", type);
-        ret = GP_ERROR_BAD_PARAMETERS;
-        goto out;
-    }
-
-    ret = gp_widget_get_value (child, &val);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not get widget value: %d\n", ret);
-        goto out;
-    }
-    val = onoff;
-    ret = gp_widget_set_value (child, &val);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not set widget value to 1: %d\n", ret);
-        goto out;
-    }
-
-    ret = gp_camera_set_config (camera, widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not set config tree to eosviewfinder: %d\n", ret);
-        goto out;
-    }
-out:
-    gp_widget_free (widget);
-    return ret;
-}
-
-*/
-
-int DSLR::camera_auto_focus(Camera *camera, GPContext *context, int onoff) {
-    CameraWidget		*widget = NULL, *child = NULL;
-    CameraWidgetType	type;
-    int			ret,val;
-
-    ret = gp_camera_get_config (camera, &widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "camera_get_config failed: %d\n", ret);
-        return ret;
-    }
-    ret = _lookup_widget (widget, "autofocusdrive", &child);
-    if (ret < GP_OK) {
-        fprintf (stderr, "lookup 'autofocusdrive' failed: %d\n", ret);
-        goto out;
-    }
-
-    // check that this is a toggle
-    ret = gp_widget_get_type (child, &type);
-    if (ret < GP_OK) {
-        fprintf (stderr, "widget get type failed: %d\n", ret);
-        goto out;
-    }
-    switch (type) {
-        case GP_WIDGET_TOGGLE:
-        break;
-    default:
-        fprintf (stderr, "widget has bad type %d\n", type);
-        ret = GP_ERROR_BAD_PARAMETERS;
-        goto out;
-    }
-
-    ret = gp_widget_get_value (child, &val);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not get widget value: %d\n", ret);
-        goto out;
-    }
-
-    val = onoff;
-
-    ret = gp_widget_set_value (child, &val);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not set widget value to 1: %d\n", ret);
-        goto out;
-    }
-
-    ret = gp_camera_set_config (camera, widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not set config tree to autofocus: %d\n", ret);
-        goto out;
-    }
-out:
-    gp_widget_free (widget);
-    return ret;
-}
-
-
-// Manual focusing a camera...
-// xx is -3 / -2 / -1 / 0 / 1 / 2 / 3
-// xx is -4 -3 / -2 / -1 / 0 / 1 / 2 - Canon EOS 750D
-//
-int DSLR::camera_manual_focus (Camera *camera, int xx, GPContext *context) {
-    CameraWidget *widget = NULL, *child = NULL;
-    CameraWidgetType type;
-    int ret;
-    float rval;
-    char *mval;
-
-    ret = gp_camera_get_config (camera, &widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "camera_get_config failed: %d\n", ret);
-        return ret;
-    }
-    ret = _lookup_widget (widget, "manualfocusdrive", &child);
-    if (ret < GP_OK)
-    {
-        fprintf (stderr, "lookup 'manualfocusdrive' failed: %d\n", ret);
-        goto out;
-    }
-
-    // check that this is a toggle
-    ret = gp_widget_get_type (child, &type);
-    if (ret < GP_OK)
-    {
-        fprintf (stderr, "widget get type failed: %d\n", ret);
-        goto out;
-    }
-    switch (type)
-    {
-        case GP_WIDGET_RADIO:
-        {
-           int choices = gp_widget_count_choices (child);
-            ret = gp_widget_get_value (child, &mval);
-            if (ret < GP_OK)
-            {
-                fprintf (stderr, "could not get widget value: %d\n", ret);
-                goto out;
-            }
-            if (choices == 7)
-            { // see what Canon has in EOS_MFDrive
-                ret = gp_widget_get_choice (child, xx+4, (const char**)&mval);
-                if (ret < GP_OK)
-                {
-                    fprintf (stderr, "could not get widget radio choice %d: %d\n", xx+2, ret);
-                    goto out;
-                }
-                fprintf(stderr,"GP_WIDGET_RADIO manual focus %d -> %s\n", xx, mval);
-            }
-            ret = gp_widget_set_value (child, mval);
-            if (ret < GP_OK)
-            {
-                fprintf (stderr, "could not set widget value to 1: %d\n", ret);
-                goto out;
-            }
-            break;
-        }
-        case GP_WIDGET_RANGE:
-        ret = gp_widget_get_value (child, &rval);
-        if (ret < GP_OK)
-        {
-            fprintf (stderr, "could not get widget value: %d\n", ret);
-            goto out;
-        }
-        switch (xx) { // Range is on Nikon from -32768 <-> 32768
-        case -3:	rval = -1024;break;
-        case -2:	rval =  -512;break;
-        case -1:	rval =  -128;break;
-        case  0:	rval =     0;break;
-        case  1:	rval =   128;break;
-        case  2:	rval =   512;break;
-        case  3:	rval =  1024;break;
-        default:	rval = xx;	break; // hack
-        }
-        fprintf(stderr,"manual focus %d -> %f\n", xx, rval);
-        ret = gp_widget_set_value (child, &rval);
-        if (ret < GP_OK) {
-            fprintf (stderr, "could not set widget value to 1: %d\n", ret);
-            goto out;
-        }
-        break;
-    default:
-        fprintf (stderr, "widget has bad type %d\n", type);
-        ret = GP_ERROR_BAD_PARAMETERS;
-        goto out;
-    }
-    ret = gp_camera_set_config (camera, widget, context);
-    if (ret < GP_OK)
-    {
-        fprintf (stderr, "could not set config tree to autofocus: %d\n", ret);
-        goto out;
-    }
-out:
-    gp_widget_free (widget);
-    return ret;
-}
-
-
-
-
-static int _lookup_widget(CameraWidget*widget, const char *key, CameraWidget **child) {
-    int ret;
-    ret = gp_widget_get_child_by_name (widget, key, child);
-    if (ret < GP_OK)
-        ret = gp_widget_get_child_by_label (widget, key, child);
-    return ret;
-}
-
-
-
-// Gets a string configuration value.
-//  This can be:
-//   - A Text widget
-//   - The current selection of a Radio Button choice
-//   - The current selection of a Menu choice
-//
-//  Sample (for Canons eg):
-//    get_config_value_string (camera, "owner", &ownerstr, context);
-//
-int DSLR::get_config_value_string (Camera *camera, const char *key, char **str, GPContext *context) {
-    CameraWidget		*widget = NULL, *child = NULL;
-    CameraWidgetType	type;
-    int			ret;
-    char			*val;
-
-    ret = gp_camera_get_single_config (camera, key, &child, context);
-    if (ret == GP_OK) {
-        if (!child) fprintf(stderr,"child is NULL?\n");
-        widget = child;
-    } else {
-        ret = gp_camera_get_config (camera, &widget, context);
-        if (ret < GP_OK) {
-            fprintf (stderr, "camera_get_config failed: %d\n", ret);
-            return ret;
-        }
-        ret = _lookup_widget (widget, key, &child);
-        if (ret < GP_OK) {
-            fprintf (stderr, "lookup widget failed: %d\n", ret);
-            goto out;
-        }
-    }
-
-    // This type check is optional, if you know what type the label
-    //  has already. If you are not sure, better check.
-    ret = gp_widget_get_type (child, &type);
-    if (ret < GP_OK) {
-        fprintf (stderr, "widget get type failed: %d\n", ret);
-        goto out;
-    }
-    switch (type) {
-        case GP_WIDGET_MENU:
-        case GP_WIDGET_RADIO:
-        case GP_WIDGET_TEXT:
-        break;
-    default:
-        fprintf (stderr, "widget has bad type %d\n", type);
-        ret = GP_ERROR_BAD_PARAMETERS;
-        goto out;
-    }
-
-    // This is the actual query call. Note that we just
-    // a pointer reference to the string, not a copy...
-    ret = gp_widget_get_value (child, &val);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not query widget value: %d\n", ret);
-        goto out;
-    }
-    // Create a new copy for our caller.
-    *str = strdup (val);
-out:
-    gp_widget_free (widget);
-    return ret;
-}
-
-
-// Sets a string configuration value.
-//  This can set for:
-//   - A Text widget
-//   - The current selection of a Radio Button choice
-//   - The current selection of a Menu choice
-//
-//  Sample (for Canons eg):
-//    get_config_value_string (camera, "owner", &ownerstr, context);
-//
-int DSLR::set_config_value_string (Camera *camera, const char *key, const char *val, GPContext *context) {
-    CameraWidget		*widget = NULL, *child = NULL;
-    CameraWidgetType	type;
-    int			ret;
-
-    ret = gp_camera_get_config (camera, &widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "camera_get_config failed: %d\n", ret);
-        return ret;
-    }
-    ret = _lookup_widget (widget, key, &child);
-    if (ret < GP_OK) {
-        fprintf (stderr, "lookup widget failed: %d\n", ret);
-        goto out;
-    }
-
-    // This type check is optional, if you know what type the label
-    //  has already. If you are not sure, better check.
-    ret = gp_widget_get_type (child, &type);
-    if (ret < GP_OK) {
-        fprintf (stderr, "widget get type failed: %d\n", ret);
-        goto out;
-    }
-    switch (type) {
-        case GP_WIDGET_MENU:
-        case GP_WIDGET_RADIO:
-        case GP_WIDGET_TEXT:
-        break;
-    default:
-        fprintf (stderr, "widget has bad type %d\n", type);
-        ret = GP_ERROR_BAD_PARAMETERS;
-        goto out;
-    }
-
-    // This is the actual set call. Note that we keep
-    // ownership of the string and have to free it if necessary.
-
-    ret = gp_widget_set_value (child, val);
-    if (ret < GP_OK) {
-        fprintf (stderr, "could not set widget value: %d\n", ret);
-        goto out;
-    }
-    ret = gp_camera_set_single_config (camera, key, child, context);
-    if (ret != GP_OK) {
-        // This stores it on the camera again
-        ret = gp_camera_set_config (camera, widget, context);
-        if (ret < GP_OK) {
-            fprintf (stderr, "camera_set_config failed: %d\n", ret);
-            return ret;
-        }
-    }
-out:
-    gp_widget_free (widget);
-    return ret;
-}
-
-
-
-//  This enables/disables the specific canon capture mode.
-//
-//  For non canons this is not required, and will just return
-//  with an error (but without negative effects).
-
-int DSLR::canon_enable_capture (Camera *camera, int onoff, GPContext *context) {
-    CameraWidget		*widget = NULL, *child = NULL;
-    CameraWidgetType	type;
-    int			ret;
-
-    ret = gp_camera_get_single_config (camera, "capture", &widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "camera_get_config failed: %d\n", ret);
-        return ret;
-    }
-
-    ret = gp_widget_get_type (child, &type);
-    if (ret < GP_OK) {
-        fprintf (stderr, "widget get type failed: %d\n", ret);
-        goto out;
-    }
-    switch (type) {
-        case GP_WIDGET_TOGGLE:
-        break;
-    default:
-        fprintf (stderr, "widget has bad type %d\n", type);
-        ret = GP_ERROR_BAD_PARAMETERS;
-        goto out;
-    }
-    // Now set the toggle to the wanted value
-    ret = gp_widget_set_value (child, &onoff);
-    if (ret < GP_OK) {
-        fprintf (stderr, "toggling Canon capture to %d failed with %d\n", onoff, ret);
-        goto out;
-    }
-    // OK
-    ret = gp_camera_set_single_config (camera, "capture", widget, context);
-    if (ret < GP_OK) {
-        fprintf (stderr, "camera_set_config failed: %d\n", ret);
-        return ret;
-    }
-out:
-    gp_widget_free (widget);
-    return ret;
-}
-
-
-/*
-statis void DSLR::errordumper(GPLogLevel level, const char *domain, const char *str, void *data) {
-  printf("%s\n", str);
-}
-*/
-// This seems to have no effect on where images go
-void set_capturetarget(Camera *canon, GPContext *canoncontext) {
-    int retval;
-    printf("Get root config.\n");
-    CameraWidget *rootconfig; // okay, not really
-    CameraWidget *actualrootconfig;
-    retval = gp_camera_get_config(canon, &rootconfig, canoncontext);
-    actualrootconfig = rootconfig;
-    printf("  Retval: %d\n", retval);
-    printf("Get main config.\n");
-    CameraWidget *child;
-    retval = gp_widget_get_child_by_name(rootconfig, "main", &child);
-    printf("  Retval: %d\n", retval);
-    printf("Get settings config.\n");
-    rootconfig = child;
-    retval = gp_widget_get_child_by_name(rootconfig, "settings", &child);
-    printf("  Retval: %d\n", retval);
-    printf("Get capturetarget.\n");
-    rootconfig = child;
-    retval = gp_widget_get_child_by_name(rootconfig, "capturetarget", &child);
-    printf("  Retval: %d\n", retval);
-    CameraWidget *capture = child;
-    const char *widgetinfo;
-    gp_widget_get_name(capture, &widgetinfo);
-    printf("config name: %s\n", widgetinfo );
-    const char *widgetlabel;
-    gp_widget_get_label(capture, &widgetlabel);
-    printf("config label: %s\n", widgetlabel);
-    int widgetid;
-    gp_widget_get_id(capture, &widgetid);
-    printf("config id: %d\n", widgetid);
-    CameraWidgetType widgettype;
-    gp_widget_get_type(capture, &widgettype);
-    printf("config type: %d == %d \n", widgettype, GP_WIDGET_RADIO);
-    printf("Set value.\n");
-    // capture to ram should be 0, although I think the filename also plays into
-    // it
-    int one=1;
-    retval = gp_widget_set_value(capture, &one);
-    printf("  Retval: %d\n", retval);
-    printf("Enabling capture to CF.\n");
-    retval = gp_camera_set_config(canon, actualrootconfig, canoncontext);
-    printf("  Retval: %d\n", retval);
-}
-
-
-    void DSLR::capture_to_file(Camera *canon, GPContext *canoncontext, char *fn)
-    {
-    int fd, retval;
-    CameraFile *canonfile;
-    CameraFilePath camera_file_path;
-
-    printf("Capturing.\n");
-
-    retval = gp_camera_capture(canon, GP_CAPTURE_IMAGE, &camera_file_path, canoncontext);
-    printf("  Retval: %d\n", retval);
-
-    printf("Pathname on the camera: %s/%s\n", camera_file_path.folder, camera_file_path.name);
-
-    if(fn)
-        fd = open(fn, O_CREAT | O_WRONLY, 0644);
-    else
-        fd = open(camera_file_path.name, O_CREAT | O_WRONLY, 0644);
-    retval = gp_file_new_from_fd(&canonfile, fd);
-    printf("  Retval: %d\n", retval);
-    retval = gp_camera_file_get(canon, camera_file_path.folder, camera_file_path.name,
-             GP_FILE_TYPE_NORMAL, canonfile, canoncontext);
-    printf("  Retval: %d\n", retval);
-
-    printf("Deleting.\n");
-    retval = gp_camera_file_delete(canon, camera_file_path.folder, camera_file_path.name,
-            canoncontext);
-    printf("  Retval: %d\n", retval);
-
-    gp_file_free(canonfile);
-}
-
 void DSLR::on_CaptureImage_clicked()
 {
-    if(!isCamera && !isCameraFile)
+    if(!dslrCamera.ShootAndCapture())
     {
-        ui->labelMessages->setText("DSLR Camera not connected!");
-        ui->labelMessages->adjustSize();
+        FrameMessage(dslrCamera.dslrMessage);
         return;
     }
-//    capture_to_file(canon, canoncontext,"/run/shm/DSLR-SourceImage.jpg");
-    set_config_value_string (canonCamera, "eosremoterelease", "Immediate", canonContext);
-    sleep(3);
-    set_config_value_string (canonCamera, "eosremoterelease", "Release Full", canonContext);
-    camera_tether(canonCamera, canonContext,(char*)"/run/shm/srcDslr.cr2");
-    NewCapture(fromCamera);
+    NewCapture(dslrCamera.fromCamera);
 }
 
 void DSLR::on_targetButton_clicked()
@@ -843,7 +180,7 @@ void DSLR::on_targetButton_clicked()
     targetSelected=true;
     dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, targetPosition.x(), targetPosition.y(), true);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
-    NewCapture(fromCamera);
+    NewCapture(dslrCamera.fromCamera);
     if(magnification==1)
         ComputeEosZoomOrigin();
     ui->dslrImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
@@ -897,7 +234,7 @@ void DSLR::on_horizontalGammaSlider_valueChanged(int value)
 
 void DSLR::on_horizontalGammaSlider_sliderReleased()
 {
-    NewCapture(fromCamera);
+    NewCapture(dslrCamera.fromCamera);
 }
 
 void DSLR::on_focusMinus3Button_clicked()
@@ -936,75 +273,38 @@ void DSLR::FrameMessage(QString message)
     message=" "+message+" ";
 	ui->labelMessages->setText(message);
     ui->labelMessages->adjustSize();
-//	#ifdef DEBUG
-//	cout << message << endl;
-    //	#endif
 }
+
 
 void DSLR::MoveCameraFocus(int value)
 {
-    if(!isCamera || !isCameraFile)
-    {
-        FrameMessage("DSLR Camera not connected!");
-        return;
-    }
-    cameraFocus=value;
-    camera_manual_focus (canonCamera, cameraFocus, canonContext);
-//    CaptureCameraPreview();
-    cameraFocus=-1; // none
-    camera_manual_focus (canonCamera, cameraFocus, canonContext);
-    CaptureCameraPreview();
+    if(!dslrCamera.SetCameraFocus(value))
+        FrameMessage(dslrCamera.dslrMessage);
+    else
+        NewCapture(dslrCamera.fromCamera);
 }
 
-void DSLR::CaptureCameraPreview()
+void DSLR::GetCameraPreview()
 {
-#ifndef NODSLR
-    if(!isCamera && !isCameraFile)
-    {
-        ui->labelMessages->setText("DSLR Camera not connected!");
-        ui->labelMessages->adjustSize();
-        return;
-    }
-    int retval;
-    retval = gp_camera_capture_preview(canonCamera, canonFile, canonContext);
-    if (retval != GP_OK)
-    {
-        dslrMessage="Could not capture camera preview.\nError code: ";
-        dslrMessage+=QString::number(retval);
-        ui->labelMessages->setText(dslrMessage);
-        ui->labelMessages->adjustSize();
-        return;
-    }
-    retval = gp_file_save(canonFile, "/run/shm/DSLR-SourceImage.jpg");
-    if (retval != GP_OK)
-    {
-        dslrMessage="Could not save camera preview.\nError code: ";
-        dslrMessage+=QString::number(retval);
-        ui->labelMessages->setText(dslrMessage);
-        ui->labelMessages->adjustSize();
-        return;
-    }
-#else
-    fromCamera=true;
-#endif
-    NewCapture(fromCamera);
+    if(!dslrCamera.CaptureCameraPreview())
+        FrameMessage((dslrCamera.dslrMessage));
+    else
+        NewCapture(dslrCamera.fromCamera);
 }
 
 void DSLR::ComputeEosZoomOrigin()
 {
-    if(!isCamera || !isCameraFile)
+    if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
         return;
     eosZoomPositionX=dgeometry.sourceTargetX*eosZoomScale-eosZoomWindowWidth/2;
     eosZoomPositionY=dgeometry.sourceTargetY*eosZoomScale-eosZoomWindowHeight/2;
-    if(eosZoomPositionX<0)
-        eosZoomPositionX=0;
-    if(eosZoomPositionY<0)
-        eosZoomPositionY=0;
-    eosZoomPositionString=QString::number((int)eosZoomPositionX)+","+QString::number((int)eosZoomPositionY);
-    char bufferString[30];
-    strcpy(bufferString,eosZoomPositionString.toLatin1());
-    set_config_value_string (canonCamera, "eoszoomposition", eosZoomPositionString.toLatin1(), canonContext);
+    if(!dslrCamera.SetEosZoomOrigin(eosZoomPositionX, eosZoomPositionY))
+    {
+        FrameMessage((dslrCamera.dslrMessage));
+        return;
+    }
 }
+
 
 void DSLR::on_resetButton_clicked()
 {
@@ -1013,18 +313,22 @@ void DSLR::on_resetButton_clicked()
     dgeometry.scaleY=0;
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
-    CaptureCameraPreview();
-    //    NewCapture(fromCamera);
+    GetCameraPreview();
     this->repaint();
 }
 
 void DSLR::on_connectButton_clicked()
 {
-    if(isCamera && isCameraFile)
+    if(dslrCamera.isCamera && dslrCamera.isCameraFile)
     {
-        set_config_value_string (canonCamera, "eoszoom", "1", canonContext);
-        CameraRelease();
-        if(!isCamera || !isCameraFile)
+        if(!dslrCamera.SetMagnification("1"))
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            return;
+        }
+        dslrCamera.CameraRelease();
+        FrameMessage((dslrCamera.dslrMessage));
+        if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
         {
             QPixmap image("media/icons/tools-16x16/led-red.png");
             ui->resetLedLabel->setPixmap(image);
@@ -1032,12 +336,14 @@ void DSLR::on_connectButton_clicked()
     }
     else
     {
-        CameraGrab();
-        if(isCamera && isCameraFile)
+        dslrCamera.KillGvfsdProcess();
+        dslrCamera.CameraGrab();
+        FrameMessage((dslrCamera.dslrMessage));
+        if(dslrCamera.isCamera && dslrCamera.isCameraFile)
         {
             QPixmap image("media/icons/tools-16x16/led-green.png");
             ui->resetLedLabel->setPixmap(image);
-            CaptureCameraPreview();
+            GetCameraPreview();
         }
     }
 }
@@ -1050,30 +356,49 @@ void DSLR::on_x1x10Button_clicked()
     case 1:
         magnification=10;
         eosZoomScale=EOSZOOMSCALEDEFAULT/1.25;
-        set_config_value_string (canonCamera, "eoszoom", "10", canonContext);
+        if(!dslrCamera.SetMagnification("10"))
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            return;
+        }
         image.load("media/icons/tools-16x16/led-green.png");
         ui->x1x10LedLabel->setPixmap(image);
-        CaptureCameraPreview();
-        CaptureCameraPreview();
+        GetCameraPreview();
+        GetCameraPreview();
         break;
 /*
     // magnification X5 seems not to work
     case 5:
-        magnification=10;
-        set_config_value_string (canonCamera, "eoszoom", "5", canonContext);
+        magnification=5;
+        if(!dslrCamera.SetMagnification("5"))
+                FrameMessage(dslrCamera.dslrMessage);
         image.load("media/icons/tools-16x16/led-green.png");
         ui->x1x10LedLabel->setPixmap(image);
-        CaptureCameraPreview();
-        CaptureCameraPreview();
+        GetCameraPreview();
+        GetCameraPreview();
         break;
 */
     default:
         magnification=1;
         eosZoomScale=EOSZOOMSCALEDEFAULT;
-        set_config_value_string (canonCamera, "eoszoom", "1", canonContext);
+        if(!dslrCamera.SetMagnification("1"))
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            return;
+        }
         ui->x1x10LedLabel->setPixmap(image);
-        CaptureCameraPreview();
-        CaptureCameraPreview();
+        GetCameraPreview();
+        GetCameraPreview();
         break;
     }
+}
+
+void DSLR::on_onButton_clicked()
+{
+    dslrCamera.ShootOn();
+}
+
+void DSLR::on_offButton_clicked()
+{
+    dslrCamera.ShootRelease();
 }

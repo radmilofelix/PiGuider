@@ -544,11 +544,11 @@
 	background-color: transparent;
 	background: none;
 	background-repeat: none;
-	border-image: url(:/media/icons/tools-512x512/search1.png);
+	border-image: url(:/media/icons/tools-512x512/search.png);
 }
 #refreshButton:pressed
 {
-	border-image: url(:/media/icons/tools-512x512/search1-pressed.png);
+	border-image: url(:/media/icons/tools-512x512/search-pressed.png);
 }</string>
    </property>
    <property name="text">
@@ -1118,11 +1118,11 @@ SAVE</string>
 	background-color: transparent;
 	background: none;
 	background-repeat: none;
-	border-image: url(:/media/icons/tools-512x512/calibration1.png);
+	border-image: url(:/media/icons/tools-512x512/calibration.png);
 }
 #calibrateButton:pressed
 {
-	border-image: url(:/media/icons/tools-512x512/calibration1-pressed.png);
+	border-image: url(:/media/icons/tools-512x512/calibration-pressed.png);
 }</string>
    </property>
    <property name="text">

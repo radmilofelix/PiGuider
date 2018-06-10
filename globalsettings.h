@@ -7,13 +7,17 @@
 #define RUNONPC
 #endif
 
-#ifndef DEBUG
-#define DEBUG
-    #ifndef CAPTUREFROMFILE
-    #define CAPTUREFROMFILE
-    #endif
-    #ifndef NODSLR
-//    #define NODSLR
+#ifdef RUNONPC
+    #ifndef DEBUG
+    #define DEBUG
+        #ifdef DEBUG
+            #ifndef CAPTUREFROMFILE
+                #define CAPTUREFROMFILE
+            #endif
+            #ifndef NODSLR
+//            #define NODSLR
+            #endif
+        #endif
     #endif
 #endif
 

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>NumPad</class>
+ <widget class="QWidget" name="NumPad">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>311</width>
+    <height>400</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>NumPad</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#NumPad
+{
+	background-color: rgb(0,0,0);
+}</string>
+  </property>
+  <widget class="QPushButton" name="pushButton1">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>210</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton1
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/1.png)
+}
+#pushButton1:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/1-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton2">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>210</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton2
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/2.png)
+}
+#pushButton2:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/2-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton3">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>210</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton3
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/3.png)
+}
+#pushButton3:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/3-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton4">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>140</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton4
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/4.png)
+}
+#pushButton4:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/4-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton5">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>140</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton5
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/5.png)
+}
+#pushButton5:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/5-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton6">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>140</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton6
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/6.png)
+}
+#pushButton6:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/6-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton7">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>80</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton7
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/7.png)
+}
+#pushButton7:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/7-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton8">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>80</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton8
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/8.png)
+}
+#pushButton8:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/8-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton9">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>80</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton9
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/9.png)
+}
+#pushButton9:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/9-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton0">
+   <property name="geometry">
+    <rect>
+     <x>30</x>
+     <y>280</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton0
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/0.png)
+}
+#pushButton0:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/0-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonClear">
+   <property name="geometry">
+    <rect>
+     <x>110</x>
+     <y>280</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButtonClear
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/C.png)
+}
+#pushButtonClear:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/C-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButtonReturn">
+   <property name="geometry">
+    <rect>
+     <x>190</x>
+     <y>280</y>
+     <width>60</width>
+     <height>60</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButtonReturn
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/1-10/RedReliefSlim/return.png)
+}
+#pushButtonReturn:pressed
+{
+	border-image: url(:/media/icons/1-10/RedReliefSlim/return-pressed.png)
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>20</y>
+     <width>271</width>
+     <height>41</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>24</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label
+{
+	background-color: rgb(60,0,0);
+	color: rgb(255,0,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>TextLabel</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

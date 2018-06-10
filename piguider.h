@@ -38,7 +38,7 @@ private:
     IntervalometerHard intervalometerhard;
     bool buttonpressed;
     bool dslr_status, guider_status, intervalometersoft_status, intervalometerhard_status;
-    void updateStatus();
+    void UpdateStatus();
 
 };
 

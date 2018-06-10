@@ -24,6 +24,10 @@ DisplayGeometry::DisplayGeometry()
     relativeTargetY=absoluteTargetY*scaleY;
 }
 
+DisplayGeometry::~DisplayGeometry()
+{
+}
+
 void DisplayGeometry::CropToRectangle(Mat source, Mat *destination)
 { // crop the source image to a rectangle that will be later scaled to the image window control rectangle
     cv::Rect roi;

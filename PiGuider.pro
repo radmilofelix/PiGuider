@@ -34,7 +34,9 @@ SOURCES += \
     test.cpp \
     pincontrolpi.cpp \
     wiringpiss.cpp \
-    displaygeometry.cpp
+    displaygeometry.cpp \
+    numpad.cpp \
+    dslrcameracontrol.cpp
 
 HEADERS += \
     piguider.h \
@@ -55,23 +57,26 @@ HEADERS += \
     capture-05.h \
     capture-06.h \
     capture-07.h \
-    displaygeometry.h
+    displaygeometry.h \
+    numpad.h \
+    dslrcameracontrol.h
 
 FORMS += \
     piguider.ui \
     guider.ui \
     dslr.ui \
     intervalometerhard.ui \
-    intervalometersoft.ui
+    intervalometersoft.ui \
+    numpad.ui
 
 RESOURCES += \
     icons.qrc \
     images.qrc
 
 # Comment out if building for raspbian
-CONFIG += PCRUN
+CONFIG += RUNONPC
 
-PCRUN {
+RUNONPC {
 # Ubuntu
     LIBS += `pkg-config opencv --libs`
     LIBS += -lgphoto2 -lgphoto2_port

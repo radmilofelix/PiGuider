@@ -20,6 +20,10 @@ PinControlPi::PinControlPi()
     pinMode(IVL2SHOOT, OUTPUT);
 }
 
+PinControlPi::~PinControlPi()
+{
+}
+
 void PinControlPi::CameraFocus(int intervalometerNo)
 {
     switch (intervalometerNo)

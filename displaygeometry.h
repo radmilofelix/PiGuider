@@ -14,6 +14,7 @@ class DisplayGeometry
 {
 public:
     DisplayGeometry();
+    ~DisplayGeometry();
     double sourceWidth;
     double sourceHeight;
     float scaleX, scaleY;

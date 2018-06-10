@@ -1,0 +1,5070 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>IntervalometerHard</class>
+ <widget class="QWidget" name="IntervalometerHard">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>800</width>
+    <height>480</height>
+   </rect>
+  </property>
+  <property name="palette">
+   <palette>
+    <active>
+     <colorrole role="WindowText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Button">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Light">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>120</red>
+        <green>24</green>
+        <blue>24</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Midlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>100</red>
+        <green>20</green>
+        <blue>20</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Dark">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Mid">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>53</red>
+        <green>10</green>
+        <blue>10</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Text">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="BrightText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ButtonText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Base">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Window">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Shadow">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="AlternateBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ToolTipBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>220</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ToolTipText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </active>
+    <inactive>
+     <colorrole role="WindowText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Button">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Light">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>120</red>
+        <green>24</green>
+        <blue>24</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Midlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>100</red>
+        <green>20</green>
+        <blue>20</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Dark">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Mid">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>53</red>
+        <green>10</green>
+        <blue>10</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Text">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="BrightText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ButtonText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Base">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Window">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Shadow">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="AlternateBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ToolTipBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>220</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ToolTipText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </inactive>
+    <disabled>
+     <colorrole role="WindowText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Button">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Light">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>120</red>
+        <green>24</green>
+        <blue>24</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Midlight">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>100</red>
+        <green>20</green>
+        <blue>20</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Dark">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Mid">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>53</red>
+        <green>10</green>
+        <blue>10</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Text">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="BrightText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>255</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ButtonText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>40</red>
+        <green>8</green>
+        <blue>8</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Base">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Window">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>30</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="Shadow">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="AlternateBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>80</red>
+        <green>16</green>
+        <blue>16</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ToolTipBase">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>255</red>
+        <green>255</green>
+        <blue>220</blue>
+       </color>
+      </brush>
+     </colorrole>
+     <colorrole role="ToolTipText">
+      <brush brushstyle="SolidPattern">
+       <color alpha="255">
+        <red>0</red>
+        <green>0</green>
+        <blue>0</blue>
+       </color>
+      </brush>
+     </colorrole>
+    </disabled>
+   </palette>
+  </property>
+  <property name="mouseTracking">
+   <bool>false</bool>
+  </property>
+  <property name="windowTitle">
+   <string>Hard Intervalometer</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">#IntervalometerHard
+{
+	background-color: rgb(30,0,0);
+}</string>
+  </property>
+  <widget class="QPushButton" name="closeButton">
+   <property name="geometry">
+    <rect>
+     <x>740</x>
+     <y>22</y>
+     <width>50</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#closeButton
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/close.png);
+}
+#closeButton:pressed
+{
+	border-image: url(:/media/icons/tools-512x512/close-pressed.png);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="enableButton">
+   <property name="geometry">
+    <rect>
+     <x>669</x>
+     <y>22</y>
+     <width>50</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#enableButton
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/shutdown.png);
+}
+#enableButton:pressed
+{
+	border-image: url(:/media/icons/tools-512x512/shutdown-pressed.png);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="ledLabel">
+   <property name="geometry">
+    <rect>
+     <x>686</x>
+     <y>6</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="exposureSecondsLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>99</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureSecondsLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureSecondsLabel1">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureSecondsLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="pushButton">
+   <property name="geometry">
+    <rect>
+     <x>602</x>
+     <y>22</y>
+     <width>50</width>
+     <height>50</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#pushButton
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/numpad.png)
+}
+#pushButton:pressed
+{
+	border-image: 
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="exposureMinutesLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>52</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureMinutesLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureMinutesLabel1">
+   <property name="geometry">
+    <rect>
+     <x>203</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureMinutesLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="exposureHoursLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureHoursLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureHoursLabel1">
+   <property name="geometry">
+    <rect>
+     <x>156</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureHoursLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelExposure">
+   <property name="geometry">
+    <rect>
+     <x>103</x>
+     <y>390</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelExposure
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Exposure</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH">
+   <property name="geometry">
+    <rect>
+     <x>15</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS">
+   <property name="geometry">
+    <rect>
+     <x>108</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM">
+   <property name="geometry">
+    <rect>
+     <x>62</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_2">
+   <property name="geometry">
+    <rect>
+     <x>261</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_2">
+   <property name="geometry">
+    <rect>
+     <x>166</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_2">
+   <property name="geometry">
+    <rect>
+     <x>213</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelFocus">
+   <property name="geometry">
+    <rect>
+     <x>73</x>
+     <y>300</y>
+     <width>151</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelFocus
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Focus (mirror settle)</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="focusHoursLabel1">
+   <property name="geometry">
+    <rect>
+     <x>156</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusHoursLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="focusSecondsLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>99</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusSecondsLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_4">
+   <property name="geometry">
+    <rect>
+     <x>213</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_4
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="focusMinutesLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>52</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusMinutesLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="focusHoursLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusHoursLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="frame">
+    <bool>false</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_3">
+   <property name="geometry">
+    <rect>
+     <x>108</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_3
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_4">
+   <property name="geometry">
+    <rect>
+     <x>166</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_4
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="focusMinutesLabel1">
+   <property name="geometry">
+    <rect>
+     <x>203</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusMinutesLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_3">
+   <property name="geometry">
+    <rect>
+     <x>15</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_3
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_3">
+   <property name="geometry">
+    <rect>
+     <x>62</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_3
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="focusSecondsLabel1">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusSecondsLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_4">
+   <property name="geometry">
+    <rect>
+     <x>261</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_4
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="restHoursLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restHoursLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_5">
+   <property name="geometry">
+    <rect>
+     <x>62</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_5
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_5">
+   <property name="geometry">
+    <rect>
+     <x>108</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_5
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_5">
+   <property name="geometry">
+    <rect>
+     <x>15</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_5
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="restHoursLabel1">
+   <property name="geometry">
+    <rect>
+     <x>156</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restHoursLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelRest">
+   <property name="geometry">
+    <rect>
+     <x>52</x>
+     <y>210</y>
+     <width>191</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelRest
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Pause Between Exposures</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_6">
+   <property name="geometry">
+    <rect>
+     <x>213</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_6
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="restMinutesLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>52</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restMinutesLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_6">
+   <property name="geometry">
+    <rect>
+     <x>261</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_6
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="restSecondsLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>99</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restSecondsLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_6">
+   <property name="geometry">
+    <rect>
+     <x>166</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_6
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="restMinutesLabel1">
+   <property name="geometry">
+    <rect>
+     <x>203</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restMinutesLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="restSecondsLabel1">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restSecondsLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="jobDelayHoursLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>5</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayHoursLineEdit1
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_7">
+   <property name="geometry">
+    <rect>
+     <x>62</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_7
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_7">
+   <property name="geometry">
+    <rect>
+     <x>108</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_7
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_7">
+   <property name="geometry">
+    <rect>
+     <x>15</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_7
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="jobDelayHoursLabel1">
+   <property name="geometry">
+    <rect>
+     <x>156</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayHoursLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelJobDelay">
+   <property name="geometry">
+    <rect>
+     <x>73</x>
+     <y>120</y>
+     <width>151</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelJobDelay
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Job Delay</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_8">
+   <property name="geometry">
+    <rect>
+     <x>213</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_8
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="jobDelayMinutesLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>52</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayMinutesLineEdit1
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_8">
+   <property name="geometry">
+    <rect>
+     <x>261</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_8
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="jobDelaySecondsLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>99</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelaySecondsLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="frame">
+    <bool>true</bool>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_8">
+   <property name="geometry">
+    <rect>
+     <x>166</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_8
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="jobDelayMinutesLabel1">
+   <property name="geometry">
+    <rect>
+     <x>203</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayMinutesLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="jobDelaySecondsLabel1">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelaySecondsLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelIntervalometer1">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>10</y>
+     <width>271</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelIntervalometer1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Intervalometer 1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelDetails1">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>271</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelDetails1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Programmed:           TO GO:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="focusMinutesLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusMinutesLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_9">
+   <property name="geometry">
+    <rect>
+     <x>508</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_9
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="jobDelayHoursLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayHoursLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_10">
+   <property name="geometry">
+    <rect>
+     <x>357</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_10
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="restMinutesLabel2">
+   <property name="geometry">
+    <rect>
+     <x>498</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restMinutesLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_11">
+   <property name="geometry">
+    <rect>
+     <x>357</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_11
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="jobDelaySecondsLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>394</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelaySecondsLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_9">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_9
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_10">
+   <property name="geometry">
+    <rect>
+     <x>461</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_10
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="exposureHoursLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureHoursLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="restMinutesLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restMinutesLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="restHoursLabel2">
+   <property name="geometry">
+    <rect>
+     <x>451</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restHoursLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_12">
+   <property name="geometry">
+    <rect>
+     <x>508</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_12
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelFocus_2">
+   <property name="geometry">
+    <rect>
+     <x>368</x>
+     <y>300</y>
+     <width>151</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelFocus_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Focus (mirror settle)</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_9">
+   <property name="geometry">
+    <rect>
+     <x>555</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_9
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_10">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_10
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_11">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_11
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="jobDelayMinutesLabel2">
+   <property name="geometry">
+    <rect>
+     <x>498</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayMinutesLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureMinutesLabel2">
+   <property name="geometry">
+    <rect>
+     <x>498</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureMinutesLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_12">
+   <property name="geometry">
+    <rect>
+     <x>461</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_12
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_11">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_11
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="restHoursLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restHoursLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_12">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_12
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_13">
+   <property name="geometry">
+    <rect>
+     <x>555</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_13
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelRest_2">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>210</y>
+     <width>191</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelRest_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Pause Between Exposures</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_13">
+   <property name="geometry">
+    <rect>
+     <x>357</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_13
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_14">
+   <property name="geometry">
+    <rect>
+     <x>357</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_14
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_13">
+   <property name="geometry">
+    <rect>
+     <x>461</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_13
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelJobDelay_2">
+   <property name="geometry">
+    <rect>
+     <x>367</x>
+     <y>120</y>
+     <width>151</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelJobDelay_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Job Delay</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="restSecondsLabel2">
+   <property name="geometry">
+    <rect>
+     <x>545</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restSecondsLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="focusMinutesLabel2">
+   <property name="geometry">
+    <rect>
+     <x>498</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusMinutesLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="focusHoursLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusHoursLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelDetails1_2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>40</y>
+     <width>271</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelDetails1_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Programmed:           TO GO:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureHoursLabel2">
+   <property name="geometry">
+    <rect>
+     <x>451</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureHoursLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_14">
+   <property name="geometry">
+    <rect>
+     <x>404</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_14
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="exposureMinutesLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureMinutesLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_14">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_14
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_15">
+   <property name="geometry">
+    <rect>
+     <x>555</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_15
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="jobDelayMinutesLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>347</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayMinutesLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_15">
+   <property name="geometry">
+    <rect>
+     <x>310</x>
+     <y>412</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_15
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="jobDelayHoursLabel2">
+   <property name="geometry">
+    <rect>
+     <x>451</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelayHoursLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="focusHoursLabel2">
+   <property name="geometry">
+    <rect>
+     <x>451</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusHoursLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>23</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="restSecondsLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>394</x>
+     <y>250</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#restSecondsLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="jobDelaySecondsLabel2">
+   <property name="geometry">
+    <rect>
+     <x>545</x>
+     <y>160</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#jobDelaySecondsLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelExposure_2">
+   <property name="geometry">
+    <rect>
+     <x>398</x>
+     <y>390</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelExposure_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Exposure</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="exposureSecondsLabel2">
+   <property name="geometry">
+    <rect>
+     <x>545</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureSecondsLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelIntervalometer1_2">
+   <property name="geometry">
+    <rect>
+     <x>300</x>
+     <y>10</y>
+     <width>271</width>
+     <height>30</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>16</pointsize>
+    </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelIntervalometer1_2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Intervalometer 2</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_15">
+   <property name="geometry">
+    <rect>
+     <x>508</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_15
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelS_16">
+   <property name="geometry">
+    <rect>
+     <x>555</x>
+     <y>232</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelS_16
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>S</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="focusSecondsLabel2">
+   <property name="geometry">
+    <rect>
+     <x>545</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusSecondsLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelM_16">
+   <property name="geometry">
+    <rect>
+     <x>508</x>
+     <y>322</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelM_16
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>M</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelH_16">
+   <property name="geometry">
+    <rect>
+     <x>461</x>
+     <y>142</y>
+     <width>21</width>
+     <height>17</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelH_16
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>H</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="focusSecondsLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>394</x>
+     <y>340</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#focusSecondsLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="exposureSecondsLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>394</x>
+     <y>430</y>
+     <width>40</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::StrongFocus</enum>
+   </property>
+   <property name="contextMenuPolicy">
+    <enum>Qt::PreventContextMenu</enum>
+   </property>
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#exposureSecondsLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="inputMask">
+    <string notr="true">NN</string>
+   </property>
+   <property name="text">
+    <string>59</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="Line" name="line">
+   <property name="geometry">
+    <rect>
+     <x>285</x>
+     <y>20</y>
+     <width>21</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#line
+{
+	
+	color: rgb(0,220,0);
+}
+</string>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>2</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="Line" name="line_2">
+   <property name="geometry">
+    <rect>
+     <x>581</x>
+     <y>10</y>
+     <width>20</width>
+     <height>461</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#line_2
+{
+	
+	color: rgb(0,220,0);
+}
+</string>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>2</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="intervalometer1Button">
+   <property name="geometry">
+    <rect>
+     <x>660</x>
+     <y>92</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#intervalometer1Button
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/sections-512x512/HardIntervalometer.png);
+}
+#intervalometer1Button:pressed
+{
+	border-image: url(:/media/icons/sections-512x512/HardIntervalometer-pressed.png);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="intervalometer2Button">
+   <property name="geometry">
+    <rect>
+     <x>730</x>
+     <y>92</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#intervalometer2Button
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/sections-512x512/HardIntervalometer.png);
+}
+#intervalometer2Button:pressed
+{
+	border-image: url(:/media/icons/sections-512x512/HardIntervalometer-pressed.png);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="intervalometer1LedLabel">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>18</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="intervalometer2LedLabel">
+   <property name="geometry">
+    <rect>
+     <x>536</x>
+     <y>18</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_1">
+   <property name="geometry">
+    <rect>
+     <x>684</x>
+     <y>76</y>
+     <width>20</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_2">
+   <property name="geometry">
+    <rect>
+     <x>753</x>
+     <y>76</y>
+     <width>20</width>
+     <height>20</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>2</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelIterations1">
+   <property name="geometry">
+    <rect>
+     <x>103</x>
+     <y>80</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelIterations1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Iterations</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelIterations2">
+   <property name="geometry">
+    <rect>
+     <x>397</x>
+     <y>80</y>
+     <width>91</width>
+     <height>21</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelIterations2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>Iterations</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="iterationsLineEdit1">
+   <property name="geometry">
+    <rect>
+     <x>17</x>
+     <y>75</y>
+     <width>60</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#iterationsLineEdit1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="iterationsLabel1">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>75</y>
+     <width>60</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#iterationsLabel1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="iterationsLineEdit2">
+   <property name="geometry">
+    <rect>
+     <x>301</x>
+     <y>75</y>
+     <width>60</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#iterationsLineEdit2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="iterationsLabel2">
+   <property name="geometry">
+    <rect>
+     <x>510</x>
+     <y>75</y>
+     <width>60</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#iterationsLabel2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="virtualKeyboardLedLabel">
+   <property name="geometry">
+    <rect>
+     <x>619</x>
+     <y>6</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelJobDelay1">
+   <property name="geometry">
+    <rect>
+     <x>599</x>
+     <y>169</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelJobDelay1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Job Delay1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_4">
+   <property name="geometry">
+    <rect>
+     <x>46</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_4
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_5">
+   <property name="geometry">
+    <rect>
+     <x>93</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_5
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_6">
+   <property name="geometry">
+    <rect>
+     <x>46</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_6
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_7">
+   <property name="geometry">
+    <rect>
+     <x>93</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_7
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_8">
+   <property name="geometry">
+    <rect>
+     <x>46</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_8
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_9">
+   <property name="geometry">
+    <rect>
+     <x>93</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_9
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_10">
+   <property name="geometry">
+    <rect>
+     <x>93</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_10
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_11">
+   <property name="geometry">
+    <rect>
+     <x>46</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_11
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_12">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>173</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_12
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_13">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>262</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_13
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_14">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>353</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_14
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_15">
+   <property name="geometry">
+    <rect>
+     <x>140</x>
+     <y>443</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_15
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_16">
+   <property name="geometry">
+    <rect>
+     <x>197</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_16
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_17">
+   <property name="geometry">
+    <rect>
+     <x>197</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_17
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_18">
+   <property name="geometry">
+    <rect>
+     <x>197</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_18
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_19">
+   <property name="geometry">
+    <rect>
+     <x>197</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_19
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_20">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_20
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_21">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_21
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_22">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_22
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_23">
+   <property name="geometry">
+    <rect>
+     <x>244</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_23
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_24">
+   <property name="geometry">
+    <rect>
+     <x>435</x>
+     <y>173</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_24
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_25">
+   <property name="geometry">
+    <rect>
+     <x>435</x>
+     <y>353</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_25
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_26">
+   <property name="geometry">
+    <rect>
+     <x>435</x>
+     <y>262</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_26
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_27">
+   <property name="geometry">
+    <rect>
+     <x>435</x>
+     <y>443</y>
+     <width>16</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_27
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrow.png)
+}
+
+</string>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_28">
+   <property name="geometry">
+    <rect>
+     <x>341</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_28
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_29">
+   <property name="geometry">
+    <rect>
+     <x>341</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_29
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_30">
+   <property name="geometry">
+    <rect>
+     <x>341</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_30
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_31">
+   <property name="geometry">
+    <rect>
+     <x>341</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_31
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_32">
+   <property name="geometry">
+    <rect>
+     <x>388</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_32
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_33">
+   <property name="geometry">
+    <rect>
+     <x>388</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_33
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_34">
+   <property name="geometry">
+    <rect>
+     <x>388</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_34
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_35">
+   <property name="geometry">
+    <rect>
+     <x>388</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_35
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_36">
+   <property name="geometry">
+    <rect>
+     <x>492</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_36
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_37">
+   <property name="geometry">
+    <rect>
+     <x>492</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_37
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_38">
+   <property name="geometry">
+    <rect>
+     <x>492</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_38
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_39">
+   <property name="geometry">
+    <rect>
+     <x>492</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_39
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_40">
+   <property name="geometry">
+    <rect>
+     <x>539</x>
+     <y>340</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_40
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_41">
+   <property name="geometry">
+    <rect>
+     <x>539</x>
+     <y>160</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_41
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_42">
+   <property name="geometry">
+    <rect>
+     <x>539</x>
+     <y>430</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_42
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="label_43">
+   <property name="geometry">
+    <rect>
+     <x>539</x>
+     <y>250</y>
+     <width>5</width>
+     <height>40</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#label_43
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="text">
+    <string>:</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="Line" name="line_3">
+   <property name="geometry">
+    <rect>
+     <x>686</x>
+     <y>170</y>
+     <width>21</width>
+     <height>301</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#line_3
+{
+	
+	color: rgb(0,220,0);
+}
+</string>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Plain</enum>
+   </property>
+   <property name="lineWidth">
+    <number>2</number>
+   </property>
+   <property name="orientation">
+    <enum>Qt::Vertical</enum>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelJobDelay2">
+   <property name="geometry">
+    <rect>
+     <x>703</x>
+     <y>169</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelJobDelay2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Job Delay2</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelRest1">
+   <property name="geometry">
+    <rect>
+     <x>599</x>
+     <y>257</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelRest1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Rest1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelRest2">
+   <property name="geometry">
+    <rect>
+     <x>703</x>
+     <y>257</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelRest2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Rest2</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelFocus2">
+   <property name="geometry">
+    <rect>
+     <x>703</x>
+     <y>346</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelFocus2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Focus</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelFocus1">
+   <property name="geometry">
+    <rect>
+     <x>599</x>
+     <y>346</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelFocus1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Focus</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelExposure2">
+   <property name="geometry">
+    <rect>
+     <x>703</x>
+     <y>436</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelExposure2
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Exposure2</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QLabel" name="labelExposure1">
+   <property name="geometry">
+    <rect>
+     <x>599</x>
+     <y>436</y>
+     <width>90</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#labelExposure1
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::Box</enum>
+   </property>
+   <property name="text">
+    <string>Exposure1</string>
+   </property>
+   <property name="alignment">
+    <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <zorder>closeButton</zorder>
+  <zorder>enableButton</zorder>
+  <zorder>ledLabel</zorder>
+  <zorder>pushButton</zorder>
+  <zorder>exposureHoursLabel1</zorder>
+  <zorder>exposureSecondsLineEdit1</zorder>
+  <zorder>exposureMinutesLineEdit1</zorder>
+  <zorder>exposureHoursLineEdit1</zorder>
+  <zorder>exposureMinutesLabel1</zorder>
+  <zorder>exposureSecondsLabel1</zorder>
+  <zorder>labelExposure</zorder>
+  <zorder>labelH</zorder>
+  <zorder>labelS</zorder>
+  <zorder>labelM</zorder>
+  <zorder>labelS_2</zorder>
+  <zorder>labelH_2</zorder>
+  <zorder>labelM_2</zorder>
+  <zorder>labelFocus</zorder>
+  <zorder>focusHoursLabel1</zorder>
+  <zorder>focusSecondsLineEdit1</zorder>
+  <zorder>labelM_4</zorder>
+  <zorder>focusMinutesLineEdit1</zorder>
+  <zorder>focusHoursLineEdit1</zorder>
+  <zorder>labelS_3</zorder>
+  <zorder>labelH_4</zorder>
+  <zorder>focusMinutesLabel1</zorder>
+  <zorder>labelH_3</zorder>
+  <zorder>labelM_3</zorder>
+  <zorder>focusSecondsLabel1</zorder>
+  <zorder>labelS_4</zorder>
+  <zorder>restHoursLineEdit1</zorder>
+  <zorder>labelM_5</zorder>
+  <zorder>labelS_5</zorder>
+  <zorder>labelH_5</zorder>
+  <zorder>restHoursLabel1</zorder>
+  <zorder>labelRest</zorder>
+  <zorder>labelM_6</zorder>
+  <zorder>restMinutesLineEdit1</zorder>
+  <zorder>labelS_6</zorder>
+  <zorder>restSecondsLineEdit1</zorder>
+  <zorder>labelH_6</zorder>
+  <zorder>restMinutesLabel1</zorder>
+  <zorder>restSecondsLabel1</zorder>
+  <zorder>jobDelayHoursLineEdit1</zorder>
+  <zorder>labelM_7</zorder>
+  <zorder>labelS_7</zorder>
+  <zorder>labelH_7</zorder>
+  <zorder>jobDelayHoursLabel1</zorder>
+  <zorder>labelJobDelay</zorder>
+  <zorder>labelM_8</zorder>
+  <zorder>jobDelayMinutesLineEdit1</zorder>
+  <zorder>labelS_8</zorder>
+  <zorder>jobDelaySecondsLineEdit1</zorder>
+  <zorder>labelH_8</zorder>
+  <zorder>jobDelayMinutesLabel1</zorder>
+  <zorder>jobDelaySecondsLabel1</zorder>
+  <zorder>labelIntervalometer1</zorder>
+  <zorder>labelDetails1</zorder>
+  <zorder>focusMinutesLineEdit2</zorder>
+  <zorder>labelM_9</zorder>
+  <zorder>jobDelayHoursLineEdit2</zorder>
+  <zorder>labelM_10</zorder>
+  <zorder>restMinutesLabel2</zorder>
+  <zorder>labelM_11</zorder>
+  <zorder>jobDelaySecondsLineEdit2</zorder>
+  <zorder>labelH_9</zorder>
+  <zorder>labelH_10</zorder>
+  <zorder>exposureHoursLineEdit2</zorder>
+  <zorder>restMinutesLineEdit2</zorder>
+  <zorder>restHoursLabel2</zorder>
+  <zorder>labelM_12</zorder>
+  <zorder>labelFocus_2</zorder>
+  <zorder>labelS_9</zorder>
+  <zorder>labelS_10</zorder>
+  <zorder>labelH_11</zorder>
+  <zorder>jobDelayMinutesLabel2</zorder>
+  <zorder>exposureMinutesLabel2</zorder>
+  <zorder>labelH_12</zorder>
+  <zorder>labelS_11</zorder>
+  <zorder>restHoursLineEdit2</zorder>
+  <zorder>labelS_12</zorder>
+  <zorder>labelS_13</zorder>
+  <zorder>labelRest_2</zorder>
+  <zorder>labelM_13</zorder>
+  <zorder>labelM_14</zorder>
+  <zorder>labelH_13</zorder>
+  <zorder>labelJobDelay_2</zorder>
+  <zorder>restSecondsLabel2</zorder>
+  <zorder>focusMinutesLabel2</zorder>
+  <zorder>focusHoursLineEdit2</zorder>
+  <zorder>labelDetails1_2</zorder>
+  <zorder>exposureHoursLabel2</zorder>
+  <zorder>labelS_14</zorder>
+  <zorder>exposureMinutesLineEdit2</zorder>
+  <zorder>labelH_14</zorder>
+  <zorder>labelS_15</zorder>
+  <zorder>jobDelayMinutesLineEdit2</zorder>
+  <zorder>labelH_15</zorder>
+  <zorder>jobDelayHoursLabel2</zorder>
+  <zorder>focusHoursLabel2</zorder>
+  <zorder>restSecondsLineEdit2</zorder>
+  <zorder>jobDelaySecondsLabel2</zorder>
+  <zorder>labelExposure_2</zorder>
+  <zorder>exposureSecondsLabel2</zorder>
+  <zorder>labelIntervalometer1_2</zorder>
+  <zorder>labelM_15</zorder>
+  <zorder>labelS_16</zorder>
+  <zorder>focusSecondsLabel2</zorder>
+  <zorder>labelM_16</zorder>
+  <zorder>labelH_16</zorder>
+  <zorder>focusSecondsLineEdit2</zorder>
+  <zorder>exposureSecondsLineEdit2</zorder>
+  <zorder>line</zorder>
+  <zorder>line_2</zorder>
+  <zorder>intervalometer1Button</zorder>
+  <zorder>intervalometer2Button</zorder>
+  <zorder>intervalometer1LedLabel</zorder>
+  <zorder>intervalometer2LedLabel</zorder>
+  <zorder>label_1</zorder>
+  <zorder>label_2</zorder>
+  <zorder>labelIterations1</zorder>
+  <zorder>labelIterations2</zorder>
+  <zorder>iterationsLineEdit1</zorder>
+  <zorder>iterationsLabel1</zorder>
+  <zorder>iterationsLineEdit2</zorder>
+  <zorder>iterationsLabel2</zorder>
+  <zorder>virtualKeyboardLedLabel</zorder>
+  <zorder>labelJobDelay1</zorder>
+  <zorder>label_4</zorder>
+  <zorder>label_5</zorder>
+  <zorder>label_6</zorder>
+  <zorder>label_7</zorder>
+  <zorder>label_8</zorder>
+  <zorder>label_9</zorder>
+  <zorder>label_10</zorder>
+  <zorder>label_11</zorder>
+  <zorder>label_12</zorder>
+  <zorder>label_13</zorder>
+  <zorder>label_14</zorder>
+  <zorder>label_15</zorder>
+  <zorder>label_16</zorder>
+  <zorder>label_17</zorder>
+  <zorder>label_18</zorder>
+  <zorder>label_19</zorder>
+  <zorder>label_20</zorder>
+  <zorder>label_21</zorder>
+  <zorder>label_22</zorder>
+  <zorder>label_23</zorder>
+  <zorder>label_24</zorder>
+  <zorder>label_25</zorder>
+  <zorder>label_26</zorder>
+  <zorder>label_27</zorder>
+  <zorder>label_28</zorder>
+  <zorder>label_29</zorder>
+  <zorder>label_30</zorder>
+  <zorder>label_31</zorder>
+  <zorder>label_32</zorder>
+  <zorder>label_33</zorder>
+  <zorder>label_34</zorder>
+  <zorder>label_35</zorder>
+  <zorder>label_36</zorder>
+  <zorder>label_37</zorder>
+  <zorder>label_38</zorder>
+  <zorder>label_39</zorder>
+  <zorder>label_40</zorder>
+  <zorder>label_41</zorder>
+  <zorder>label_42</zorder>
+  <zorder>label_43</zorder>
+  <zorder>line_3</zorder>
+  <zorder>labelJobDelay2</zorder>
+  <zorder>labelRest1</zorder>
+  <zorder>labelRest2</zorder>
+  <zorder>labelFocus2</zorder>
+  <zorder>labelFocus1</zorder>
+  <zorder>labelExposure2</zorder>
+  <zorder>labelExposure1</zorder>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -70,8 +70,8 @@ Guider::Guider(QWidget *parent) :
     ui->horizontalGammaSlider->setRange(0, 2000);
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalGammaSlider->setVisible(true);
-    captureIndex=0;
 #ifdef DEBUG
+    captureIndex=0;
     captureFlag=false;
 #endif
 #ifdef CAPTUREFROMFILE
@@ -1013,7 +1013,9 @@ void Guider::on_minusButton_clicked()
 
 void Guider::on_targetButton_clicked()
 {
+#ifdef DEBUG
     dgeometry.DisplayGeometryData("target button clicked");
+#endif
     targetSelected=true;
 //    cout << "Target X: " << targetPosition.x() << endl;
 //    cout << "Target Y: " << targetPosition.y() << endl;
@@ -1128,8 +1130,10 @@ void Guider::on_snapButton_clicked()
 }
 */
 
+
 void Guider::on_saveButton_clicked()
 {
+#ifdef DEBUG
     if(captureFlag)
     {
         captureFlag=false;
@@ -1145,6 +1149,7 @@ void Guider::on_saveButton_clicked()
         ui->labelMessages->setText("File saving toggled ON.");
     }
     ui->labelMessages->adjustSize();
+#endif
 }
 
 void Guider::on_slowButton_clicked()

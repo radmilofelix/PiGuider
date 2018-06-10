@@ -57,16 +57,32 @@ void IntervalometerSoft::on_closeButton_clicked()
 void IntervalometerSoft::on_enableButton_clicked()
 {
     if(enabled)
-    {
+    {//://media/icons/tools-512x512/plus.png
         enabled=false;
         QPixmap image("media/icons/tools-32x32/led-red.png");
         ui->ledLabel->setPixmap(image);
+        QPixmap pixmap("://media/icons/tools-512x512/plus.png");
+        QIcon ButtonIcon(pixmap);
+        ui->enableButton->setIcon(ButtonIcon);
+        QSize msize;
+        msize.setHeight(100);
+        msize.setWidth(100);
+        ui->enableButton->setIconSize(msize);
+        ui->enableButton->setFixedSize(msize);
     }
     else
     {
         enabled=true;
         QPixmap image("media/icons/tools-32x32/led-green.png");
         ui->ledLabel->setPixmap(image);
+        QPixmap pixmap("://media/icons/tools-512x512/minus.png");
+        QIcon ButtonIcon(pixmap);
+        ui->enableButton->setIcon(ButtonIcon);
+        QSize msize;
+        msize.setHeight(100);
+        msize.setWidth(100);
+        ui->enableButton->setIconSize(msize);
+        ui->enableButton->setFixedSize(msize);
     }
 }
 

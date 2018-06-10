@@ -55,10 +55,10 @@ PiGuider::~PiGuider()
 
 void PiGuider::UpdateTime()
 {
-    updateStatus();
+    UpdateStatus();
 }
 
-void PiGuider::updateStatus()
+void PiGuider::UpdateStatus()
 {
     QPixmap ledred("media/icons/tools-16x16/led-red.png");
     QPixmap ledgreen("media/icons/tools-16x16/led-green.png");
@@ -90,7 +90,7 @@ void PiGuider::updateStatus()
         {
             ui->ledLabelSoftIntervalometer->setPixmap(ledgreen);
             intervalometerhard.enabled=false;
-            intervalometerhard.updateStatus();
+            intervalometerhard.UpdateStatus();
         }
         else
             ui->ledLabelSoftIntervalometer->setPixmap(ledred);
@@ -118,11 +118,12 @@ void PiGuider::updateStatus()
             ui->mainImageLabel->setPixmap(guideimage);
         }
     }
-//    else
-//    {
-//        QPixmap image("media/NightSky.png");
-//        ui->mainImageLabel->setPixmap(image);
-//    }
+
+    if( intervalometerhard.enabled)
+        intervalometerhard.UpdateStatus();
+
+
+
 
 }
 
@@ -135,6 +136,7 @@ void PiGuider::on_exitButton_clicked()
 
 void PiGuider::on_pushButton_clicked()
 {
+
 #ifndef RUNONPC
 
     if(buttonpressed)
