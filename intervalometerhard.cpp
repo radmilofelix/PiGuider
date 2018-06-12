@@ -15,16 +15,14 @@ IntervalometerHard::IntervalometerHard(QWidget *parent) :
     connect(&numpad, SIGNAL(ReturnClickedSignal()), this, SLOT(NumpadReturnClickedSlot()));
     intervalometer1Enabled=false;
     intervalometer2Enabled=false;
+    buttonSize.setHeight(70);
+    buttonSize.setWidth(70);
     QPixmap image("media/icons/tools-16x16/led-red.png");
     ui->intervalometer1LedLabel->setPixmap(image);
     ui->intervalometer2LedLabel->setPixmap(image);
-    image.load("media/icons/tools-16x16/led-green.png");
-    ui->virtualKeyboardLedLabel->setPixmap(image);
     enabled=false;
     editEnabled=true;
     enableVirtualKeyboard=true;
-    image.load("media/icons/tools-16x16/led-red.png");
-    ui->ledLabel->setPixmap(image);
     Init();
     DisplayInputValues();
     HmsToPeriods();
@@ -38,34 +36,34 @@ IntervalometerHard::~IntervalometerHard()
 
 void IntervalometerHard::Init()
 {
-    iterations1=2;
+    iterations1=1;
     iterationsCount1=iterations1;
     jobDelayHours1=0;
     jobDelayHoursCount1=jobDelayHours1;
     jobDelayMinutes1=0;
     jobDelayMinutesCount1=jobDelayMinutes1;
-    jobDelaySeconds1=9;
+    jobDelaySeconds1=1;
     jobDelaySecondsCount1=jobDelaySeconds1;
     restHours1=0;
     restHoursCount1=restHours1;
     restMinutes1=0;
     restMinutesCount1=restMinutes1;
-    restSeconds1=9;
+    restSeconds1=1;
     restSecondsCount1=restSeconds1;
     focusHours1=0;
     focusHoursCount1=focusHours1;
     focusMinutes1=0;
     focusMinutesCount1=focusMinutes1;
-    focusSeconds1=9;
+    focusSeconds1=1;
     focusSecondsCount1=focusSeconds1;
     exposureHours1=0;
     exposureHoursCount1=exposureHours1;
     exposureMinutes1=0;
     exposureMinutesCount1=exposureMinutes1;
-    exposureSeconds1=9;
+    exposureSeconds1=1;
     exposureSecondsCount1=exposureSeconds1;
 
-    iterations2=2;
+    iterations2=1;
     iterationsCount2=iterations2;
     jobDelayHours2=0;
     jobDelayHoursCount2=jobDelayHours2;
@@ -89,17 +87,16 @@ void IntervalometerHard::Init()
     exposureHoursCount2=exposureHours2;
     exposureMinutes2=0;
     exposureMinutesCount2=exposureMinutes2;
-    exposureSeconds2=20;
+    exposureSeconds2=5;
     exposureSecondsCount2=exposureSeconds2;
     HmsToPeriods();
 }
 
 void IntervalometerHard::UpdateStatus()
 {
+    QIcon buttonIcon;
     if(enabled)
     {
-        QPixmap image("media/icons/tools-16x16/led-green.png");
-        ui->ledLabel->setPixmap(image);
         long i=timer.elapsed()/1000-oldTime;
         oldTime=timer.elapsed()/1000;
         if(i>0)
@@ -108,18 +105,26 @@ void IntervalometerHard::UpdateStatus()
     }
     else
     {
-        QPixmap image("media/icons/tools-16x16/led-red.png");
-        ui->ledLabel->setPixmap(image);
         pincontrol.CameraRelease(1);
         pincontrol.CameraRelease(2);
         ValidateInput();
         HmsToPeriods();
         DisplayCounterValues();
-        ledImage.load("media/icons/tools-16x16/led-red.png");
         intervalometer1Enabled=false;
         intervalometer2Enabled=false;
-        ui->intervalometer1LedLabel->setPixmap(image);
-        ui->intervalometer2LedLabel->setPixmap(image);
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->intervalometer1Button->setIcon(buttonIcon);
+        ui->intervalometer2Button->setIcon(buttonIcon);
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->enableButton->setIcon(buttonIcon);
+        ui->enableButton->setIconSize(buttonSize);
+        ui->enableButton->setFixedSize(buttonSize);
+        ui->intervalometer1Button->setIconSize(buttonSize);
+        ui->intervalometer1Button->setFixedSize(buttonSize);
+        ui->intervalometer2Button->setIconSize(buttonSize);
+        ui->intervalometer2Button->setFixedSize(buttonSize);
     }
 }
 
@@ -401,10 +406,6 @@ void IntervalometerHard::DisplayInputValues()
     ui->exposureHoursLineEdit1->setText(QString::number((int)exposureHours1));
     ui->exposureMinutesLineEdit1->setText(QString::number((int)exposureMinutes1));
     ui->exposureSecondsLineEdit1->setText(QString::number((int)exposureSeconds1));
-//    ui->labelJobDelay1->setText(QString::number((long)jobDelayPeriod1));
-//    ui->labelRest1->setText(QString::number((long)restPeriod1));
-//    ui->labelFocus1->setText(QString::number((long)focusPeriod1));
-//    ui->labelExposure1->setText(QString::number((long)exposurePeriod1));
 
     ui->iterationsLineEdit2->setText(QString::number((int)iterations2));
     ui->jobDelayHoursLineEdit2->setText(QString::number((int)jobDelayHours2));
@@ -419,10 +420,6 @@ void IntervalometerHard::DisplayInputValues()
     ui->exposureHoursLineEdit2->setText(QString::number((int)exposureHours2));
     ui->exposureMinutesLineEdit2->setText(QString::number((int)exposureMinutes2));
     ui->exposureSecondsLineEdit2->setText(QString::number((int)exposureSeconds2));
-//    ui->labelJobDelay2->setText(QString::number((long)jobDelayPeriod2));
-//    ui->labelRest2->setText(QString::number((long)restPeriod2));
-//    ui->labelFocus2->setText(QString::number((long)focusPeriod2));
-//    ui->labelExposure2->setText(QString::number((long)exposurePeriod2));
 }
 
 
@@ -433,23 +430,28 @@ void IntervalometerHard::on_closeButton_clicked()
 
 void IntervalometerHard::on_enableButton_clicked()
 {
+    QIcon buttonIcon;
     if(enabled)
     {
         enabled=false;
-        QPixmap image("media/icons/tools-16x16/led-red.png");
-        ui->ledLabel->setPixmap(image);
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->enableButton->setIcon(buttonIcon);
     }
     else
     {
         enabled=true;
-        QPixmap image("media/icons/tools-16x16/led-green.png");
-        ui->ledLabel->setPixmap(image);
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->enableButton->setIcon(buttonIcon);
         if(intervalometer1Enabled || intervalometer2Enabled)
         {
             oldTime=0;
             timer.start();
         }
     }
+    ui->enableButton->setIconSize(buttonSize);
+    ui->enableButton->setFixedSize(buttonSize);
     UpdateStatus();
 }
 
@@ -525,6 +527,7 @@ void IntervalometerHard::PeriodsToHMS()
 
 void IntervalometerHard::DecreaseTimer1()
 {
+    QIcon buttonIcon;
     if(intervalometer1Enabled)
     {
         if(jobDelayPeriodCount1>0)
@@ -568,14 +571,19 @@ void IntervalometerHard::DecreaseTimer1()
             focusPeriodCount1=focusPeriod1;
             exposurePeriodCount1=exposurePeriod1;
             intervalometer1Enabled=false;
-            ledImage.load("media/icons/tools-16x16/led-red.png");
-            ui->intervalometer1LedLabel->setPixmap(ledImage);
+
+            changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer.png");
+            buttonIcon.addPixmap(changingButtonsPixmap);
+            ui->intervalometer1Button->setIcon(buttonIcon);
+            ui->intervalometer1Button->setIconSize(buttonSize);
+            ui->intervalometer1Button->setFixedSize(buttonSize);
         }
     }
 }
 
 void IntervalometerHard::DecreaseTimer2()
 {
+    QIcon buttonIcon;
     if(intervalometer2Enabled)
     {
         if(jobDelayPeriodCount2>0)
@@ -619,22 +627,29 @@ void IntervalometerHard::DecreaseTimer2()
             focusPeriodCount2=focusPeriod2;
             exposurePeriodCount2=exposurePeriod2;
             intervalometer2Enabled=false;
-            ledImage.load("media/icons/tools-16x16/led-red.png");
-            ui->intervalometer2LedLabel->setPixmap(ledImage);
+
+            changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer.png");
+            buttonIcon.addPixmap(changingButtonsPixmap);
+            ui->intervalometer2Button->setIcon(buttonIcon);
+            ui->intervalometer2Button->setIconSize(buttonSize);
+            ui->intervalometer2Button->setFixedSize(buttonSize);
         }
     }
 }
 
 void IntervalometerHard::DecreaseTimers()
 {
+    QIcon buttonIcon;
     DecreaseTimer1();
     DecreaseTimer2();
     if( !intervalometer1Enabled && !intervalometer2Enabled)
     {
         enabled=false;
-        ledImage.load("media/icons/tools-16x16/led-red.png");
-        ui->ledLabel->setPixmap(ledImage);
-    }
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->enableButton->setIcon(buttonIcon);
+        ui->enableButton->setIconSize(buttonSize);
+        ui->enableButton->setFixedSize(buttonSize);    }
     PeriodsToHMS();
     DisplayCounterValues();
 }
@@ -740,32 +755,50 @@ void IntervalometerHard::on_pushButton_clicked()
 
 void IntervalometerHard::on_intervalometer1Button_clicked()
 {
+    QIcon buttonIcon;
     QPixmap image("media/icons/tools-16x16/led-red.png");
     if(intervalometer1Enabled)
     {
         intervalometer1Enabled=false;
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->intervalometer1Button->setIcon(buttonIcon);
     }
     else
     {
         image.load("media/icons/tools-16x16/led-green.png");
         intervalometer1Enabled=true;
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->intervalometer1Button->setIcon(buttonIcon);
     }
     ui->intervalometer1LedLabel->setPixmap(image);
+    ui->intervalometer1Button->setIconSize(buttonSize);
+    ui->intervalometer1Button->setFixedSize(buttonSize);
 }
 
 void IntervalometerHard::on_intervalometer2Button_clicked()
 {
+    QIcon buttonIcon;
     QPixmap image("media/icons/tools-16x16/led-red.png");
     if(intervalometer2Enabled)
     {
         intervalometer2Enabled=false;
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->intervalometer2Button->setIcon(buttonIcon);
     }
     else
     {
         image.load("media/icons/tools-16x16/led-green.png");
         intervalometer2Enabled=true;
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->intervalometer2Button->setIcon(buttonIcon);
     }
     ui->intervalometer2LedLabel->setPixmap(image);
+    ui->intervalometer2Button->setIconSize(buttonSize);
+    ui->intervalometer2Button->setFixedSize(buttonSize);
 }
 
 void IntervalometerHard::on_exposureHoursLineEdit1_cursorPositionChanged(int arg1, int arg2)
@@ -1008,15 +1041,21 @@ void IntervalometerHard::on_iterationsLineEdit2_cursorPositionChanged(int arg1, 
 
 void IntervalometerHard::on_toggleVirtualNumpadButton_clicked()
 {
-    QPixmap image("media/icons/tools-16x16/led-green.png");
+    QIcon buttonIcon;
     if(enableVirtualKeyboard)
     {
-        image.load("media/icons/tools-16x16/led-red.png");
+        changingButtonsPixmap.load("://media/icons/tools-512x512/numpad.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->toggleVirtualNumpadButton->setIcon(buttonIcon);
         enableVirtualKeyboard=false;
     }
     else
     {
+        changingButtonsPixmap.load("://media/icons/tools-512x512/numpad-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->toggleVirtualNumpadButton->setIcon(buttonIcon);
         enableVirtualKeyboard=true;
     }
-    ui->virtualKeyboardLedLabel->setPixmap(image);
+    ui->toggleVirtualNumpadButton->setIconSize(buttonSize);
+    ui->toggleVirtualNumpadButton->setFixedSize(buttonSize);
 }

@@ -440,10 +440,10 @@
   <widget class="QPushButton" name="closeButton">
    <property name="geometry">
     <rect>
-     <x>740</x>
+     <x>720</x>
      <y>22</y>
-     <width>50</width>
-     <height>50</height>
+     <width>70</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -468,8 +468,8 @@
     <rect>
      <x>602</x>
      <y>22</y>
-     <width>50</width>
-     <height>50</height>
+     <width>70</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -484,22 +484,6 @@
 {
 	border-image: url(:/media/icons/tools-512x512/shutdown-pressed.png);
 }</string>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ledLabel">
-   <property name="geometry">
-    <rect>
-     <x>619</x>
-     <y>6</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
    </property>
    <property name="text">
     <string/>
@@ -569,8 +553,8 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>730</x>
-     <y>292</y>
+     <x>610</x>
+     <y>270</y>
      <width>50</width>
      <height>50</height>
     </rect>
@@ -3487,8 +3471,8 @@
   <widget class="QPushButton" name="intervalometer1Button">
    <property name="geometry">
     <rect>
-     <x>600</x>
-     <y>92</y>
+     <x>610</x>
+     <y>140</y>
      <width>70</width>
      <height>70</height>
     </rect>
@@ -3513,8 +3497,8 @@
   <widget class="QPushButton" name="intervalometer2Button">
    <property name="geometry">
     <rect>
-     <x>660</x>
-     <y>92</y>
+     <x>720</x>
+     <y>140</y>
      <width>70</width>
      <height>70</height>
     </rect>
@@ -3565,8 +3549,8 @@
   <widget class="QLabel" name="label_1">
    <property name="geometry">
     <rect>
-     <x>624</x>
-     <y>75</y>
+     <x>633</x>
+     <y>114</y>
      <width>20</width>
      <height>20</height>
     </rect>
@@ -3591,8 +3575,8 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>684</x>
-     <y>75</y>
+     <x>745</x>
+     <y>114</y>
      <width>20</width>
      <height>20</height>
     </rect>
@@ -3764,27 +3748,11 @@
     <set>Qt::AlignCenter</set>
    </property>
   </widget>
-  <widget class="QLabel" name="virtualKeyboardLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>686</x>
-     <y>6</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="QLabel" name="labelJobDelay1">
    <property name="geometry">
     <rect>
      <x>599</x>
-     <y>169</y>
+     <y>333</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -4738,9 +4706,9 @@
    <property name="geometry">
     <rect>
      <x>686</x>
-     <y>170</y>
+     <y>320</y>
      <width>21</width>
-     <height>301</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -4765,7 +4733,7 @@
    <property name="geometry">
     <rect>
      <x>703</x>
-     <y>169</y>
+     <y>333</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -4791,7 +4759,7 @@
    <property name="geometry">
     <rect>
      <x>599</x>
-     <y>257</y>
+     <y>368</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -4817,7 +4785,7 @@
    <property name="geometry">
     <rect>
      <x>703</x>
-     <y>257</y>
+     <y>368</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -4843,7 +4811,7 @@
    <property name="geometry">
     <rect>
      <x>703</x>
-     <y>346</y>
+     <y>402</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -4869,7 +4837,7 @@
    <property name="geometry">
     <rect>
      <x>599</x>
-     <y>346</y>
+     <y>402</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -4946,10 +4914,10 @@
   <widget class="QPushButton" name="toggleVirtualNumpadButton">
    <property name="geometry">
     <rect>
-     <x>669</x>
-     <y>22</y>
-     <width>50</width>
-     <height>50</height>
+     <x>720</x>
+     <y>250</y>
+     <width>70</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -4958,7 +4926,7 @@
 	background-color: transparent;
 	background: none;
 	background-repeat: none;
-	border-image: url(:/media/icons/tools-512x512/numpad.png)
+	border-image: url(:/media/icons/tools-512x512/numpad-on.png)
 }
 #toggleVirtualNumpadButton:pressed
 {
@@ -4971,7 +4939,6 @@
   </widget>
   <zorder>closeButton</zorder>
   <zorder>enableButton</zorder>
-  <zorder>ledLabel</zorder>
   <zorder>pushButton</zorder>
   <zorder>exposureHoursLabel1</zorder>
   <zorder>exposureSecondsLineEdit1</zorder>
@@ -5095,7 +5062,6 @@
   <zorder>iterationsLabel1</zorder>
   <zorder>iterationsLineEdit2</zorder>
   <zorder>iterationsLabel2</zorder>
-  <zorder>virtualKeyboardLedLabel</zorder>
   <zorder>labelJobDelay1</zorder>
   <zorder>label_4</zorder>
   <zorder>label_5</zorder>

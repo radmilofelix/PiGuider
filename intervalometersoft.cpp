@@ -25,8 +25,8 @@ IntervalometerSoft::IntervalometerSoft(QWidget *parent) :
 {
     ui->setupUi(this);
     enabled=false;
-    QPixmap image("media/icons/tools-32x32/led-red.png");
-    ui->ledLabel->setPixmap(image);
+    buttonSize.setHeight(70);
+    buttonSize.setWidth(70);
 }
 
 IntervalometerSoft::~IntervalometerSoft()
@@ -38,14 +38,25 @@ void IntervalometerSoft::updateStatus()
 {
     if(enabled)
     {
-        QPixmap image("media/icons/tools-32x32/led-green.png");
-        ui->ledLabel->setPixmap(image);
+        SetEnableButtonImage(true);
     }
     else
     {
-        QPixmap image("media/icons/tools-32x32/led-red.png");
-        ui->ledLabel->setPixmap(image);
+        SetEnableButtonImage(false);
     }
+}
+
+void IntervalometerSoft::SetEnableButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->enableButton->setIcon(buttonIcon);
+    ui->enableButton->setIconSize(buttonSize);
+    ui->enableButton->setFixedSize(buttonSize);
 }
 
 
@@ -57,35 +68,18 @@ void IntervalometerSoft::on_closeButton_clicked()
 void IntervalometerSoft::on_enableButton_clicked()
 {
     if(enabled)
-    {//://media/icons/tools-512x512/plus.png
+    {
         enabled=false;
-        QPixmap image("media/icons/tools-32x32/led-red.png");
-        ui->ledLabel->setPixmap(image);
-        QPixmap pixmap("://media/icons/tools-512x512/plus.png");
-        QIcon ButtonIcon(pixmap);
-        ui->enableButton->setIcon(ButtonIcon);
-        QSize msize;
-        msize.setHeight(100);
-        msize.setWidth(100);
-        ui->enableButton->setIconSize(msize);
-        ui->enableButton->setFixedSize(msize);
+        SetEnableButtonImage(false);
     }
     else
     {
         enabled=true;
-        QPixmap image("media/icons/tools-32x32/led-green.png");
-        ui->ledLabel->setPixmap(image);
-        QPixmap pixmap("://media/icons/tools-512x512/minus.png");
-        QIcon ButtonIcon(pixmap);
-        ui->enableButton->setIcon(ButtonIcon);
-        QSize msize;
-        msize.setHeight(100);
-        msize.setWidth(100);
-        ui->enableButton->setIconSize(msize);
-        ui->enableButton->setFixedSize(msize);
+        SetEnableButtonImage(true);
     }
 }
 
+/*
 void IntervalometerSoft::setLedColour(std::string filename)
 {
     Mat myImage, srcImage;
@@ -100,3 +94,6 @@ void IntervalometerSoft::setLedColour(std::string filename)
     ui->ledLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
 //    ui->ledLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_ARGB32_Premultiplied)));
 }
+*/
+
+

@@ -486,22 +486,6 @@
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="MainLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>680</x>
-     <y>20</y>
-     <width>32</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
   <widget class="ImageLabel" name="guiderImageLabel">
    <property name="geometry">
     <rect>
@@ -1129,58 +1113,6 @@ SAVE</string>
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="refreshLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>550</x>
-     <y>30</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="slowLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>538</x>
-     <y>280</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="normalLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>627</x>
-     <y>280</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
-  <widget class="QLabel" name="fastLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>718</x>
-     <y>280</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
-   </property>
-  </widget>
   <widget class="QLabel" name="labelStars">
    <property name="geometry">
     <rect>
@@ -1342,19 +1274,6 @@ Arcsec.</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
-   </property>
-  </widget>
-  <widget class="QLabel" name="calibrateLedLabel">
-   <property name="geometry">
-    <rect>
-     <x>750</x>
-     <y>430</y>
-     <width>16</width>
-     <height>16</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>TextLabel</string>
    </property>
   </widget>
  </widget>

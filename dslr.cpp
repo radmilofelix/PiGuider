@@ -40,12 +40,12 @@ DSLR::DSLR(QWidget *parent) :
     ui(new Ui::DSLR)
 {
     ui->setupUi(this);
-
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Pos()), this, SLOT(Mouse_current_pos()));
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Pressed()), this, SLOT(Mouse_pressed()));
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Left()), this, SLOT(Mouse_left()));
+    buttonSize.setHeight(70);
+    buttonSize.setWidth(70);
     cameraFocus=0;
-//    pi=3.14159265358979323846;
     targetPosition.setX(478/2);
     targetPosition.setY(478/2);
     enabled=false;
@@ -56,10 +56,6 @@ DSLR::DSLR(QWidget *parent) :
     eosZoomWindowHeight=710;
     eosZoomPositionX=0;
     eosZoomPositionY=0;
-    QPixmap image("media/icons/tools-32x32/led-red.png");
-    ui->ledLabel->setPixmap(image);
-//    image.load("media/NightSky.png");
-//    ui->dslrImageLabel->setPixmap(image);
     ui->horizontalGammaSlider->setRange(0, 2000);
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalGammaSlider->setVisible(true);
@@ -69,10 +65,6 @@ DSLR::DSLR(QWidget *parent) :
     ui->horizontalZoomSlider->setRange(10, 1000);
     ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
     ui->horizontalZoomSlider->setVisible(true);
-    image.load("media/icons/tools-16x16/led-red.png");
-    ui->resetLedLabel->setPixmap(image);
-//    image.load("media/icons/tools-16x16/led-blue.png");
-    ui->x1x10LedLabel->setPixmap(image);
 }
 
 DSLR::~DSLR()
@@ -97,9 +89,11 @@ void DSLR::GammaCorrection(const Mat &img, const double gamma_, Mat *result)
 void DSLR::NewCapture(bool fromCamera)
 {
     if(!fromCamera)
-        srcImage = imread("media/NightSky.png", CV_LOAD_IMAGE_UNCHANGED);
+        LoadFromQrc("://media/NightSky.png",IMREAD_COLOR);
+//        srcImage = imread("media/NightSky.png", CV_LOAD_IMAGE_UNCHANGED);
     else
-        srcImage = imread("/run/shm/DSLR-SourceImage.jpg", CV_LOAD_IMAGE_UNCHANGED);
+        srcImage = imread(dslrCamera.sourceFileName, CV_LOAD_IMAGE_UNCHANGED);
+//        srcImage = imread("/run/shm/DSLR-SourceImage.jpg", CV_LOAD_IMAGE_UNCHANGED);
     if(srcImage.empty())
     {
         ui->labelMessages->setText("Could not open or find camera image");
@@ -149,30 +143,50 @@ void DSLR::on_closeButton_clicked()
 
 void DSLR::on_enableButton_clicked()
 {
+    QIcon buttonIcon;
     if(enabled)
     {
         enabled=false;
-        QPixmap image("media/icons/tools-32x32/led-red.png");
-        ui->ledLabel->setPixmap(image);
 
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->enableButton->setIcon(buttonIcon);
     }
     else
     {
         enabled=true;
-        QPixmap image("media/icons/tools-32x32/led-green.png");
-        ui->ledLabel->setPixmap(image);
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->enableButton->setIcon(buttonIcon);
     }
+    ui->enableButton->setIconSize(buttonSize);
+    ui->enableButton->setFixedSize(buttonSize);
 }
-
 
 void DSLR::on_CaptureImage_clicked()
 {
-    if(!dslrCamera.ShootAndCapture())
+    char fileName[100];
+    char systemCommand[100];
+    if(dslrCamera.ShootAndCapture("/run/shm/", fileName, 1))
+    {
+        strcpy(dslrCamera.sourceFileName, "/run/shm/");
+        strcat(dslrCamera.sourceFileName, "DSLR-SourceImage");
+        strcat(dslrCamera.sourceFileName, dslrCamera.captureFileExtension);
+        strcpy(systemCommand, "mv ");
+        strcat(systemCommand, "/run/shm/");
+        strcat(systemCommand, fileName);
+        strcat(systemCommand, " ");
+        strcat(systemCommand, dslrCamera.sourceFileName);
+        system(systemCommand);
+        NewCapture(dslrCamera.fromCamera);
+        ui->labelMessages->setText(fileName);
+        ui->labelMessages->adjustSize();
+    }
+    else
     {
         FrameMessage(dslrCamera.dslrMessage);
-        return;
+        NewCapture(false);
     }
-    NewCapture(dslrCamera.fromCamera);
 }
 
 void DSLR::on_targetButton_clicked()
@@ -305,6 +319,26 @@ void DSLR::ComputeEosZoomOrigin()
     }
 }
 
+void DSLR::RefreshData()
+{
+    if(!enabled)
+        return;
+    GetCameraPreview();
+    //    NewCapture(dslrCamera.fromCamera);
+}
+
+void DSLR::LoadFromQrc(QString qrc, int flag)
+{
+    QFile file(qrc);
+    if(file.open(QIODevice::ReadOnly))
+    {
+        qint64 sz = file.size();
+        std::vector<uchar> buf(sz);
+        file.read((char*)buf.data(), sz);
+        srcImage = imdecode(buf, flag);
+    }
+}
+
 
 void DSLR::on_resetButton_clicked()
 {
@@ -319,6 +353,7 @@ void DSLR::on_resetButton_clicked()
 
 void DSLR::on_connectButton_clicked()
 {
+    QIcon buttonIcon;
     if(dslrCamera.isCamera && dslrCamera.isCameraFile)
     {
         if(!dslrCamera.SetMagnification("1"))
@@ -330,8 +365,9 @@ void DSLR::on_connectButton_clicked()
         FrameMessage((dslrCamera.dslrMessage));
         if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
         {
-            QPixmap image("media/icons/tools-16x16/led-red.png");
-            ui->resetLedLabel->setPixmap(image);
+            changingButtonsPixmap.load("://media/icons/tools-512x512/connect.png");
+            buttonIcon.addPixmap(changingButtonsPixmap);
+            ui->connectButton->setIcon(buttonIcon);
         }
     }
     else
@@ -341,16 +377,19 @@ void DSLR::on_connectButton_clicked()
         FrameMessage((dslrCamera.dslrMessage));
         if(dslrCamera.isCamera && dslrCamera.isCameraFile)
         {
-            QPixmap image("media/icons/tools-16x16/led-green.png");
-            ui->resetLedLabel->setPixmap(image);
+            changingButtonsPixmap.load("://media/icons/tools-512x512/connect-on.png");
+            buttonIcon.addPixmap(changingButtonsPixmap);
+            ui->connectButton->setIcon(buttonIcon);
             GetCameraPreview();
         }
     }
+    ui->connectButton->setIconSize(buttonSize);
+    ui->connectButton->setFixedSize(buttonSize);
 }
 
 void DSLR::on_x1x10Button_clicked()
 {
-    QPixmap image("media/icons/tools-16x16/led-red.png");
+    QIcon buttonIcon;
     switch (magnification)
     {
     case 1:
@@ -361,10 +400,11 @@ void DSLR::on_x1x10Button_clicked()
             FrameMessage(dslrCamera.dslrMessage);
             return;
         }
-        image.load("media/icons/tools-16x16/led-green.png");
-        ui->x1x10LedLabel->setPixmap(image);
         GetCameraPreview();
         GetCameraPreview();
+        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->x1x10Button->setIcon(buttonIcon);
         break;
 /*
     // magnification X5 seems not to work
@@ -372,10 +412,11 @@ void DSLR::on_x1x10Button_clicked()
         magnification=5;
         if(!dslrCamera.SetMagnification("5"))
                 FrameMessage(dslrCamera.dslrMessage);
-        image.load("media/icons/tools-16x16/led-green.png");
-        ui->x1x10LedLabel->setPixmap(image);
         GetCameraPreview();
         GetCameraPreview();
+        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify-on.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->x1x10Button->setIcon(buttonIcon);
         break;
 */
     default:
@@ -386,19 +427,24 @@ void DSLR::on_x1x10Button_clicked()
             FrameMessage(dslrCamera.dslrMessage);
             return;
         }
-        ui->x1x10LedLabel->setPixmap(image);
         GetCameraPreview();
         GetCameraPreview();
+        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify.png");
+        buttonIcon.addPixmap(changingButtonsPixmap);
+        ui->x1x10Button->setIcon(buttonIcon);
         break;
     }
-}
+    ui->x1x10Button->setIconSize(buttonSize);
+    ui->x1x10Button->setFixedSize(buttonSize);}
 
 void DSLR::on_onButton_clicked()
 {
-    dslrCamera.ShootOn();
+    if(!dslrCamera.ShootOn())
+        FrameMessage(dslrCamera.dslrMessage);
 }
 
 void DSLR::on_offButton_clicked()
 {
-    dslrCamera.ShootRelease();
+    if(!dslrCamera.ShootRelease())
+        FrameMessage(dslrCamera.dslrMessage);
 }

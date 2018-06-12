@@ -70,8 +70,7 @@ FORMS += \
     numpad.ui
 
 RESOURCES += \
-    icons.qrc \
-    images.qrc
+    icons.qrc
 
 # Comment out if building for raspbian
 CONFIG += RUNONPC

@@ -197,5 +197,6 @@
         <file>media/icons/tools-512x512/search-on.png</file>
         <file>media/icons/tools-512x512/search-pressed.png</file>
         <file>media/icons/tools-512x512/shutdown-on.png</file>
+        <file>media/NightSky.png</file>
     </qresource>
 </RCC>

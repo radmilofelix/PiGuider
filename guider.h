@@ -54,7 +54,10 @@ public:
     bool slopeVertical;
     double timeToGuide;
     QElapsedTimer guideTimer;
+    QPixmap changingButtonsPixmap;
+    QSize buttonSize;
     void Flush(cv::VideoCapture& camera);
+    void LoadFromQrc(QString qrc, int flag);
     void DisplayData();
     void RefreshData();
     void LoadUnchanged();

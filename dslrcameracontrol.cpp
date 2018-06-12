@@ -22,10 +22,14 @@ DslrCameraControl::DslrCameraControl()
     isCamera=false;
     isCameraFile=false;
     fromCamera=false;
+    sourceFileName=new char(100);
+    captureFileExtension = new char(8);
 }
 
 DslrCameraControl::~DslrCameraControl()
 {
+    delete sourceFileName;
+    delete captureFileExtension;
 }
 
 void DslrCameraControl::CameraGrab()
@@ -127,7 +131,9 @@ int DslrCameraControl::CaptureCameraPreview()
         dslrMessage+=QString::number(retval);
         return 0;
     }
-    retval = gp_file_save(canonFile, "/run/shm/DSLR-SourceImage.jpg");
+    strcpy(sourceFileName,"/run/shm/DSLR-SourceImage.jpg");
+//    retval = gp_file_save(canonFile, "/run/shm/DSLR-SourceImage.jpg");
+    retval = gp_file_save(canonFile, sourceFileName);
     if (retval != GP_OK)
     {
         dslrMessage="Could not save camera preview.\nError code: ";
@@ -230,9 +236,20 @@ int DslrCameraControl::ShootRelease()
     return 1;
 }
 
+void DslrCameraControl::GetCaptureFileExtension(char *inputString)
+{
+    int i;
+    int dotPosition=strcspn(inputString,".");
+    int counter=0;
+    for(i=dotPosition; i<strlen(inputString); i++)
+    {
+        *(captureFileExtension+i-dotPosition)=*(inputString+i);
+        counter++;
+    }
+    *(captureFileExtension+counter)=0;
+}
 
-
-int DslrCameraControl::ShootAndCapture()
+int DslrCameraControl::ShootAndCapture(char *path, char *fileName, int exposureTime)
 {
     if(!isCamera && !isCameraFile)
     {
@@ -241,10 +258,11 @@ int DslrCameraControl::ShootAndCapture()
     }
     if(SetConfigValueString(canonCamera, "eosremoterelease", "Immediate", canonContext) < GP_OK)
         return 0;
-    sleep(3);
+    sleep(exposureTime);
     if(SetConfigValueString(canonCamera, "eosremoterelease", "Release Full", canonContext) < GP_OK)
         return 0;
-    camera_tether(canonCamera, canonContext,(char*)"/run/shm/srcDslr.cr2");
+    CameraTether(canonCamera, canonContext, path, fileName);
+    GetCaptureFileExtension(fileName);
     return 1;
 }
 
@@ -259,13 +277,17 @@ int DslrCameraControl::LookupWidget(CameraWidget *widget, const char *key, Camer
 }
 
 
-void DslrCameraControl::camera_tether(Camera *camera, GPContext *context,  char *fn)
+void DslrCameraControl::CameraTether(Camera *camera, GPContext *context,  char *destinationFolder, char *fileName)
 {
     int fd, retval;
 //    CameraFile *file;
     CameraEventType	evttype;
     CameraFilePath	*path;
     void	*evtdata;
+    char saveFile[500];
+//    strcpy (saveFile,"/run/shm/");
+        strcpy (saveFile,(const char*)destinationFolder);
+//        saveFile[strlen(destinationFolder)]=0;
 
     printf("Tethering...\n");
 
@@ -274,9 +296,8 @@ void DslrCameraControl::camera_tether(Camera *camera, GPContext *context,  char 
         retval = gp_camera_wait_for_event (camera, 1000, &evttype, &evtdata, context);
         if (retval != GP_OK)
             break;
-        char saveFile[500];
-        strcpy (saveFile,"/run/shm/");
-        switch (evttype) {
+        switch (evttype)
+        {
 
         case GP_EVENT_FILE_ADDED:
             path = (CameraFilePath*)evtdata;
@@ -290,6 +311,7 @@ void DslrCameraControl::camera_tether(Camera *camera, GPContext *context,  char 
             fd = open (saveFile, O_CREAT | O_WRONLY, 0644);
             retval = gp_file_new_from_fd(&canonFile, fd);
             printf("  Downloading %s...\n", path->name);
+            strcpy(fileName, path->name);
             retval = gp_camera_file_get(camera, path->folder, path->name,
                      GP_FILE_TYPE_NORMAL, canonFile, context);
 

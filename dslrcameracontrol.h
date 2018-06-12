@@ -19,6 +19,8 @@ public:
     Camera	*canonCamera;
     GPContext *canonContext;
     CameraFile *canonFile;
+    char *sourceFileName;
+    char *captureFileExtension;
 
     void CameraGrab();
     void CameraRelease();
@@ -30,14 +32,15 @@ public:
     int SetMagnification(char* magnification);
     int ShootOn();
     int ShootRelease();
-    int ShootAndCapture();
+    void GetCaptureFileExtension(char *inputString);
+    int ShootAndCapture(char *path, char *fileName, int exposureTime);
 
 private:
     int GetConfigValueString(Camera *camera, const char *key, char **str, GPContext *context);
     int SetConfigValueString (Camera *camera, const char *key, const char *val, GPContext *context);
     int CameraManualFocus (Camera *camera, int xx, GPContext *context);
     static int LookupWidget(CameraWidget*widget, const char *key, CameraWidget **child);
-    void camera_tether(Camera *camera, GPContext *context,  char *fn);
+    void CameraTether(Camera *camera, GPContext *context,  char *destinationFolder, char *fileName);
 //    static void capture_to_file(Camera *canon, GPContext *canoncontext, char *fn);
 //    static void errordumper(GPLogLevel level, const char *domain, const char *str, void *data);
 //    int canon_enable_capture (Camera *camera, int onoff, GPContext *context);

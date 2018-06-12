@@ -26,14 +26,14 @@ PiGuider::PiGuider(QWidget *parent) :
     //  Remove main window frame
     this->setWindowFlags( Qt::FramelessWindowHint );
     ui->setupUi(this);
-//    QPixmap image("media/NightSky.png");
-//    ui->mainImageLabel->setPixmap(image);
     dslr_status=false;
     guider_status=false;
     intervalometersoft_status=false;
     intervalometerhard_status=false;
+    buttonSize.setHeight(70);
+    buttonSize.setWidth(70);
 
-    QPixmap image("media/icons/tools-16x16/led-red.png");
+    QPixmap image("://media/icons/tools-16x16/led-red.png");
     ui->ledLabelGuider->setPixmap(image);
     ui->ledLabelDSLR->setPixmap(image);
     ui->ledLabelSoftIntervalometer->setPixmap(image);
@@ -60,26 +60,36 @@ void PiGuider::UpdateTime()
 
 void PiGuider::UpdateStatus()
 {
-    QPixmap ledred("media/icons/tools-16x16/led-red.png");
-    QPixmap ledgreen("media/icons/tools-16x16/led-green.png");
+    QPixmap ledred("://media/icons/tools-16x16/led-red.png");
+    QPixmap ledgreen("://media/icons/tools-16x16/led-green.png");
 
     if( dslr.enabled != dslr_status)
     {
         dslr_status=dslr.enabled;
         if(dslr.enabled)
+        {
             ui->ledLabelDSLR->setPixmap(ledgreen);
+            SetFocusButtonImage(true);
+        }
         else
+        {
             ui->ledLabelDSLR->setPixmap(ledred);
+            SetFocusButtonImage(false);
+        }
     }
 
     if( (guider.enabled || guider.refreshEnabled) != guider_status )
     {
         guider_status=(guider.enabled || guider.refreshEnabled);
         if(guider.enabled || guider.refreshEnabled)
+        {
             ui->ledLabelGuider->setPixmap(ledgreen);
+            SetGuiderButtonImage(true);
+        }
         else
         {
             ui->ledLabelGuider->setPixmap(ledred);
+            SetGuiderButtonImage(false);
         }
     }
 
@@ -89,11 +99,15 @@ void PiGuider::UpdateStatus()
         if(intervalometersoft.enabled)
         {
             ui->ledLabelSoftIntervalometer->setPixmap(ledgreen);
+            SetSoftIntervlometerButtonImage(true);
             intervalometerhard.enabled=false;
             intervalometerhard.UpdateStatus();
         }
         else
+        {
             ui->ledLabelSoftIntervalometer->setPixmap(ledred);
+            SetSoftIntervlometerButtonImage(false);
+        }
     }
     if( intervalometerhard.enabled != intervalometerhard_status)
     {
@@ -101,12 +115,17 @@ void PiGuider::UpdateStatus()
         if(intervalometerhard.enabled)
         {
             ui->ledLabelHardIntervalometer->setPixmap(ledgreen);
+            SetHardIntervlometerButtonImage(true);
             intervalometersoft.enabled=false;
             intervalometersoft.updateStatus();
             ui->ledLabelSoftIntervalometer->setPixmap(ledred);
+            SetSoftIntervlometerButtonImage(false);
         }
         else
+        {
             ui->ledLabelHardIntervalometer->setPixmap(ledred);
+            SetHardIntervlometerButtonImage(false);
+        }
     }
 
     if(guider.enabled || guider.refreshEnabled)
@@ -122,7 +141,8 @@ void PiGuider::UpdateStatus()
     if( intervalometerhard.enabled)
         intervalometerhard.UpdateStatus();
 
-
+    if(dslr.enabled)
+        dslr.RefreshData();
 
 
 }
@@ -193,4 +213,56 @@ void PiGuider::on_intervalometerSoftButton_clicked()
 void PiGuider::on_intervalometerHardButton_clicked()
 {
     intervalometerhard.show();
+}
+
+void PiGuider::SetGuiderButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/sections-512x512/Guide-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/sections-512x512/Guide.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->guideButton->setIcon(buttonIcon);
+    ui->guideButton->setIconSize(buttonSize);
+    ui->guideButton->setFixedSize(buttonSize);
+}
+
+void PiGuider::SetFocusButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/sections-512x512/ManualFocus-pressed.png");
+    else
+        changingButtonsPixmap.load("://media/icons/sections-512x512/ManualFocus.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->focusButton->setIcon(buttonIcon);
+    ui->focusButton->setIconSize(buttonSize);
+    ui->focusButton->setFixedSize(buttonSize);
+}
+
+void PiGuider::SetHardIntervlometerButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/sections-512x512/HardIntervalometer.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->intervalometerHardButton->setIcon(buttonIcon);
+    ui->intervalometerHardButton->setIconSize(buttonSize);
+    ui->intervalometerHardButton->setFixedSize(buttonSize);
+}
+
+void PiGuider::SetSoftIntervlometerButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/sections-512x512/SoftIntervalometer-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/sections-512x512/SoftIntervalometer.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->intervalometerSoftButton->setIcon(buttonIcon);
+    ui->intervalometerSoftButton->setIconSize(buttonSize);
+    ui->intervalometerSoftButton->setFixedSize(buttonSize);
 }

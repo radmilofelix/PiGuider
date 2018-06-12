@@ -41,12 +41,16 @@ public:
     DisplayGeometry dgeometry;
     QPoint targetPosition;
     QString dslrMessage;
+    QPixmap changingButtonsPixmap;
+    QSize buttonSize;
     void GammaCorrection(const cv::Mat &img, const double gamma_, cv::Mat *result);
     void NewCapture(bool fromCamera);
     void FrameMessage(QString message);
     void MoveCameraFocus(int value);
     void GetCameraPreview();
     void ComputeEosZoomOrigin();
+    void RefreshData();
+    void LoadFromQrc(QString qrc, int flag);
 
 private slots:
     void Mouse_current_pos();
@@ -70,7 +74,7 @@ private slots:
     void on_focusPlus3Button_clicked();
     void on_resetButton_clicked();
     void on_connectButton_clicked();
-    void on_x1x10Button_clicked(); ///---///
+    void on_x1x10Button_clicked();
 
     void on_onButton_clicked();
 

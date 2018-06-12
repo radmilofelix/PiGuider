@@ -97,9 +97,12 @@ public:
     long exposurePeriodCount2;
 
     PinControlPi pincontrol;
-    QPixmap ledImage;
+//    QPixmap ledImage;
     QElapsedTimer timer;
     long oldTime;
+    QPixmap changingButtonsPixmap;
+    QSize buttonSize;
+
     void Init();
     void UpdateStatus();
     void ReadValues();

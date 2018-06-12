@@ -439,8 +439,8 @@
     <rect>
      <x>680</x>
      <y>360</y>
-     <width>100</width>
-     <height>100</height>
+     <width>70</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -465,8 +465,8 @@
     <rect>
      <x>690</x>
      <y>80</y>
-     <width>100</width>
-     <height>100</height>
+     <width>70</width>
+     <height>70</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -490,38 +490,6 @@
      <width>100</width>
      <height>100</height>
     </size>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ledLabel">
-   <property name="geometry">
-    <rect>
-     <x>760</x>
-     <y>10</y>
-     <width>32</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="ledLabel_2">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>32</width>
-     <height>32</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true"/>
-   </property>
-   <property name="text">
-    <string/>
    </property>
   </widget>
  </widget>

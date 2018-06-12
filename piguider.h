@@ -19,6 +19,8 @@ class PiGuider : public QMainWindow
 public:
     explicit PiGuider(QWidget *parent = 0);
     ~PiGuider();
+    QPixmap changingButtonsPixmap;
+    QSize buttonSize;
 
 private slots:
     void UpdateTime();
@@ -28,7 +30,10 @@ private slots:
     void on_pushButton_clicked();
     void on_intervalometerSoftButton_clicked();
     void on_intervalometerHardButton_clicked();
-
+    void SetGuiderButtonImage(bool on);
+    void SetFocusButtonImage(bool on);
+    void SetHardIntervlometerButtonImage(bool on);
+    void SetSoftIntervlometerButtonImage(bool on);
 private:
     Ui::PiGuider *ui;
     QTimer *timerMain;

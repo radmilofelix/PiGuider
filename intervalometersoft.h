@@ -15,8 +15,11 @@ public:
     explicit IntervalometerSoft(QWidget *parent = 0);
     ~IntervalometerSoft();
     bool enabled;
-    void setLedColour(std::string filename);
+    QPixmap changingButtonsPixmap;
+    QSize buttonSize;
+//    void setLedColour(std::string filename);
     void updateStatus();
+    void SetEnableButtonImage(bool on);
 
 private slots:
     void on_closeButton_clicked();
