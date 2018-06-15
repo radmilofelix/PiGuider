@@ -36,7 +36,8 @@ SOURCES += \
     wiringpiss.cpp \
     displaygeometry.cpp \
     numpad.cpp \
-    dslrcameracontrol.cpp
+    dslrcameracontrol.cpp \
+    loadsaveandsettings.cpp
 
 HEADERS += \
     piguider.h \
@@ -59,7 +60,8 @@ HEADERS += \
     capture-07.h \
     displaygeometry.h \
     numpad.h \
-    dslrcameracontrol.h
+    dslrcameracontrol.h \
+    loadsaveandsettings.h
 
 FORMS += \
     piguider.ui \
@@ -67,7 +69,8 @@ FORMS += \
     dslr.ui \
     intervalometerhard.ui \
     intervalometersoft.ui \
-    numpad.ui
+    numpad.ui \
+    loadsaveandsettings.ui
 
 RESOURCES += \
     icons.qrc

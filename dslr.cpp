@@ -112,8 +112,10 @@ void DSLR::NewCapture(bool fromCamera)
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     cvtColor(myImage, myImage, CV_BGR2RGB);
     ui->dslrImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
-    ui->labelMessages->setText(" DSLR Focus Aid ");
-    ui->labelMessages->adjustSize();
+//    ui->labelMessages->setText(" DSLR Focus Aid ");
+//    ui->labelMessages->adjustSize();
+    if(fromCamera)
+        FrameMessage("DSLR Focus Aid");
     this->repaint();
 }
 

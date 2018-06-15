@@ -2,6 +2,7 @@
 #define INTERVALOMETERSOFT_H
 
 #include <QWidget>
+#include "loadsaveandsettings.h"
 
 namespace Ui {
 class IntervalometerSoft;
@@ -17,6 +18,7 @@ public:
     bool enabled;
     QPixmap changingButtonsPixmap;
     QSize buttonSize;
+    LoadSaveAndSettings lsas;
 //    void setLedColour(std::string filename);
     void updateStatus();
     void SetEnableButtonImage(bool on);

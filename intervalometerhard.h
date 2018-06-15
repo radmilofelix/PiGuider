@@ -4,6 +4,8 @@
 #include <QWidget>
 #include <QElapsedTimer>
 #include "pincontrolpi.h"
+#include "loadsaveandsettings.h"
+
 
 #define ITERATIONS1 25
 #define JOBDELAYHOURS1 1
@@ -95,7 +97,7 @@ public:
     long restPeriodCount2;
     long focusPeriodCount2;
     long exposurePeriodCount2;
-
+    LoadSaveAndSettings lsas;
     PinControlPi pincontrol;
 //    QPixmap ledImage;
     QElapsedTimer timer;

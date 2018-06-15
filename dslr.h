@@ -13,6 +13,7 @@
 #include <opencv2/imgproc/imgproc.hpp>
 #include <opencv2/features2d/features2d.hpp>
 #include "displaygeometry.h"
+#include "loadsaveandsettings.h"
 
 #define EOSZOOMSCALEDEFAULT 6
 
@@ -43,6 +44,7 @@ public:
     QString dslrMessage;
     QPixmap changingButtonsPixmap;
     QSize buttonSize;
+    LoadSaveAndSettings lsas;
     void GammaCorrection(const cv::Mat &img, const double gamma_, cv::Mat *result);
     void NewCapture(bool fromCamera);
     void FrameMessage(QString message);

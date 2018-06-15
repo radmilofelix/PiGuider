@@ -7,6 +7,7 @@
 #include "dslr.h"
 #include "intervalometerhard.h"
 #include "intervalometersoft.h"
+#include "loadsaveandsettings.h"
 
 namespace Ui {
 class PiGuider;
@@ -37,6 +38,7 @@ private slots:
 private:
     Ui::PiGuider *ui;
     QTimer *timerMain;
+    LoadSaveAndSettings lsas;
     DSLR dslr;
     Guider guider;
     IntervalometerSoft intervalometersoft;

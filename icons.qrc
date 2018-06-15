@@ -198,5 +198,6 @@
         <file>media/icons/tools-512x512/search-pressed.png</file>
         <file>media/icons/tools-512x512/shutdown-on.png</file>
         <file>media/NightSky.png</file>
+        <file>media/icons/sections-512x512/ManualFocus-on.png</file>
     </qresource>
 </RCC>

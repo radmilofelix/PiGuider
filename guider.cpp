@@ -29,27 +29,36 @@ Guider::Guider(QWidget *parent) :
     connect(ui->guiderImageLabel, SIGNAL(Mouse_Pos()), this, SLOT(Mouse_current_pos()));
     connect(ui->guiderImageLabel, SIGNAL(Mouse_Pressed()), this, SLOT(Mouse_pressed()));
     connect(ui->guiderImageLabel, SIGNAL(Mouse_Left()), this, SLOT(Mouse_left()));
+    lsas.ReadData("settings.cfg","", true);
+    lsas.ReadData("params.cfg", "params-default.cfg",false);
+    lsas.DisplayData();
     buttonSize.setHeight(50);
     buttonSize.setWidth(50);
     enabled=false;
     guideStarSelected=false;
     targetSelected=false;
     pi=3.14159265358979323846;
-    targetPosition.setX(478/2);
-    targetPosition.setY(478/2);
+    targetPosition.setX(lsas.setRelativeWidth.value/2);
+    targetPosition.setY(lsas.setRelativeHeight.value/2);
+    triggerGuide=lsas.setTriggerGuide.value;
     starsDetected=0;
     centerCoefficient=1;
     pincontrol.AscensionRelease();
     pincontrol.DeclinationRelease();
     refreshEnabled=false;
-    calibrationStatus=0;
+    calibrationStatus=lsas.paramCalibrationStatus.value;
     interfaceWindowOpen=false;
-    slopeVertical=false;
-    raSlope=0;
-    arcsecPerPixel=5;
-    normalTrackingSpeed=15; // arcsec per second (Earth angular rotation speed)
-    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
-    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
+    if(lsas.paramSlopeVertical.value)
+        slopeVertical=true;
+    else
+        slopeVertical=false;
+    raSlope=lsas.paramRaSlope.value;
+    arcsecPerPixel=lsas.paramArcsecPerPixel.value;
+    normalTrackingSpeed=lsas.setNormalTrackingSpeed.value; // arcsec per second (Earth angular rotation speed)
+    acceleratedTrackingSpeed=normalTrackingSpeed*(1+lsas.setGuidingSpeed.value); // = 22.5 arcsec/sec (measured on SW-SA)
+    deceleratedTrackingSpeed=normalTrackingSpeed*(1-lsas.setGuidingSpeed.value); // = 7.5 arcsec/sec (measured on SW-SA)
+//    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
+//    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
 
     raDrift=0;
     declDrift=0;
@@ -82,7 +91,7 @@ Guider::Guider(QWidget *parent) :
     ui->horizontalZoomSlider->setRange(10, 1000);
     ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
     ui->horizontalZoomSlider->setVisible(true);
-
+    DisplayData();
 }
 
 Guider::~Guider()
@@ -928,6 +937,12 @@ void Guider::Calibration()
             double resolutionDistance=sqrt((resolutionComputeX-dgeometry.sourceStarX) * (resolutionComputeX-dgeometry.sourceStarX) \
                         + (resolutionComputeY-dgeometry.sourceStarY) * (resolutionComputeY-dgeometry.sourceStarY));
             arcsecPerPixel=guideTimer.elapsed()*normalTrackingSpeed/resolutionDistance/1000;
+            lsas.paramArcsecPerPixel.value=arcsecPerPixel;
+            lsas.paramRaSlope.value=raSlope;
+            lsas.paramSlopeVertical.value=slopeVertical;
+            lsas.paramCalibrationStatus.value=calibrationStatus;
+            lsas.paramAlpha.value=alpha;
+            lsas.SaveParams();
             QString rezMessage="C A L I B R A T I O N\nResolution: ";
             rezMessage+=QString::number((double)arcsecPerPixel);
             rezMessage+=" arcsec/pixel\nTurn on tracking!\nPress calibration buton when done.";
@@ -958,7 +973,7 @@ void Guider::DoGuide()
     double reductionCoefficient=0.8;
     if(calibrationStatus || !targetSelected)
         return;
-    if(raDriftArcsec > TRIGGERGUIDE)
+    if(raDriftArcsec > triggerGuide)
     {
         timeToGuide=raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
         on_normalButton_clicked();
@@ -966,7 +981,7 @@ void Guider::DoGuide()
             on_fastButton_clicked();
         guideTimer.start();
     }
-    if(raDriftArcsec < -TRIGGERGUIDE)
+    if(raDriftArcsec < -triggerGuide)
     {
         timeToGuide=-raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
         on_normalButton_clicked();

@@ -36,6 +36,7 @@ IntervalometerHard::~IntervalometerHard()
 
 void IntervalometerHard::Init()
 {
+/*
     iterations1=1;
     iterationsCount1=iterations1;
     jobDelayHours1=0;
@@ -90,6 +91,40 @@ void IntervalometerHard::Init()
     exposureSeconds2=5;
     exposureSecondsCount2=exposureSeconds2;
     HmsToPeriods();
+*/
+
+
+    lsas.ReadData("params.cfg" ,"params-default.cfg",false);
+    iterations1=lsas.hwIterations1.value;
+    iterations2=lsas.hwIterations2.value;
+
+    jobDelayPeriod1=lsas.hwJobDelayPeriod1.value;
+    restPeriod1=lsas.hwRestPeriod1.value;
+    focusPeriod1=lsas.hwFocusPeriod1.value;
+    exposurePeriod1=lsas.hwExposurePeriod1.value;
+
+    jobDelayPeriod2=lsas.hwJobDelayPeriod2.value;
+    restPeriod2=lsas.hwRestPeriod2.value;
+    focusPeriod2=lsas.hwFocusPeriod2.value;
+    exposurePeriod2=lsas.hwExposurePeriod2.value;
+
+    iterationsCount1=iterations1;
+    iterationsCount2=iterations2;
+
+    jobDelayPeriodCount1=jobDelayPeriod1;
+    restPeriodCount1=restPeriod1;
+    focusPeriodCount1=focusPeriod1;
+    exposurePeriodCount1=exposurePeriod1;
+
+    jobDelayPeriodCount2=jobDelayPeriod2;
+    restPeriodCount2=restPeriod2;
+    focusPeriodCount2=focusPeriod2;
+    exposurePeriodCount2=exposurePeriod2;
+
+    PeriodsToHMS();
+
+
+
 }
 
 void IntervalometerHard::UpdateStatus()
@@ -350,6 +385,8 @@ void IntervalometerHard::ValidateInput()
     exposureHoursCount2=exposureHours2;
     exposureMinutesCount2=exposureMinutes2;
     exposureSecondsCount2=exposureSeconds2;
+    lsas.hwIterations1.value=iterations1;
+    lsas.hwIterations2.value=iterations2;
 }
 
 void IntervalometerHard::DisplayCounterValues()
@@ -434,6 +471,7 @@ void IntervalometerHard::on_enableButton_clicked()
     if(enabled)
     {
         enabled=false;
+        editEnabled=true;
         changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
         buttonIcon.addPixmap(changingButtonsPixmap);
         ui->enableButton->setIcon(buttonIcon);
@@ -441,11 +479,13 @@ void IntervalometerHard::on_enableButton_clicked()
     else
     {
         enabled=true;
+        editEnabled=false;
         changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
         buttonIcon.addPixmap(changingButtonsPixmap);
         ui->enableButton->setIcon(buttonIcon);
         if(intervalometer1Enabled || intervalometer2Enabled)
         {
+            lsas.SaveParams();
             oldTime=0;
             timer.start();
         }
@@ -502,6 +542,17 @@ void IntervalometerHard::HmsToPeriods()
     restPeriodCount2 = HmsToLong(restHoursCount2, restMinutesCount2, restSecondsCount2);
     focusPeriodCount2= HmsToLong(focusHoursCount2, focusMinutesCount2, focusSecondsCount2);
     exposurePeriodCount2 = HmsToLong(exposureHoursCount2, exposureMinutesCount2, exposureSecondsCount2);
+
+    lsas.hwJobDelayPeriod1.value=jobDelayPeriod1;
+    lsas.hwRestPeriod1.value=restPeriod1;
+    lsas.hwFocusPeriod1.value=focusPeriod1;
+    lsas.hwExposurePeriod1.value=exposurePeriod1;
+
+    lsas.hwJobDelayPeriod2.value=jobDelayPeriod2;
+    lsas.hwRestPeriod2.value=restPeriod2;
+    lsas.hwFocusPeriod2.value=focusPeriod2;
+    lsas.hwExposurePeriod2.value=exposurePeriod2;
+
 }
 
 void IntervalometerHard::PeriodsToHMS()
@@ -835,6 +886,8 @@ void IntervalometerHard::on_focusHoursLineEdit1_cursorPositionChanged(int arg1, 
         editEnabled=false;
         NumPadCaller(FOCUSHOURS1);
     }
+    else
+        ui->focusHoursLineEdit1->disconnect();
 }
 
 void IntervalometerHard::on_focusMinutesLineEdit1_cursorPositionChanged(int arg1, int arg2)

@@ -156,6 +156,12 @@ void PiGuider::on_exitButton_clicked()
 
 void PiGuider::on_pushButton_clicked()
 {
+    lsas.ReadData("settings.cfg","",true); // configuration
+    lsas.ReadData("params.cfg","params-default.cfg",false);
+//    lsas.DisplayData();
+//    lsas.MakeNegativeParamsZero();
+    lsas.DisplayData();
+//    lsas.SaveParams();
 
 #ifndef RUNONPC
 
@@ -232,7 +238,7 @@ void PiGuider::SetFocusButtonImage(bool on)
 {
     QIcon buttonIcon;
     if(on)
-        changingButtonsPixmap.load("://media/icons/sections-512x512/ManualFocus-pressed.png");
+        changingButtonsPixmap.load("://media/icons/sections-512x512/ManualFocus-on.png");
     else
         changingButtonsPixmap.load("://media/icons/sections-512x512/ManualFocus.png");
     buttonIcon.addPixmap(changingButtonsPixmap);

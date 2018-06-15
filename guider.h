@@ -15,8 +15,8 @@
 
 #include "pincontrolpi.h"
 #include "displaygeometry.h"
+#include "loadsaveandsettings.h"
 
-#define TRIGGERGUIDE 2 // arcseconds - if drift is under this value guiding will not be triggered
 
 namespace Ui {
 class Guider;
@@ -36,6 +36,7 @@ public:
     bool refreshEnabled;
     bool interfaceWindowOpen;
     int calibrationStatus;
+    int triggerGuide; // arcseconds - if drift is under this value guiding will not be triggered
     cv::Mat myImage, srcImage, processImage, im;
     DisplayGeometry dgeometry;
     QPoint targetPosition;
@@ -43,6 +44,7 @@ public:
     size_t starsDetected;
     float centerCoefficient;
     PinControlPi pincontrol;
+    LoadSaveAndSettings lsas;
     double pi;
     double leftStarX, leftStarY, resolutionComputeX, resolutionComputeY;
     double arcsecPerPixel;
