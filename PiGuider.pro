@@ -50,18 +50,18 @@ HEADERS += \
     test.h \
     pincontrolpi.h \
     wiringpiss.h \
-    capture-01.h \
-    capture-00.h \
-    capture-02.h \
-    capture-03.h \
-    capture-04.h \
-    capture-05.h \
-    capture-06.h \
-    capture-07.h \
     displaygeometry.h \
     numpad.h \
     dslrcameracontrol.h \
-    loadsaveandsettings.h
+    loadsaveandsettings.h \
+    capture-00-Miscellaneous.h \
+    capture-01-Arcturus-CNE-CWC3.h \
+    capture-02-Arcturus-CNE-HWC1.h \
+    capture-03-Arcturus-Trust-16429.h \
+    capture-04-Jupiter-CNE-HWC1.h \
+    capture-05-Jupiter-Trust-16429.h \
+    capture-06-Polaris-CNE-CWC3.h \
+    capture-07-Polaris-Trust-16429.h
 
 FORMS += \
     piguider.ui \

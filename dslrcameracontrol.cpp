@@ -266,6 +266,235 @@ int DslrCameraControl::ShootAndCapture(char *path, char *fileName, int exposureT
     return 1;
 }
 
+int DslrCameraControl::Connect()
+{
+    if(!isCamera || !isCameraFile)
+    {
+        KillGvfsdProcess();
+        CameraGrab();
+        if(isCamera && isCameraFile)
+            return 1;
+    }
+    return 0;
+}
+
+int DslrCameraControl::Disconnect()
+{
+    if(isCamera && isCameraFile)
+    {
+        if(!SetMagnification("1"))
+            return 0;
+        CameraRelease();
+        if(!isCamera && !isCameraFile)
+            return 1;
+    }
+    return 0;
+}
+
+int DslrCameraControl::GetCameraListItem(CameraList *list, int selector, const char** foundItem, QString itemNameForErrorMessage)
+{
+    if(!isCamera && !isCameraFile)
+    {
+        dslrMessage="DSLR Camera not connected!";
+        return 0;
+    }
+
+    int ret=gp_list_get_name(list, selector, foundItem);
+    if( ret < GP_OK )
+    {
+        dslrMessage="Could not get " +itemNameForErrorMessage + " from the camera list.";
+        return 0;
+    }
+    return 1;
+}
+
+int DslrCameraControl::GetCameraLastFile(Camera *camera, GPContext *context, const char *folder)
+{
+    if(!isCamera && !isCameraFile)
+    {
+        dslrMessage="DSLR Camera not connected!";
+        return 0;
+    }
+    int ret;
+    CameraList *list = 0;
+    ret=gp_list_new(&list);
+    ret=gp_filesystem_list_files(camera->fs, folder, list, context);
+//    ret=gp_camera_folder_list_files(camera, folder, list, context);
+    int listDim=gp_list_count(list);
+    if(listDim)
+    {
+        const char* fileName=0;
+        gp_list_get_name(list, listDim-1, &fileName);
+        lastCameraFile=fileName;
+    }
+    else
+    {
+        lastCameraFile="";
+        dslrMessage="The camera folder is empty!";
+        lastFileNumber=0;
+    }
+    return 1;
+    gp_list_free(list);
+}
+
+int DslrCameraControl::SetCameraLastFileNumber()
+{
+    if(!GetCameraFolder(canonCamera, canonContext,  "/", "ROOT", &rootCameraFolder))
+        return 0;
+    if(!GetCameraFolder(canonCamera, canonContext,  rootCameraFolder.toLatin1(), "DCIM", &dcimCameraFolder))
+        return 0;
+    if(!GetCameraFolder(canonCamera, canonContext,  dcimCameraFolder.toLatin1(), "LAST", &currentCameraFolder))
+            return 0;
+    if(!GetCameraLastFile(canonCamera, canonContext, currentCameraFolder.toLatin1()))
+       return 0;
+    if(lastCameraFile.length()==0)
+    {
+        lastFileNumber=0;
+        return 1;
+    }
+    int lastPoint = lastCameraFile.lastIndexOf(".");
+    QString lastFilenameNoExtension = lastCameraFile.left(lastPoint);
+    lastFilenameNoExtension = lastFilenameNoExtension.right(4);
+    lastFileNumber=lastFilenameNoExtension.toInt();
+    return 1;
+}
+
+int DslrCameraControl::GetCameraFolder(Camera *camera, GPContext *context, const char *folderPrefix, QString selection, QString *cameraFolder)
+{
+    if(!isCamera && !isCameraFile)
+    {
+        dslrMessage="DSLR Camera not connected!";
+        return 0;
+    }
+    int ret, selector;
+    CameraList *list = 0;
+    const char* folderName=0;
+    ret=gp_list_new(&list);
+
+//    ret=gp_camera_folder_list_folders(camera, folder, list, context);
+    ret=gp_filesystem_list_folders(camera->fs, folderPrefix, list, context);
+    if( ret < GP_OK )
+    {
+        dslrMessage="Could not get folder list.";
+        {
+            return 0;
+            gp_list_free(list);
+        }
+    }
+    int listDim=gp_list_count(list);
+    if(listDim==0)
+    {
+        dslrMessage="Folder list is empty (no subfolders.";
+        {
+            return 0;
+            gp_list_free(list);
+        }
+    }
+    *cameraFolder = folderPrefix;
+    if(selection=="ROOT")
+    {
+        if(!GetCameraListItem(list, 0, &folderName, "ROOT"))
+        {
+            return 0;
+            gp_list_free(list);
+        }
+    }
+    else
+    {
+        if(selection=="DCIM")
+        {
+            if(listDim>1)
+            {
+                bool folderFound=false;
+                for(int i=0; i<listDim; i++)
+                {
+                    if(!GetCameraListItem(list, i, &folderName, "DCIM"))
+                    {
+                        return 0;
+                        gp_list_free(list);
+                    }
+                    if( !strcmp(folderName, "DCIM") )
+                    {
+                        *cameraFolder += "/";
+                        folderFound=true;
+                        break;
+                    }
+                }
+                if(!folderFound)
+                {
+                    dslrMessage="DCIM folder not found!";
+                    gp_list_free(list);
+                    return 0;
+                }
+            }
+            else
+            {
+                if(!GetCameraListItem(list, 0, &folderName, "DCIM"))
+                {
+                    return 0;
+                    gp_list_free(list);
+                }
+                if( !strcmp(folderName, "DCIM") )
+                {
+                    *cameraFolder += "/";
+                }
+                else
+                {
+                    dslrMessage="DCIM folder not found!";
+                    gp_list_free(list);
+                    return 0;
+                }
+
+            }
+        }
+        else
+        {
+            if(selection=="LAST")
+            {
+                if(listDim>0)
+                {
+                    bool folderFound=false;
+                    QString folder0, folder1;
+                    for(int i=0; i<listDim; i++)
+                    {
+                        if(!GetCameraListItem(list, i, &folderName, "LAST"))
+                        {
+                            return 0;
+                            gp_list_free(list);
+                        }
+                        else
+                            folderFound=true;
+                        if(i==0)
+                            folder0=folderName;
+                        folder1=folderName;
+                        if( folder1 > folder0 )
+                        {
+                            folder0=folder1;
+                        }
+                    }
+                    if(!folderFound)
+                    {
+                        dslrMessage="Last camera folder not found!";
+                        gp_list_free(list);
+                        return 0;
+                    }
+                    else
+                    {
+                        *cameraFolder += "/";
+                        *cameraFolder += folder0;
+                        gp_list_free(list);
+                        return 1;
+                    }
+                }
+            }
+        }
+    }
+    *cameraFolder += folderName;
+    gp_list_free(list);
+    return 1;
+}
+
+
 
 int DslrCameraControl::LookupWidget(CameraWidget *widget, const char *key, CameraWidget **child)
 {
@@ -275,6 +504,92 @@ int DslrCameraControl::LookupWidget(CameraWidget *widget, const char *key, Camer
         ret = gp_widget_get_child_by_label (widget, key, child);
     return ret;
 }
+
+
+int DslrCameraControl::SetCaptureTarget(Camera *canon, GPContext *canoncontext, char* option)
+{ // For Canons, option will be "Memory card" for setting capture to SD card or
+    // "Internal RAM" for setting capture to RAM. Keep capital/small letters as shown here!
+    int retval;
+    CameraWidget *rootconfig;
+    CameraWidget *actualrootconfig;
+    if( retval = gp_camera_get_config(canon, &rootconfig, canoncontext) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get camera configuration.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    actualrootconfig = rootconfig;
+    CameraWidget *child;
+    if( retval = gp_widget_get_child_by_name(rootconfig, "main", &child) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get main widget.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    rootconfig = child;
+    if( retval = gp_widget_get_child_by_name(rootconfig, "settings", &child) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get settings widget.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    rootconfig = child;
+    if(retval = gp_widget_get_child_by_name(rootconfig, "capturetarget", &child) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get capturetarget widget.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    CameraWidget *capture = child;
+
+/*  ============================ These calls are unnecessary ===========================
+    const char *widgetinfo;
+    if(gp_widget_get_name(capture, &widgetinfo) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get widget name.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    const char *widgetlabel;
+    if(gp_widget_get_label(capture, &widgetlabel) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get widget label.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    int widgetid;
+    if(gp_widget_get_id(capture, &widgetid) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get widget ID.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    CameraWidgetType widgettype;
+    if(gp_widget_get_type(capture, &widgettype) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not get widget type.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+  ======================================================================================
+*/
+
+    if(retval = gp_widget_set_value(capture, option) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not set widget value.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    if(retval = gp_camera_set_config(canon, actualrootconfig, canoncontext) < GP_OK)
+    {
+        dslrMessage+="SetCaptureTarget:\nCould not set camera configuration.\nError code: ";
+        dslrMessage+=QString::number(retval);
+        return 0;
+    }
+    return 1;
+}
+
+
 
 
 void DslrCameraControl::CameraTether(Camera *camera, GPContext *context,  char *destinationFolder, char *fileName)
@@ -835,53 +1150,6 @@ static void DslrCameraControl::errordumper(GPLogLevel level, const char *domain,
 // This seems to have no effect on where images go
 
 
-
-/*
-void DslrCameraControl::set_capturetarget(Camera *canon, GPContext *canoncontext)
-{
-    int retval;
-    printf("Get root config.\n");
-    CameraWidget *rootconfig; // okay, not really
-    CameraWidget *actualrootconfig;
-    retval = gp_camera_get_config(canon, &rootconfig, canoncontext);
-    actualrootconfig = rootconfig;
-    printf("  Retval: %d\n", retval);
-    printf("Get main config.\n");
-    CameraWidget *child;
-    retval = gp_widget_get_child_by_name(rootconfig, "main", &child);
-    printf("  Retval: %d\n", retval);
-    printf("Get settings config.\n");
-    rootconfig = child;
-    retval = gp_widget_get_child_by_name(rootconfig, "settings", &child);
-    printf("  Retval: %d\n", retval);
-    printf("Get capturetarget.\n");
-    rootconfig = child;
-    retval = gp_widget_get_child_by_name(rootconfig, "capturetarget", &child);
-    printf("  Retval: %d\n", retval);
-    CameraWidget *capture = child;
-    const char *widgetinfo;
-    gp_widget_get_name(capture, &widgetinfo);
-    printf("config name: %s\n", widgetinfo );
-    const char *widgetlabel;
-    gp_widget_get_label(capture, &widgetlabel);
-    printf("config label: %s\n", widgetlabel);
-    int widgetid;
-    gp_widget_get_id(capture, &widgetid);
-    printf("config id: %d\n", widgetid);
-    CameraWidgetType widgettype;
-    gp_widget_get_type(capture, &widgettype);
-    printf("config type: %d == %d \n", widgettype, GP_WIDGET_RADIO);
-    printf("Set value.\n");
-    // capture to ram should be 0, although I think the filename also plays into
-    // it
-    int one=1;
-    retval = gp_widget_set_value(capture, &one);
-    printf("  Retval: %d\n", retval);
-    printf("Enabling capture to CF.\n");
-    retval = gp_camera_set_config(canon, actualrootconfig, canoncontext);
-    printf("  Retval: %d\n", retval);
-}
-*/
 
 /*
 void DslrCameraControl::capture_to_file(Camera *canon, GPContext *canoncontext, char *fn)

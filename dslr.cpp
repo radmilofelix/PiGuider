@@ -145,24 +145,16 @@ void DSLR::on_closeButton_clicked()
 
 void DSLR::on_enableButton_clicked()
 {
-    QIcon buttonIcon;
     if(enabled)
     {
         enabled=false;
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->enableButton->setIcon(buttonIcon);
+        SetEnableButtonImage(false);
     }
     else
     {
         enabled=true;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->enableButton->setIcon(buttonIcon);
+        SetEnableButtonImage(true);
     }
-    ui->enableButton->setIconSize(buttonSize);
-    ui->enableButton->setFixedSize(buttonSize);
 }
 
 void DSLR::on_CaptureImage_clicked()
@@ -341,6 +333,45 @@ void DSLR::LoadFromQrc(QString qrc, int flag)
     }
 }
 
+void DSLR::SetEnableButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->enableButton->setIcon(buttonIcon);
+    ui->enableButton->setIconSize(buttonSize);
+    ui->enableButton->setFixedSize(buttonSize);
+}
+
+void DSLR::SetConnectButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/connect-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/connect.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->connectButton->setIcon(buttonIcon);
+    ui->connectButton->setIconSize(buttonSize);
+    ui->connectButton->setFixedSize(buttonSize);
+}
+
+void DSLR::SetX1X10ButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->x1x10Button->setIcon(buttonIcon);
+    ui->x1x10Button->setIconSize(buttonSize);
+    ui->x1x10Button->setFixedSize(buttonSize);
+}
+
 
 void DSLR::on_resetButton_clicked()
 {
@@ -355,43 +386,36 @@ void DSLR::on_resetButton_clicked()
 
 void DSLR::on_connectButton_clicked()
 {
-    QIcon buttonIcon;
     if(dslrCamera.isCamera && dslrCamera.isCameraFile)
     {
-        if(!dslrCamera.SetMagnification("1"))
+        if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Memory card"))
+            FrameMessage(dslrCamera.dslrMessage);
+        if(!dslrCamera.Disconnect())
         {
             FrameMessage(dslrCamera.dslrMessage);
             return;
         }
-        dslrCamera.CameraRelease();
         FrameMessage((dslrCamera.dslrMessage));
-        if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
-        {
-            changingButtonsPixmap.load("://media/icons/tools-512x512/connect.png");
-            buttonIcon.addPixmap(changingButtonsPixmap);
-            ui->connectButton->setIcon(buttonIcon);
-        }
+        SetConnectButtonImage(false);
     }
     else
     {
-        dslrCamera.KillGvfsdProcess();
-        dslrCamera.CameraGrab();
-        FrameMessage((dslrCamera.dslrMessage));
-        if(dslrCamera.isCamera && dslrCamera.isCameraFile)
+        if(!dslrCamera.Connect())
         {
-            changingButtonsPixmap.load("://media/icons/tools-512x512/connect-on.png");
-            buttonIcon.addPixmap(changingButtonsPixmap);
-            ui->connectButton->setIcon(buttonIcon);
-            GetCameraPreview();
+            FrameMessage(dslrCamera.dslrMessage);
+            return;
         }
+        FrameMessage((dslrCamera.dslrMessage));
+        dslrCamera.SetCameraLastFileNumber();
+        if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Internal RAM"))
+            FrameMessage(dslrCamera.dslrMessage);
+        SetConnectButtonImage(true);
+        GetCameraPreview();
     }
-    ui->connectButton->setIconSize(buttonSize);
-    ui->connectButton->setFixedSize(buttonSize);
 }
 
 void DSLR::on_x1x10Button_clicked()
 {
-    QIcon buttonIcon;
     switch (magnification)
     {
     case 1:
@@ -404,9 +428,7 @@ void DSLR::on_x1x10Button_clicked()
         }
         GetCameraPreview();
         GetCameraPreview();
-        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->x1x10Button->setIcon(buttonIcon);
+        SetX1X10ButtonImage(true);
         break;
 /*
     // magnification X5 seems not to work
@@ -416,9 +438,7 @@ void DSLR::on_x1x10Button_clicked()
                 FrameMessage(dslrCamera.dslrMessage);
         GetCameraPreview();
         GetCameraPreview();
-        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->x1x10Button->setIcon(buttonIcon);
+        SetX1X10ButtonImage(true);
         break;
 */
     default:
@@ -431,16 +451,19 @@ void DSLR::on_x1x10Button_clicked()
         }
         GetCameraPreview();
         GetCameraPreview();
-        changingButtonsPixmap.load("://media/icons/tools-512x512/magnify.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->x1x10Button->setIcon(buttonIcon);
+        SetX1X10ButtonImage(false);
         break;
     }
-    ui->x1x10Button->setIconSize(buttonSize);
-    ui->x1x10Button->setFixedSize(buttonSize);}
+}
 
 void DSLR::on_onButton_clicked()
 {
+//    if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Memory card"))
+//    if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Internal RAM"))
+    {
+        FrameMessage(dslrCamera.dslrMessage);
+        return;
+    }
     if(!dslrCamera.ShootOn())
         FrameMessage(dslrCamera.dslrMessage);
 }
@@ -448,5 +471,11 @@ void DSLR::on_onButton_clicked()
 void DSLR::on_offButton_clicked()
 {
     if(!dslrCamera.ShootRelease())
+        FrameMessage(dslrCamera.dslrMessage);
+}
+
+void DSLR::on_testButton_clicked()
+{
+    if(!dslrCamera.SetCameraLastFileNumber())
         FrameMessage(dslrCamera.dslrMessage);
 }

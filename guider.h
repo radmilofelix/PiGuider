@@ -78,6 +78,14 @@ public:
     void ComputeDrift();
     void Calibration();
     void DoGuide();
+
+    void SetEnableButtonImage(bool on);
+    void SetRefreshButtonImage(bool on);
+    void SetSlowButtonImage(bool on);
+    void SetNormalButtonImage(bool on);
+    void SetFastButtonImage(bool on);
+    void SetCalibrateButtonImage(bool on);
+
 #ifdef DEBUG
     void CaptureImagesToFiles();
     int captureIndex;

@@ -105,6 +105,7 @@ void PiGuider::UpdateStatus()
         }
         else
         {
+            intervalometersoft.UpdateStatus();
             ui->ledLabelSoftIntervalometer->setPixmap(ledred);
             SetSoftIntervlometerButtonImage(false);
         }
@@ -117,12 +118,13 @@ void PiGuider::UpdateStatus()
             ui->ledLabelHardIntervalometer->setPixmap(ledgreen);
             SetHardIntervlometerButtonImage(true);
             intervalometersoft.enabled=false;
-            intervalometersoft.updateStatus();
+            intervalometersoft.UpdateStatus();
             ui->ledLabelSoftIntervalometer->setPixmap(ledred);
             SetSoftIntervlometerButtonImage(false);
         }
         else
         {
+            intervalometerhard.UpdateStatus();
             ui->ledLabelHardIntervalometer->setPixmap(ledred);
             SetHardIntervlometerButtonImage(false);
         }
@@ -140,6 +142,9 @@ void PiGuider::UpdateStatus()
 
     if( intervalometerhard.enabled)
         intervalometerhard.UpdateStatus();
+
+    if( intervalometersoft.enabled)
+        intervalometersoft.UpdateStatus();
 
     if(dslr.enabled)
         dslr.RefreshData();

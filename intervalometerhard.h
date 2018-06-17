@@ -99,7 +99,6 @@ public:
     long exposurePeriodCount2;
     LoadSaveAndSettings lsas;
     PinControlPi pincontrol;
-//    QPixmap ledImage;
     QElapsedTimer timer;
     long oldTime;
     QPixmap changingButtonsPixmap;
@@ -120,11 +119,15 @@ public:
     void DecreaseTimer2();
     void DecreaseTimers();
 
+    void SetEnableButtonImage(bool on);
+    void SetIntervalometer1ButtonImage(bool on);
+    void SetIntervalometer2ButtonImage(bool on);
+    void SetToggleNumpadButtonImage(bool on);
+
 private slots:
     void on_closeButton_clicked();
     void on_enableButton_clicked();
     void NumpadReturnClickedSlot();
-
     void on_pushButton_clicked();
 
     void on_intervalometer1Button_clicked();

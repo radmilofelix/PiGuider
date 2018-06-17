@@ -54,6 +54,10 @@ public:
     void RefreshData();
     void LoadFromQrc(QString qrc, int flag);
 
+    void SetEnableButtonImage(bool on);
+    void SetConnectButtonImage(bool on);
+    void SetX1X10ButtonImage(bool on);
+
 private slots:
     void Mouse_current_pos();
     void Mouse_pressed();
@@ -79,8 +83,8 @@ private slots:
     void on_x1x10Button_clicked();
 
     void on_onButton_clicked();
-
     void on_offButton_clicked();
+    void on_testButton_clicked();
 
 private:
     Ui::DSLR *ui;

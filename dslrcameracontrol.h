@@ -3,6 +3,7 @@
 
 #include <gphoto2/gphoto2.h>
 #include <gphoto2/gphoto2-camera.h>
+#include <gphoto2/gphoto2-filesys.h>
 #include <QString>
 
 class DslrCameraControl
@@ -16,6 +17,8 @@ public:
     bool fromCamera;
     int cameraFocus;
     QString dslrMessage;
+    QString rootCameraFolder, dcimCameraFolder, currentCameraFolder, lastCameraFile;
+    int lastFileNumber;
     Camera	*canonCamera;
     GPContext *canonContext;
     CameraFile *canonFile;
@@ -34,6 +37,14 @@ public:
     int ShootRelease();
     void GetCaptureFileExtension(char *inputString);
     int ShootAndCapture(char *path, char *fileName, int exposureTime);
+    int Connect();
+    int Disconnect();
+
+    int GetCameraListItem(CameraList *list, int selector, const char** foundItem, QString itemNameForErrorMessage);
+    int GetCameraFolder(Camera *camera, GPContext *context, const char *folderPrefix, QString selection, QString *cameraFolder);
+    int GetCameraLastFile(Camera *camera, GPContext *context, const char *folder);
+    int SetCameraLastFileNumber();
+    int SetCaptureTarget(Camera *canon, GPContext *canoncontext, char* option);
 
 private:
     int GetConfigValueString(Camera *camera, const char *key, char **str, GPContext *context);
@@ -46,7 +57,6 @@ private:
 //    int canon_enable_capture (Camera *camera, int onoff, GPContext *context);
 //    int camera_auto_focus(Camera *camera, GPContext *context, int onoff);
 //    int camera_eosviewfinder(Camera *camera, GPContext *context, int onoff);
-//    void set_capturetarget(Camera *canon, GPContext *canoncontext);
 
 };
 

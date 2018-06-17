@@ -69,12 +69,7 @@ Guider::Guider(QWidget *parent) :
     ui->horizontalGammaSlider->setRange(0, 2000);
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalGammaSlider->setVisible(true);
-    changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral-on.png");
-    QIcon buttonIcon;
-    buttonIcon.addPixmap(changingButtonsPixmap);
-    ui->normalButton->setIcon(buttonIcon);
-    ui->normalButton->setIconSize(buttonSize);
-    ui->normalButton->setFixedSize(buttonSize);
+    SetNormalButtonImage(true);
 
 #ifdef DEBUG
     captureIndex=0;
@@ -107,55 +102,35 @@ void Guider::on_closeButton_clicked()
 
 void Guider::on_enableButton_clicked()
 {
-    QIcon buttonIcon;
     if(enabled)
     {
         enabled=false;
         on_normalButton_clicked();
-        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->enableButton->setIcon(buttonIcon);
+        SetEnableButtonImage(false);
     }
     else
     {
         enabled=true;
         refreshEnabled=false;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/search.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->refreshButton->setIcon(buttonIcon);
-        ui->refreshButton->setIconSize(buttonSize);
-        ui->refreshButton->setFixedSize(buttonSize);
-        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->enableButton->setIcon(buttonIcon);
+        SetRefreshButtonImage(false);
+        SetEnableButtonImage(true);
     }
-    ui->enableButton->setIconSize(buttonSize);
-    ui->enableButton->setFixedSize(buttonSize);
     this->repaint();
 }
 
 void Guider::on_refreshButton_clicked()
 {
-    QIcon buttonIcon;
     if(refreshEnabled)
     {
         refreshEnabled=false;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/search.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->refreshButton->setIcon(buttonIcon);
+        SetRefreshButtonImage(false);
     }
     else
     {
         refreshEnabled=true;
         enabled=false;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/search-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->refreshButton->setIcon(buttonIcon);
-        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->enableButton->setIcon(buttonIcon);
-        ui->enableButton->setIconSize(buttonSize);
-        ui->enableButton->setFixedSize(buttonSize);
+        SetRefreshButtonImage(true);
+        SetEnableButtonImage(false);
 
         starsDetected=0;
         targetSelected=false;
@@ -189,8 +164,6 @@ void Guider::on_refreshButton_clicked()
         NewCapture();
         this->repaint();
     }
-    ui->refreshButton->setIconSize(buttonSize);
-    ui->refreshButton->setFixedSize(buttonSize);
 }
 
 
@@ -297,8 +270,8 @@ void Guider::DisplayData()
 void Guider::RefreshData() // called by main interface if enabled=true or refreshEnabled=true
 {
 #ifdef CAPTUREFROMFILE
-//    if(fileIndex < (numberOfFiles-1))
-    if(fileIndex < (60))
+    if(fileIndex < (numberOfFiles-1))
+//    if(fileIndex < (60))
         fileIndex++;
     else
         fileIndex=0;
@@ -376,14 +349,14 @@ void Guider::NewCapture()
     }
 #else
 
-//#include "capture-00.h" // miscellaneous sky photos
-#include "capture-01.h" // Arcturus Canyon-CNE-CWC3-webcam - 1332 files - 20 min simulation
-//#include "capture-02.h" // Arcturus Canyon-CNE-HWC1-webcam - 123 files
-//#include "capture-03.h" // Arcturus Trust-16429-webcam - 41 files
-//#include "capture-04.h" // Jupiter Canyon-CNE-HWC1-webcam - 27 files
-//#include "capture-05.h" // Jupiter Trust-16429-webcam - 42 files
-//#include "capture-06.h" // Polaris Canyon-CNE-CWC3-webcam - 52 files
-//#include "capture-07.h" // Polaris Trust-16429-webcam - 24 files
+//#include "capture-00-Miscellaneous.h" // miscellaneous sky photos
+#include "capture-01-Arcturus-CNE-CWC3.h" // Arcturus Canyon-CNE-CWC3-webcam - 1332 files - 20 min simulation
+//#include "capture-02-Arcturus-CNE-HWC1.h" // Arcturus Canyon-CNE-HWC1-webcam - 123 files
+//#include "capture-03-Arcturus-Trust-16429.h" // Arcturus Trust-16429-webcam - 41 files
+//#include "capture-04-Jupiter-CNE-HWC1.h" // Jupiter Canyon-CNE-HWC1-webcam - 27 files
+//#include "capture-05-Jupiter-Trust-16429.h" // Jupiter Trust-16429-webcam - 42 files
+//#include "capture-06-Polaris-CNE-CWC3.h" // Polaris Canyon-CNE-CWC3-webcam - 52 files
+//#include "capture-07-Polaris-Trust-16429.h" // Polaris Trust-16429-webcam - 24 files
 
     if(srcImage.empty())
     {
@@ -425,10 +398,11 @@ void Guider::NewCapture()
     }
     if(starsDetected==0 || refreshEnabled)
     {
-        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
-        cvtColor(myImage, myImage, CV_BGR2RGB);
+//        cvtColor(myImage, myImage, CV_BGR2RGB);
         if(interfaceWindowOpen)
             ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
+        cvtColor(myImage, myImage, CV_BGR2RGB);
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
     }
     if(interfaceWindowOpen)
         this->repaint();
@@ -793,19 +767,21 @@ void Guider::FindAndTrackStar()
     FindClosestStarToTarget();
     if(!refreshEnabled)
         ComputeDrift();
-    DisplayData();
+    if(interfaceWindowOpen)
+        DisplayData();
 //    if(oldStarsDetected==0)
 //        cvtColor(myImage, myImage, CV_BGR2RGB);
     if(guideStarSelected)
         SetReticle(&myImage, dgeometry.relativeStarX, dgeometry.relativeStarY, Scalar(255,0,0));
     if(starsDetected)
     {
-        cvtColor(myImage, myImage, CV_BGR2RGB);
         if(interfaceWindowOpen)
+        {
             ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
-        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
-        if(interfaceWindowOpen)
             this->repaint();
+        }
+        cvtColor(myImage, myImage, CV_BGR2RGB);
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
     }
 }
 
@@ -818,7 +794,6 @@ void Guider::SnapToNearestStar()
     dgeometry.CropAroundSelection(srcImage, &myImage, &processImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, true);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(0,255,0));
-//    SetReticle(&myImage, dgeometry.relativeStarX, dgeometry.relativeStarY, Scalar(255,0,0));
     if(interfaceWindowOpen)
     {
         ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
@@ -993,6 +968,84 @@ void Guider::DoGuide()
         on_normalButton_clicked();
 }
 
+void Guider::SetEnableButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->enableButton->setIcon(buttonIcon);
+    ui->enableButton->setIconSize(buttonSize);
+    ui->enableButton->setFixedSize(buttonSize);
+}
+
+void Guider::SetRefreshButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/search-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/search.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->refreshButton->setIcon(buttonIcon);
+    ui->refreshButton->setIconSize(buttonSize);
+    ui->refreshButton->setFixedSize(buttonSize);
+}
+
+void Guider::SetSlowButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->slowButton->setIcon(buttonIcon);
+    ui->slowButton->setIconSize(buttonSize);
+    ui->slowButton->setFixedSize(buttonSize);
+}
+
+void Guider::SetNormalButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->normalButton->setIcon(buttonIcon);
+    ui->normalButton->setIconSize(buttonSize);
+    ui->normalButton->setFixedSize(buttonSize);
+}
+
+void Guider::SetFastButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->fastButton->setIcon(buttonIcon);
+    ui->fastButton->setIconSize(buttonSize);
+    ui->fastButton->setFixedSize(buttonSize);
+}
+
+void Guider::SetCalibrateButtonImage(bool on)
+{
+    QIcon buttonIcon;
+    if(on)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/calibration-on.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/calibration.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->calibrateButton->setIcon(buttonIcon);
+    ui->calibrateButton->setIconSize(buttonSize);
+    ui->calibrateButton->setFixedSize(buttonSize);
+}
+
 #ifdef DEBUG
 void Guider::CaptureImagesToFiles()
 {
@@ -1064,10 +1117,10 @@ void Guider::on_targetButton_clicked()
     {
         ui->labelMessages->setText("Could not find any guide star!");
         ui->labelMessages->adjustSize();
-        SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(255,0,0));
+        SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(0,255,0));
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
         cvtColor(myImage, myImage, CV_BGR2RGB);
         ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
-        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
     }
     this->repaint();
 }
@@ -1143,87 +1196,39 @@ void Guider::on_saveButton_clicked()
 
 void Guider::on_slowButton_clicked()
 {
-    QIcon buttonIcon;
     pincontrol.AscensionMinus();
     if(interfaceWindowOpen)
     {
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->slowButton->setIcon(buttonIcon);
-        ui->slowButton->setIconSize(buttonSize);
-        ui->slowButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->normalButton->setIcon(buttonIcon);
-        ui->normalButton->setIconSize(buttonSize);
-        ui->normalButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->fastButton->setIcon(buttonIcon);
-        ui->fastButton->setIconSize(buttonSize);
-        ui->fastButton->setFixedSize(buttonSize);
-
-
+        SetSlowButtonImage(true);
+        SetNormalButtonImage(false);
+        SetFastButtonImage(false);
     }
 }
 
 void Guider::on_normalButton_clicked()
 {
-    QIcon buttonIcon;
     pincontrol.AscensionRelease();
     if(interfaceWindowOpen)
     {
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->slowButton->setIcon(buttonIcon);
-        ui->slowButton->setIconSize(buttonSize);
-        ui->slowButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->normalButton->setIcon(buttonIcon);
-        ui->normalButton->setIconSize(buttonSize);
-        ui->normalButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->fastButton->setIcon(buttonIcon);
-        ui->fastButton->setIconSize(buttonSize);
-        ui->fastButton->setFixedSize(buttonSize);
+        SetSlowButtonImage(false);
+        SetNormalButtonImage(true);
+        SetFastButtonImage(false);
     }
 }
 
 void Guider::on_fastButton_clicked()
 {
-    QIcon buttonIcon;
     pincontrol.AscensionPlus();
     if(interfaceWindowOpen)
     {
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->slowButton->setIcon(buttonIcon);
-        ui->slowButton->setIconSize(buttonSize);
-        ui->slowButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->normalButton->setIcon(buttonIcon);
-        ui->normalButton->setIconSize(buttonSize);
-        ui->normalButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->fastButton->setIcon(buttonIcon);
-        ui->fastButton->setIconSize(buttonSize);
-        ui->fastButton->setFixedSize(buttonSize);
+        SetSlowButtonImage(false);
+        SetNormalButtonImage(false);
+        SetFastButtonImage(true);
     }
 }
 
 void Guider::on_calibrateButton_clicked()
 {
-    QIcon buttonIcon;
     if(!targetSelected)
     {
         ui->labelMessages->setText("GUIDE STAR NOT SELECTED!\nCan not start/continue calibration!");
@@ -1239,50 +1244,28 @@ void Guider::on_calibrateButton_clicked()
         enabled=true;
         refreshEnabled=false;
         on_fastButton_clicked();
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/shutdown-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->enableButton->setIcon(buttonIcon);
-        ui->enableButton->setIconSize(buttonSize);
-        ui->enableButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/search.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->refreshButton->setIcon(buttonIcon);
-        ui->refreshButton->setIconSize(buttonSize);
-        ui->refreshButton->setFixedSize(buttonSize);
-
-        changingButtonsPixmap.load("://media/icons/tools-512x512/calibration-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->calibrateButton->setIcon(buttonIcon);
-
+        SetEnableButtonImage(true);
+        SetRefreshButtonImage(false);
+        SetCalibrateButtonImage(true);
         break;
     case 5:
         calibrationStatus=6;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/calibration-on.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->calibrateButton->setIcon(buttonIcon);
+        SetCalibrateButtonImage(true);
         ui->labelMessages->setText("C A L I B R A T I O N\nReturning guide star to center.");
         ui->labelMessages->adjustSize();
         on_fastButton_clicked();
         break;
     case 7:
         calibrationStatus=0;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/calibration.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->calibrateButton->setIcon(buttonIcon);
+        SetCalibrateButtonImage(false);
         ui->labelMessages->setText("Message Box");
         ui->labelMessages->adjustSize();
         break;
     default:
         calibrationStatus=0;
-        changingButtonsPixmap.load("://media/icons/tools-512x512/calibration.png");
-        buttonIcon.addPixmap(changingButtonsPixmap);
-        ui->calibrateButton->setIcon(buttonIcon);
+        SetCalibrateButtonImage(false);
         ui->labelMessages->setText("Message Box");
         ui->labelMessages->adjustSize();
         on_normalButton_clicked();
     }
-    ui->calibrateButton->setIconSize(buttonSize);
-    ui->calibrateButton->setFixedSize(buttonSize);
 }

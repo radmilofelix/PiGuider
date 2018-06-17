@@ -12,7 +12,7 @@
     #define DEBUG
         #ifdef DEBUG
             #ifndef CAPTUREFROMFILE
-                #define CAPTUREFROMFILE
+//                #define CAPTUREFROMFILE
             #endif
             #ifndef NODSLR
 //            #define NODSLR

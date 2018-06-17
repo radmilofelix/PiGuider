@@ -241,8 +241,6 @@ int LoadSaveAndSettings::CheckAndSetValidData()
     {
         if(!strcmp(parameterName, PARAMSDOUBLE[i].name))
         {
-//            strcpy(numericParameterStringBuffer, parameterValue);
-//            PARAMSDOUBLE[i].value=atof(numericParameterStringBuffer);
             PARAMSDOUBLE[i].value=buff.toDouble();
             return 1;
         }
@@ -252,8 +250,6 @@ int LoadSaveAndSettings::CheckAndSetValidData()
     {
         if(!strcmp(parameterName, PARAMSFLOAT[i].name))
         {
-//            strcpy(numericParameterStringBuffer, parameterValue);
-//            PARAMSFLOAT[i].value=atof(numericParameterStringBuffer);
             PARAMSFLOAT[i].value=buff.toFloat();
             return 1;
         }
@@ -293,8 +289,6 @@ int LoadSaveAndSettings::CheckAndSetValidData()
     {
         if(!strcmp(parameterName, SETTINGSFLOAT[i].name))
         {
-//            strcpy(numericParameterStringBuffer, parameterValue);
-//            SETTINGSFLOAT[i].value=atof(numericParameterStringBuffer);
             SETTINGSFLOAT[i].value=buff.toFloat();
             return 1;
         }
@@ -304,8 +298,6 @@ int LoadSaveAndSettings::CheckAndSetValidData()
     {
         if(!strcmp(parameterName, SETTINGSDOUBLE[i].name))
         {
-//            strcpy(numericParameterStringBuffer, parameterValue);
-//            SETTINGSDOUBLE[i].value=atof(numericParameterStringBuffer);
             SETTINGSDOUBLE[i].value=buff.toDouble();
             return 1;
         }
