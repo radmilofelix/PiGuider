@@ -560,10 +560,20 @@
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">#pushButton
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrowDown.png);
+}
+#pushButton:pressed
+{
+	border-image: url(:/media/icons/tools-512x512/arrowDown-pressed.png);
+}</string>
    </property>
    <property name="text">
-    <string>PBTN</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLineEdit" name="exposureMinutesLineEdit1">
@@ -1958,7 +1968,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>Programmed:           TO GO:</string>
+    <string>Programmed:        TO GO:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -2836,7 +2846,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>Programmed:           TO GO:</string>
+    <string>Programmed:        TO GO:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>

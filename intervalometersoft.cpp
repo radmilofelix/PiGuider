@@ -31,6 +31,8 @@ IntervalometerSoft::IntervalometerSoft(QWidget *parent) :
     intervalometer1Enabled=false;
     enabled=false;
     editEnabled=true;
+    cameraShooting=false;
+//    cameraFocusing=false;
     enableVirtualKeyboard=true;
     Init();
     DisplayInputValues();
@@ -45,22 +47,23 @@ IntervalometerSoft::~IntervalometerSoft()
 
 void IntervalometerSoft::Init()
 {
-    lsas.ReadData("params.cfg" ,"params-default.cfg",false);
     iterations1=lsas.swIterations1.value;
-
     jobDelayPeriod1=lsas.swJobDelayPeriod1.value;
     restPeriod1=lsas.swRestPeriod1.value;
     focusPeriod1=lsas.swFocusPeriod1.value;
     exposurePeriod1=lsas.swExposurePeriod1.value;
 
     iterationsCount1=iterations1;
-
     jobDelayPeriodCount1=jobDelayPeriod1;
     restPeriodCount1=restPeriod1;
     focusPeriodCount1=focusPeriod1;
     exposurePeriodCount1=exposurePeriod1;
-
     PeriodsToHMS();
+    if(lsas.IsUSBFolder())
+        captureMediaOnSD=false;
+    else
+        captureMediaOnSD=true;
+    SetCaptureMediaButtonImage(captureMediaOnSD);
 }
 
 
@@ -77,14 +80,24 @@ void IntervalometerSoft::UpdateStatus()
     }
     else
     {
-//        pincontrol.CameraRelease(1);
-//        pincontrol.CameraRelease(2);
+        BreakCameraShooting();
         ValidateInput();
         HmsToPeriods();
         DisplayCounterValues();
         intervalometer1Enabled=false;
         editEnabled=true;
         SetEnableButtonImage(false);
+        if(dslrCamera.isCamera && dslrCamera.isCameraFile)
+        {
+            if(!dslrCamera.Disconnect())
+            {
+                FrameMessage(dslrCamera.dslrMessage);
+                return;
+            }
+            FrameMessage((dslrCamera.dslrMessage));
+//            intervalometer1Enabled=false;
+            SetConnectButtonImage(false);
+        }
     }
 }
 
@@ -201,7 +214,6 @@ void IntervalometerSoft::ValidateInput()
     exposureHoursCount1=exposureHours1;
     exposureMinutesCount1=exposureMinutes1;
     exposureSecondsCount1=exposureSeconds1;
-
     lsas.swIterations1.value=iterations1;
 }
 
@@ -323,22 +335,26 @@ void IntervalometerSoft::DecreaseTimer1()
             }
             if(focusPeriodCount1)
             {
-//                pincontrol.CameraFocus(1);
                 focusPeriodCount1--;
                 return;
             }
             if(exposurePeriodCount1)
             {
-//                pincontrol.CameraShoot(1);
-                dslrCamera.ShootOn();
+                if(!cameraShooting)
+                {
+                    if(captureMediaOnSD)
+                        dslrCamera.SetCaptureTargetToSD();
+                    else
+                        dslrCamera.SetCaptureTargetToMemory();
+                    dslrCamera.ShootOn();
+                    cameraShooting=true;
+                }
                 exposurePeriodCount1--;
                 return;
             }
             else
             {
-
-//                pincontrol.CameraRelease(1);
-                dslrCamera.ShootRelease();
+                BreakCameraShooting();
                 iterationsCount1--;
                 restPeriodCount1=restPeriod1;
                 focusPeriodCount1=focusPeriod1;
@@ -347,6 +363,7 @@ void IntervalometerSoft::DecreaseTimer1()
         }
         else
         {
+            dslrCamera.SetCaptureTargetToSD();
             iterationsCount1=iterations1;
             jobDelayPeriodCount1=jobDelayPeriod1;
             restPeriodCount1=restPeriod1;
@@ -376,6 +393,29 @@ void IntervalometerSoft::FrameMessage(QString message)
     message=" "+message+" ";
     ui->labelMessages->setText(message);
     ui->labelMessages->adjustSize();
+}
+
+void IntervalometerSoft::BreakCameraShooting()
+{
+    if(cameraShooting)
+    {
+        if(captureMediaOnSD)
+            dslrCamera.ShootRelease();
+        else
+        {
+            lsas.SetChronologicFileName();
+            char chronoFile[100];
+            strcpy(chronoFile, lsas.chronologicFilename.toLatin1());
+            char capturePath[200];
+            strcpy(capturePath, lsas.usbFlashMemoryPath.value);
+            strcat(capturePath, lsas.DSLRFolder.value);
+            dslrCamera.ReleaseAndTether(capturePath, chronoFile);
+            dslrCamera.dslrMessage = "Last Image:\n";
+            dslrCamera.dslrMessage += dslrCamera.capturedFileName;
+            FrameMessage(dslrCamera.dslrMessage);
+        }
+        cameraShooting=false;
+    }
 }
 
 void IntervalometerSoft::NumpadReturnClicked()
@@ -469,6 +509,25 @@ void IntervalometerSoft::SetToggleNumpadButtonImage(bool on)
     ui->toggleVirtualNumpadButton->setFixedSize(buttonSize);
 }
 
+void IntervalometerSoft::SetCaptureMediaButtonImage(bool sdCard)
+{
+    QIcon buttonIcon;
+    changingButtonsPixmap.load("://media/icons/tools-512x512/neutralSquareBright.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->captureMediaButton->setIcon(buttonIcon);
+    ui->captureMediaButton->setIconSize(buttonSize);
+    ui->captureMediaButton->setFixedSize(buttonSize);
+    this->repaint();
+    if(sdCard)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/sdCard.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/usbKey.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->captureMediaButton->setIcon(buttonIcon);
+    ui->captureMediaButton->setIconSize(buttonSize);
+    ui->captureMediaButton->setFixedSize(buttonSize);
+}
+
 
 void IntervalometerSoft::on_closeButton_clicked()
 {
@@ -501,9 +560,6 @@ void IntervalometerSoft::on_enableButton_clicked()
     }
     UpdateStatus();
 }
-
-
-
 
 void IntervalometerSoft::on_toggleVirtualNumpadButton_clicked()
 {
@@ -577,7 +633,7 @@ void IntervalometerSoft::on_focusMinutesLineEdit1_cursorPositionChanged(int arg1
 
 void IntervalometerSoft::on_focusSecondsLineEdit1_cursorPositionChanged(int arg1, int arg2)
 {
-    if(editEnabled)if(dslrCamera.isCamera && dslrCamera.isCameraFile)
+    if(editEnabled)
     {
         editEnabled=false;
         NumPadCaller(FOCUSSECONDS1);
@@ -653,6 +709,7 @@ void IntervalometerSoft::on_connectButton_clicked()
 {
     if(dslrCamera.isCamera && dslrCamera.isCameraFile)
     {
+        BreakCameraShooting();
         if(!dslrCamera.Disconnect())
         {
             FrameMessage(dslrCamera.dslrMessage);
@@ -661,6 +718,7 @@ void IntervalometerSoft::on_connectButton_clicked()
         FrameMessage((dslrCamera.dslrMessage));
         intervalometer1Enabled=false;
         SetConnectButtonImage(false);
+        enabled=false;
     }
     else
     {
@@ -671,7 +729,32 @@ void IntervalometerSoft::on_connectButton_clicked()
         }
         FrameMessage((dslrCamera.dslrMessage));
         intervalometer1Enabled=true;
-        dslrCamera.SetCameraLastFileNumber();
+        dslrCamera.GetLastCameraFileNumber();
+        if(!dslrCamera.CaptureCameraPreview())
+            FrameMessage((dslrCamera.dslrMessage));
         SetConnectButtonImage(true);
     }
+}
+
+void IntervalometerSoft::on_captureMediaButton_clicked()
+{
+    if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
+    {
+        FrameMessage("Can not change capture media.\nDSLR Camera not connected");
+        return;
+    }
+    if(captureMediaOnSD)
+    {
+        if(!lsas.IsUSBFolder())
+        {
+            FrameMessage("Can not change capture media.\nUSB Flash Memory absent.");
+            return;
+        }
+        captureMediaOnSD=false;
+    }
+    else
+    {
+            captureMediaOnSD=true;
+    }
+    SetCaptureMediaButtonImage(captureMediaOnSD);
 }

@@ -61,7 +61,11 @@ HEADERS += \
     capture-04-Jupiter-CNE-HWC1.h \
     capture-05-Jupiter-Trust-16429.h \
     capture-06-Polaris-CNE-CWC3.h \
-    capture-07-Polaris-Trust-16429.h
+    capture-07-Polaris-Trust-16429.h \
+    capture-08-Alkaid-CNE-CWC3.h \
+    capture-09-Alkaid-CNE-CWC3.h \
+    capture-10-Arcturus-CNE-CWC3.h \
+    capture-11-Vega-CNE-CWC3.h
 
 FORMS += \
     piguider.ui \

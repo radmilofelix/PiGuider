@@ -74,6 +74,9 @@ public:
     QPixmap changingButtonsPixmap;
     QSize buttonSize;
     LoadSaveAndSettings lsas;
+    bool captureMediaOnSD;
+    bool cameraShooting;
+//    bool cameraFocusing;
 
 
     void Init();
@@ -90,11 +93,13 @@ public:
     void DecreaseTimer1();
     void DecreaseTimers();
     void FrameMessage(QString message);
+    void BreakCameraShooting();
 
 
     void SetEnableButtonImage(bool on);
     void SetConnectButtonImage(bool on);
     void SetToggleNumpadButtonImage(bool on);
+    void SetCaptureMediaButtonImage(bool sdCard);
 
 private slots:
     void on_closeButton_clicked();
@@ -118,6 +123,8 @@ private slots:
     void on_jobDelaySecondsLineEdit1_cursorPositionChanged(int arg1, int arg2);
     void on_iterationsLineEdit1_cursorPositionChanged(int arg1, int arg2);
     void on_connectButton_clicked();
+
+    void on_captureMediaButton_clicked();
 
 private:
     Ui::IntervalometerSoft *ui;

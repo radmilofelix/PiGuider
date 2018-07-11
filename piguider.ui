@@ -476,8 +476,8 @@
    <widget class="QLabel" name="mainImageLabel">
     <property name="geometry">
      <rect>
-      <x>1</x>
-      <y>1</y>
+      <x>0</x>
+      <y>0</y>
       <width>478</width>
       <height>478</height>
      </rect>
@@ -555,10 +555,10 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>480</x>
-      <y>400</y>
-      <width>111</width>
-      <height>71</height>
+      <x>740</x>
+      <y>30</y>
+      <width>51</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
@@ -569,14 +569,14 @@
 }</string>
     </property>
     <property name="text">
-     <string>BLINK</string>
+     <string>Test</string>
     </property>
    </widget>
    <widget class="QPushButton" name="intervalometerSoftButton">
     <property name="geometry">
      <rect>
-      <x>500</x>
-      <y>90</y>
+      <x>620</x>
+      <y>110</y>
       <width>70</width>
       <height>70</height>
      </rect>
@@ -601,8 +601,8 @@
    <widget class="QPushButton" name="intervalometerHardButton">
     <property name="geometry">
      <rect>
-      <x>630</x>
-      <y>90</y>
+      <x>710</x>
+      <y>108</y>
       <width>70</width>
       <height>70</height>
      </rect>
@@ -624,68 +624,652 @@
      <string/>
     </property>
    </widget>
-   <widget class="QLabel" name="ledLabelGuider">
+   <widget class="QLineEdit" name="yearLineEdit">
     <property name="geometry">
      <rect>
-      <x>573</x>
-      <y>44</y>
-      <width>32</width>
-      <height>32</height>
+      <x>7</x>
+      <y>10</y>
+      <width>50</width>
+      <height>30</height>
      </rect>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::PreventContextMenu</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">#yearLineEdit
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="inputMask">
+     <string notr="true">NNNN</string>
     </property>
     <property name="text">
-     <string/>
+     <string>2000</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="ledLabelDSLR">
+   <widget class="QLineEdit" name="hoursLineEdit">
     <property name="geometry">
      <rect>
-      <x>704</x>
-      <y>38</y>
-      <width>32</width>
-      <height>32</height>
+      <x>39</x>
+      <y>41</y>
+      <width>30</width>
+      <height>30</height>
      </rect>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::PreventContextMenu</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">#hoursLineEdit
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="inputMask">
+     <string notr="true">NN</string>
     </property>
     <property name="text">
-     <string/>
+     <string>23</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="ledLabelSoftIntervalometer">
+   <widget class="QLineEdit" name="dayLineEdit">
     <property name="geometry">
      <rect>
-      <x>575</x>
-      <y>115</y>
-      <width>32</width>
-      <height>32</height>
+      <x>103</x>
+      <y>10</y>
+      <width>30</width>
+      <height>30</height>
      </rect>
     </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::PreventContextMenu</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">#dayLineEdit
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="inputMask">
+     <string notr="true">NN</string>
     </property>
     <property name="text">
-     <string/>
+     <string>59</string>
+    </property>
+    <property name="frame">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QLabel" name="ledLabelHardIntervalometer">
+   <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>697</x>
-      <y>117</y>
-      <width>32</width>
-      <height>32</height>
+      <x>57</x>
+      <y>15</y>
+      <width>8</width>
+      <height>20</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">#label_4
+{
+	background-color: rgb(0,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_5">
+    <property name="geometry">
+     <rect>
+      <x>95</x>
+      <y>15</y>
+      <width>8</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#label_5
+{
+	background-color: rgb(0,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>-</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="monthLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>65</x>
+      <y>10</y>
+      <width>30</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::PreventContextMenu</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#monthLineEdit
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="inputMask">
+     <string notr="true">NN</string>
+    </property>
+    <property name="text">
+     <string>59</string>
+    </property>
+    <property name="frame">
+     <bool>true</bool>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>71</x>
+      <y>45</y>
+      <width>5</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#label_6
+{
+	background-color: rgb(0,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>:</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="minutesLineEdit">
+    <property name="geometry">
+     <rect>
+      <x>77</x>
+      <y>41</y>
+      <width>30</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="focusPolicy">
+     <enum>Qt::StrongFocus</enum>
+    </property>
+    <property name="contextMenuPolicy">
+     <enum>Qt::PreventContextMenu</enum>
+    </property>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#minutesLineEdit
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="inputMask">
+     <string notr="true">NN</string>
+    </property>
+    <property name="text">
+     <string>59</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="leftLabel">
+    <property name="geometry">
+     <rect>
+      <x>482</x>
+      <y>143</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#leftLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string>L</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="rightLabel">
+    <property name="geometry">
+     <rect>
+      <x>562</x>
+      <y>143</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#rightLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string>R</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="downLabel">
+    <property name="geometry">
+     <rect>
+      <x>522</x>
+      <y>180</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#downLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string>D</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="upLabel">
+    <property name="geometry">
+     <rect>
+      <x>522</x>
+      <y>110</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#upLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::NoFrame</enum>
+    </property>
+    <property name="text">
+     <string>U</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iv1Label">
+    <property name="geometry">
+     <rect>
+      <x>500</x>
+      <y>270</y>
+      <width>131</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#iv1Label
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>Intervalometer 1</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iv2Label">
+    <property name="geometry">
+     <rect>
+      <x>650</x>
+      <y>270</y>
+      <width>131</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#iv2Label
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>Intervalometer 2</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iv1CyclesLabel">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>320</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#iv1CyclesLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>C</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iv1SecondsLabel">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>320</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#iv1SecondsLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>S</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>507</x>
+      <y>324</y>
+      <width>10</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#label_7
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>x</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_8">
+    <property name="geometry">
+     <rect>
+      <x>657</x>
+      <y>324</y>
+      <width>10</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#label_8
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>x</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iv2SecondsLabel">
+    <property name="geometry">
+     <rect>
+      <x>730</x>
+      <y>320</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#iv2SecondsLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>S</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="iv2CyclesLabel">
+    <property name="geometry">
+     <rect>
+      <x>670</x>
+      <y>320</y>
+      <width>40</width>
+      <height>40</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#iv2CyclesLabel
+{
+	background-color: rgb(30,0,0);
+	color: rgb(0,220,0);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::Box</enum>
+    </property>
+    <property name="text">
+     <string>C</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelRaDriftValueArcsec">
+    <property name="geometry">
+     <rect>
+      <x>207</x>
+      <y>455</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#labelRaDriftValueArcsec
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,180,0);
+}</string>
     </property>
     <property name="text">
      <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelDeclDriftValueArcsec">
+    <property name="geometry">
+     <rect>
+      <x>344</x>
+      <y>455</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#labelDeclDriftValueArcsec
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,180,0);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelRaDrift">
+    <property name="geometry">
+     <rect>
+      <x>235</x>
+      <y>433</y>
+      <width>67</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#labelRaDrift
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,180,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>RA Drift</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="labelDeclDrift">
+    <property name="geometry">
+     <rect>
+      <x>345</x>
+      <y>433</y>
+      <width>131</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">#labelDeclDrift
+{
+	background-color: rgb(60,0,0);
+	color: rgb(0,180,0);
+}</string>
+    </property>
+    <property name="text">
+     <string>Declination Drift</string>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

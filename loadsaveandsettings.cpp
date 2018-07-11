@@ -1,10 +1,21 @@
 #include "loadsaveandsettings.h"
 #include "ui_loadsaveandsettings.h"
+//#include <stdio.h>
+//#include <stdlib.h>
+#include <unistd.h>
 
 ///////
 #include <iostream>
 using namespace std;
 /////////
+
+#define INVALIDVALUE -31415926
+
+
+//static const char* paramsCharNamesToMatch[] =
+//{
+//};
+
 
 static const char* paramsIntegerNamesToMatch[] =
 {
@@ -28,13 +39,19 @@ static const char* paramsLongNamesToMatch[] =
     "swJobDelayPeriod1",
     "swRestPeriod1",
     "swFocusPeriod1",
-    "swExposurePeriod1"
+    "swExposurePeriod1",
+    "timeDrift"
 };
 
 static const char* paramsFloatNamesToMatch[] =
 {
     "paramAlpha",
-    "paramArcsecPerPixel"
+    "paramArcsecPerPixel",
+    "paramsMinThreshold",
+    "paramsThresholdStep",
+    "paramsMaxThreshold",
+    "paramsMinArea",
+    "paramsMaxArea"
 };
 
 static const char* paramsDoubleNamesToMatch[] =
@@ -42,11 +59,23 @@ static const char* paramsDoubleNamesToMatch[] =
     "paramRaSlope"
 };
 
+static const char* settingsCharNamesToMatch[] =
+{
+    "usbFlashMemoryPath",
+    "sdFlashMemoryPath",
+    "GuiderFolder",
+    "DSLRFolder"
+};
+
 static const char* settingsIntegerNamesToMatch[] =
 {
     "setRelativeWidth",
     "setRelativeHeight",
-    "setTriggerGuide"
+    "setTriggerGuide",
+    "captureTethered",
+    "captureToUSB",
+    "iSDeclinationTracked",
+    "captureJustGuiderData"
 };
 
 static const char* settingsFloatNamesToMatch[] =
@@ -59,63 +88,126 @@ static const char* settingsDoubleNamesToMatch[] =
     "setNormalTrackingSpeed"
 };
 
-
-
 LoadSaveAndSettings::LoadSaveAndSettings(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::LoadSaveAndSettings)
 {
     ui->setupUi(this);
+    stopOnSettingsError=false;
     int i;
+
+/*
+    for(i=0; i<MAXCHARPARAMS; i++)
+    {
+        strcpy(PARAMSCHAR[i].name, paramsCharNamesToMatch[i]);
+        strcpy(PARAMSCHAR[i].value, "");
+    }
+*/
+
+    for(i=0; i<MAXCHARSETTINGS; i++)
+    {
+        strcpy(SETTINGSCHAR[i].name, settingsCharNamesToMatch[i]);
+        strcpy(SETTINGSCHAR[i].value, "");
+    }
+
     for(i=0; i<MAXDOUBLEPARAMS; i++)
     {
         strcpy(PARAMSDOUBLE[i].name,paramsDoubleNamesToMatch[i]);
-        PARAMSDOUBLE[i].value=-1;
+        PARAMSDOUBLE[i].value=INVALIDVALUE;
     }
 
     for(i=0; i<MAXFLOATPARAMS; i++)
     {
         strcpy(PARAMSFLOAT[i].name,paramsFloatNamesToMatch[i]);
-        PARAMSFLOAT[i].value=-1;
+        PARAMSFLOAT[i].value=INVALIDVALUE;
     }
 
     for(i=0; i<MAXLONGPARAMS; i++)
     {
         strcpy(PARAMSLONG[i].name,paramsLongNamesToMatch[i]);
-        PARAMSLONG[i].value=-1;
+        PARAMSLONG[i].value=INVALIDVALUE;
     }
 
     for(i=0; i<MAXINTEGERPARAMS; i++)
     {
         strcpy(PARAMSINTEGER[i].name,paramsIntegerNamesToMatch[i]);
-        PARAMSINTEGER[i].value=-1;
+        PARAMSINTEGER[i].value=INVALIDVALUE;
     }
 
     for(i=0; i<MAXINTEGERSETTINGS; i++)
     {
         strcpy(SETTINGSINTEGER[i].name,settingsIntegerNamesToMatch[i]);
-        SETTINGSINTEGER[i].value=-1;
+        SETTINGSINTEGER[i].value=INVALIDVALUE;
     }
 
     for(i=0; i<MAXFLOATSETTINGS; i++)
     {
         strcpy(SETTINGSFLOAT[i].name,settingsFloatNamesToMatch[i]);
-        SETTINGSFLOAT[i].value=-1;
+        SETTINGSFLOAT[i].value=INVALIDVALUE;
     }
 
     for(i=0; i<MAXDOUBLESETTINGS; i++)
     {
         strcpy(SETTINGSDOUBLE[i].name,settingsDoubleNamesToMatch[i]);
-        SETTINGSDOUBLE[i].value=-1;
+        SETTINGSDOUBLE[i].value=INVALIDVALUE;
     }
+    if(!ReadSettings())
+        stopOnSettingsError=true;
+    ReadParams();
+    if(!CreateFolders(GuiderFolder.value))
+        stopOnSettingsError=true;
+    if(!CreateFolders(DSLRFolder.value))
+        stopOnSettingsError=true;
 
+    if(IsUSBFolder())
+    {
+        if(!CanWriteToFolder(usbFlashMemoryPath.value))
+        {
+            cout << "Can not write to USB!" << endl;
+            stopOnSettingsError=true;
+        }
+        char folderName[200];
+        strcpy(folderName,usbFlashMemoryPath.value);
+        strcat(folderName, GuiderFolder.value);
+        if(!CanWriteToFolder(folderName))
+        {
+            cout << "Can not write to USB Guider folder!" << endl;
+            stopOnSettingsError=true;
+        }
+        strcpy(folderName,usbFlashMemoryPath.value);
+        strcat(folderName, DSLRFolder.value);
+        if(!CanWriteToFolder(folderName))
+        {
+            cout << "Can not write to USB DSLR folder!" << endl;
+            stopOnSettingsError=true;
+        }
+    }
+    if(!CanWriteToFolder(sdFlashMemoryPath.value))
+    {
+        cout << "Can not write to user folder on SD!" << endl;
+        stopOnSettingsError=true;
+    }
+    char folderName[200];
+    strcpy(folderName,sdFlashMemoryPath.value);
+    strcat(folderName, GuiderFolder.value);
+    if(!CanWriteToFolder(folderName))
+    {
+        cout << "Can not write to user Guider folder on SD!" << endl;
+        stopOnSettingsError=true;
+    }
+    strcpy(folderName,sdFlashMemoryPath.value);
+    strcat(folderName, DSLRFolder.value);
+    if(!CanWriteToFolder(folderName))
+    {
+        cout << "Can not write to user DSLR folder on SD!" << endl;
+        stopOnSettingsError=true;
+    }
 }
 
 LoadSaveAndSettings::~LoadSaveAndSettings()
 {
     delete ui;
 }
-
 
 int LoadSaveAndSettings::ClearSpaces(char* buf, int dim, char delimiter, bool onlyAroundDelimiter)
 {
@@ -167,7 +259,7 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
     {
         for(int i=0;i<MAXDOUBLEPARAMS;i++)
         {
-            if( PARAMSDOUBLE[i].value<0 )
+            if( PARAMSDOUBLE[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)PARAMSDOUBLE[i].name);
                 return 0;
@@ -176,7 +268,7 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
 
         for(int i=0;i<MAXFLOATPARAMS;i++)
         {
-            if( PARAMSFLOAT[i].value<0 )
+            if( PARAMSFLOAT[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)PARAMSFLOAT[i].name);
                 return 0;
@@ -185,7 +277,7 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
 
         for(int i=0;i<MAXLONGPARAMS;i++)
         {
-            if( PARAMSLONG[i].value<0 )
+            if( PARAMSLONG[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)PARAMSLONG[i].name);
                 return 0;
@@ -194,7 +286,7 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
 
         for(int i=0;i<MAXINTEGERPARAMS;i++)
         {
-            if( PARAMSINTEGER[i].value<0 )
+            if( PARAMSINTEGER[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)PARAMSINTEGER[i].name);
                 return 0;
@@ -205,7 +297,7 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
     {
         for(int i=0;i<MAXINTEGERSETTINGS;i++)
         {
-            if( SETTINGSINTEGER[i].value<0 )
+            if( SETTINGSINTEGER[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)SETTINGSINTEGER[i].name);
                 return 0;
@@ -214,7 +306,7 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
 
         for(int i=0;i<MAXFLOATSETTINGS;i++)
         {
-            if( SETTINGSFLOAT[i].value<0 )
+            if( SETTINGSFLOAT[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)SETTINGSFLOAT[i].name);
                 return 0;
@@ -223,20 +315,38 @@ int LoadSaveAndSettings::CheckData(bool readConfiguration)
 
         for(int i=0;i<MAXDOUBLESETTINGS;i++)
         {
-            if( SETTINGSDOUBLE[i].value<0 )
+            if( SETTINGSDOUBLE[i].value==INVALIDVALUE )
             {
                 DispatchErrorMessage((char*)SETTINGSDOUBLE[i].name);
                 return 0;
             }
         }
+
+        for(int i=0;i<MAXCHARSETTINGS;i++)
+        {
+            if(strlen(SETTINGSCHAR[i].value)==0)
+            {
+                DispatchErrorMessage((char*)SETTINGSCHAR[i].name);
+                return 0;
+            }
+        }
     }
     return 1;
-
 }
 
 int LoadSaveAndSettings::CheckAndSetValidData()
 {
     QString buff=parameterValue;
+/*
+    for(int i=0;i<MAXCHARPARAMS;i++)
+    {
+        if(!strcmp(parameterName, PARAMSCHAR[i].name))
+        {
+            strcpy(PARAMSCHAR[i].value, parameterValue);
+            return 1;
+        }
+    }
+*/
     for(int i=0;i<MAXDOUBLEPARAMS;i++)
     {
         if(!strcmp(parameterName, PARAMSDOUBLE[i].name))
@@ -271,6 +381,15 @@ int LoadSaveAndSettings::CheckAndSetValidData()
         {
             strcpy(numericParameterStringBuffer, parameterValue);
             PARAMSINTEGER[i].value=atoi(numericParameterStringBuffer);
+            return 1;
+        }
+    }
+
+    for(int i=0;i<MAXCHARSETTINGS;i++)
+    {
+        if(!strcmp(parameterName, SETTINGSCHAR[i].name))
+        {
+            strcpy(SETTINGSCHAR[i].value, parameterValue);
             return 1;
         }
     }
@@ -326,18 +445,42 @@ int LoadSaveAndSettings::ReadData(char* configurationOrParams, char* defaultPara
     }
     else
     {
-        mycfg=fopen(configurationOrParams, "r");
-        if (mycfg == NULL)
+        char fileName[200];
+        if(IsUSBFolder())
         {
-            cout << "Parameters file not found. Loadig default file..." << endl;
-            mycfg=fopen(defaultParams, "r");
+            strcpy(fileName, usbFlashMemoryPath.value);
+            strcat(fileName, configurationOrParams);
+            mycfg=fopen(fileName, "r");
             if (mycfg == NULL)
             {
-                cout << "Default parameters file not found. Abandoning read." << endl;
-                return 0;
+                cout << "Parameters file not found on USB. Loadig file from program folder..." << endl;
+                mycfg=fopen(configurationOrParams, "r");
+                if (mycfg == NULL)
+                {
+                    cout << "Default parameters file not found. Loadig default file..." << endl;
+                    mycfg=fopen(defaultParams, "r");
+                    if (mycfg == NULL)
+                    {
+                        cout << "Default parameters file not found. Abandoning read." << endl;
+                        return 0;
+                    }
+                }
             }
         }
-
+        else
+        {
+            mycfg=fopen(configurationOrParams, "r");
+            if (mycfg == NULL)
+            {
+                cout << "Parameters file not found. Loadig default file..." << endl;
+                mycfg=fopen(defaultParams, "r");
+                if (mycfg == NULL)
+                {
+                    cout << "Default parameters file not found. Abandoning read." << endl;
+                    return 0;
+                }
+            }
+        }
     }
     while ((read = getline(&line, &len, mycfg)) != -1)
     {
@@ -376,6 +519,16 @@ int LoadSaveAndSettings::ReadData(char* configurationOrParams, char* defaultPara
     return 1;
 }
 
+int LoadSaveAndSettings::ReadSettings()
+{
+    return ReadData("PiGuider-settings.cfg","", true);
+}
+
+int LoadSaveAndSettings::ReadParams()
+{
+    return ReadData("PiGuider-params.cfg", "PiGuider-params-default.cfg",false);
+}
+
 void LoadSaveAndSettings::DisplayData()
 {
 #ifdef DEBUG
@@ -395,6 +548,9 @@ void LoadSaveAndSettings::DisplayData()
         cout << PARAMSDOUBLE[i].name << " = " << PARAMSDOUBLE[i].value << endl;
     cout << endl;
     cout << endl << " ======== SETTINGS ========" << endl;
+    for(int i=0;i<MAXCHARSETTINGS;i++)
+        cout << SETTINGSCHAR[i].name << " = " << SETTINGSCHAR[i].value << endl;
+    cout << endl;
     for(int i=0;i<MAXINTEGERSETTINGS;i++)
         cout << SETTINGSINTEGER[i].name << " = " << SETTINGSINTEGER[i].value << endl;
     cout << endl;
@@ -407,11 +563,11 @@ void LoadSaveAndSettings::DisplayData()
 #endif
 }
 
-void LoadSaveAndSettings::MakeNegativeParamsZero()
+void LoadSaveAndSettings::MakeInvalidParamsZero()
 {
     for(int i=0;i<MAXINTEGERPARAMS;i++)
     {
-        if( PARAMSINTEGER[i].value<0)
+        if( PARAMSINTEGER[i].value==INVALIDVALUE)
         {
             DispatchErrorMessage((char*)PARAMSINTEGER[i].name);
             PARAMSINTEGER[i].value=0;
@@ -420,7 +576,7 @@ void LoadSaveAndSettings::MakeNegativeParamsZero()
 
     for(int i=0;i<MAXLONGPARAMS;i++)
     {
-        if( PARAMSLONG[i].value<0)
+        if( PARAMSLONG[i].value==INVALIDVALUE)
         {
             DispatchErrorMessage((char*)PARAMSLONG[i].name);
             PARAMSLONG[i].value=0;
@@ -429,7 +585,7 @@ void LoadSaveAndSettings::MakeNegativeParamsZero()
 
     for(int i=0;i<MAXFLOATPARAMS;i++)
     {
-        if( PARAMSFLOAT[i].value<0)
+        if( PARAMSFLOAT[i].value==INVALIDVALUE)
         {
             DispatchErrorMessage((char*)PARAMSFLOAT[i].name);
             PARAMSFLOAT[i].value=0;
@@ -438,7 +594,7 @@ void LoadSaveAndSettings::MakeNegativeParamsZero()
 
     for(int i=0;i<MAXDOUBLEPARAMS;i++)
     {
-        if( PARAMSDOUBLE[i].value<0)
+        if( PARAMSDOUBLE[i].value==INVALIDVALUE)
         {
             DispatchErrorMessage((char*)PARAMSDOUBLE[i].name);
             PARAMSDOUBLE[i].value=0;
@@ -451,13 +607,27 @@ int LoadSaveAndSettings::SaveParams()
 {
     // Save Parameers to file
     QString buff;
-    char logentry[500];
-    char buf[30];
     FILE* parameterFile;
-    if( !(parameterFile=fopen("params.cfg", "w")))
+    if(IsUSBFolder())
     {
-        cout << "Unable to open parameter file " << "params.cfg" << endl;
-        return 0;
+        char fileName[200];
+        strcpy(fileName, usbFlashMemoryPath.value);
+        strcat(fileName, "PiGuider-params.cfg");
+        if( !(parameterFile=fopen(fileName, "w")))
+        {
+            cout << "Unable to open parameter file " << "params.cfg" << endl;
+            stopOnSettingsError=true;
+            return 0;
+        }
+    }
+    else
+    {
+        if( !(parameterFile=fopen("PiGuider-params.cfg", "w")))
+        {
+            cout << "Unable to open parameter file " << "params.cfg" << endl;
+            stopOnSettingsError=true;
+            return 0;
+        }
     }
 
     for(int i=0;i<MAXINTEGERPARAMS;i++)
@@ -492,5 +662,115 @@ int LoadSaveAndSettings::SaveParams()
     }
     fclose(parameterFile);
     return 1;
+}
+
+void LoadSaveAndSettings::SetChronologicFileName()
+{
+    time_t currtime = time(&currtime);
+    currtime+=timeDrift.value;
+    struct tm * ptime;
+    ptime=gmtime(&currtime); // UTC time
+//    ptime=localtime(&currtime); // Local time
+    chronologicFilename=QString::number(ptime->tm_year+1900) + "-";
+    chronologicFilename+=QString::number(ptime->tm_mon+1).rightJustified(2, '0') + "-";
+    chronologicFilename+=QString::number(ptime->tm_mday).rightJustified(2, '0') + "_";
+    chronologicFilename+=QString::number(ptime->tm_hour).rightJustified(2, '0') + ".";
+    chronologicFilename+=QString::number(ptime->tm_min).rightJustified(2, '0') + ".";
+    chronologicFilename+=QString::number(ptime->tm_sec).rightJustified(2, '0');
+}
+
+int LoadSaveAndSettings::IsFile(char *filename)
+{
+    if( access( filename, F_OK ) != -1 )
+        return 1;
+    else
+        return 0;
+}
+
+bool LoadSaveAndSettings::IsUSBFolder()
+{
+    if(IsFile(usbFlashMemoryPath.value))
+        return true;
+    else
+        return false;
+}
+
+bool LoadSaveAndSettings::IsSDFolder()
+{
+    if(IsFile(sdFlashMemoryPath.value))
+        return true;
+    else
+        return false;
+}
+
+int LoadSaveAndSettings::CreateFolders(char* folderName)
+{
+    char newFolder[200];
+    if(IsUSBFolder())
+    {
+        strcpy(newFolder,usbFlashMemoryPath.value);
+        strcat(newFolder, folderName);
+        if(!IsFile(newFolder))
+        {
+            char systemCommand[200];
+            strcpy(systemCommand, "mkdir ");
+            strcat(systemCommand,newFolder);
+            if(system(systemCommand)!=0)
+            {
+                cout << "Can not create USB folder: " << folderName <<endl;
+                return 0;
+            }
+        }
+    }
+    if(!IsSDFolder())
+    {
+        cout << "User folder is absent. Creating user folder." << endl;
+        char systemCommand[200];
+        strcpy(systemCommand, "mkdir ");
+        strcat(systemCommand,sdFlashMemoryPath.value);
+        if(system(systemCommand)!=0)
+        {
+            cout << "Can not create user folder!" << endl;
+            return 0;
+        }
+    }
+    strcpy(newFolder,sdFlashMemoryPath.value);
+    strcat(newFolder, folderName);
+    if(!IsFile(newFolder))
+    {
+        char systemCommand[200];
+        strcpy(systemCommand, "mkdir ");
+        strcat(systemCommand,newFolder);
+        if(system(systemCommand)!=0)
+        {
+            cout << "Can not create SD folder: " << folderName <<endl;
+            return 0;
+        }
+    }
+    return 1;
+}
+
+int LoadSaveAndSettings::CanWriteToFolder(char* folder)
+{
+    char systemCommand[200];
+    strcpy(systemCommand, "mkdir ");
+    strcat(systemCommand, folder);
+    strcat(systemCommand, "testdir/");
+    if(system(systemCommand))
+        return 0;
+    strcpy(systemCommand, folder);
+    strcat(systemCommand, "testdir/");
+    if( IsFile(systemCommand) )
+    {
+        strcpy(systemCommand, "rm -r ");
+        strcat(systemCommand, folder);
+        strcat(systemCommand, "testdir");
+        system(systemCommand);
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 

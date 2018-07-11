@@ -18,6 +18,7 @@
 #include "loadsaveandsettings.h"
 
 
+
 namespace Ui {
 class Guider;
 }
@@ -33,8 +34,9 @@ public:
     bool guideStarSelected;
     bool targetSelected;
     cv::VideoCapture cap;
-    bool refreshEnabled;
+    bool refreshEnabled; // status fot the refresh button
     bool interfaceWindowOpen;
+    int ascensionGuiding, declinationGuiding;
     int calibrationStatus;
     int triggerGuide; // arcseconds - if drift is under this value guiding will not be triggered
     cv::Mat myImage, srcImage, processImage, im;
@@ -54,8 +56,8 @@ public:
     double raSlope;
     double alpha;
     bool slopeVertical;
-    double timeToGuide;
-    QElapsedTimer guideTimer;
+    double ascTimeToGuide, declTimeToGuide;
+    QElapsedTimer ascensionGuideTimer, declinationGuideTimer;
     QPixmap changingButtonsPixmap;
     QSize buttonSize;
     void Flush(cv::VideoCapture& camera);
@@ -78,15 +80,18 @@ public:
     void ComputeDrift();
     void Calibration();
     void DoGuide();
+    void StopGuiders(bool ascension, bool declination);
 
     void SetEnableButtonImage(bool on);
     void SetRefreshButtonImage(bool on);
     void SetSlowButtonImage(bool on);
     void SetNormalButtonImage(bool on);
     void SetFastButtonImage(bool on);
+    void SetSlowButtonImage_2(bool on);
+    void SetFastButtonImage_2(bool on);
     void SetCalibrateButtonImage(bool on);
 
-#ifdef DEBUG
+#ifdef CAPTUREGUIDING
     void CaptureImagesToFiles();
     int captureIndex;
     bool captureFlag;
@@ -122,7 +127,10 @@ private slots:
     void on_slowButton_clicked();
     void on_normalButton_clicked();
     void on_fastButton_clicked();
+    void on_fastButton_2_clicked();
+    void on_slowButton_2_clicked();
     void on_calibrateButton_clicked();
+
 
 private:
     Ui::Guider *ui;

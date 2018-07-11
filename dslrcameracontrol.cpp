@@ -22,14 +22,16 @@ DslrCameraControl::DslrCameraControl()
     isCamera=false;
     isCameraFile=false;
     fromCamera=false;
-    sourceFileName=new char(100);
-    captureFileExtension = new char(8);
+    capturedFileExtension = new char(20);
+    capturedFileName=new char(300);
+    strcpy(capturedFileName, "");
+    strcpy(capturedFileExtension, "");
 }
 
 DslrCameraControl::~DslrCameraControl()
 {
-    delete sourceFileName;
-    delete captureFileExtension;
+    delete capturedFileName;
+    delete capturedFileExtension;
 }
 
 void DslrCameraControl::CameraGrab()
@@ -48,7 +50,7 @@ void DslrCameraControl::CameraGrab()
             return;
         }
         isCamera=true;
-        dslrMessage+="Camera initialised.";
+        dslrMessage+="Camera initialised.\n";
     }
     else
         dslrMessage+="Camera already initialised.";
@@ -62,7 +64,7 @@ void DslrCameraControl::CameraGrab()
             return;
         }
         isCameraFile=true;
-        dslrMessage+="\nCamera file created.";
+        dslrMessage+="Camera file created.\n";
     }
     else
         dslrMessage+="\nCamera file already exists.";
@@ -131,9 +133,10 @@ int DslrCameraControl::CaptureCameraPreview()
         dslrMessage+=QString::number(retval);
         return 0;
     }
-    strcpy(sourceFileName,"/run/shm/DSLR-SourceImage.jpg");
+    strcpy(capturedFileName,"/run/shm/DSLR-SourceImage.jpg");
+    strcpy(capturedFileExtension,".jpg");
 //    retval = gp_file_save(canonFile, "/run/shm/DSLR-SourceImage.jpg");
-    retval = gp_file_save(canonFile, sourceFileName);
+    retval = gp_file_save(canonFile, capturedFileName);
     if (retval != GP_OK)
     {
         dslrMessage="Could not save camera preview.\nError code: ";
@@ -236,35 +239,113 @@ int DslrCameraControl::ShootRelease()
     return 1;
 }
 
-void DslrCameraControl::GetCaptureFileExtension(char *inputString)
+void DslrCameraControl::GetCapturedFileExtension(char *inputString)
 {
     int i;
     int dotPosition=strcspn(inputString,".");
     int counter=0;
     for(i=dotPosition; i<strlen(inputString); i++)
     {
-        *(captureFileExtension+i-dotPosition)=*(inputString+i);
+        *(capturedFileExtension+i-dotPosition)=*(inputString+i);
         counter++;
     }
-    *(captureFileExtension+counter)=0;
+    *(capturedFileExtension+counter)=0;
 }
 
 int DslrCameraControl::ShootAndCapture(char *path, char *fileName, int exposureTime)
 {
+    if(!ShootOn())
+        return 0;
+    sleep(exposureTime);
+    if(!ShootRelease())
+        return 0;
+/*
+    lastCameraFileNumber++;
+    lastCameraFileName="IMG_";
+    if(lastCameraFileNumber < 1000)
+    {
+        lastCameraFileName += "0";
+        if(lastCameraFileNumber < 100)
+        {
+            lastCameraFileName += "0";
+            if(lastCameraFileNumber < 10)
+                lastCameraFileName += "0";
+        }
+    }
+    lastCameraFileName += QString::number((int)lastCameraFileNumber);
+    lastCameraFileName += "." + lastCameraFileExtension;
+*/
+    int retval;
+//    CameraRelease();
+//    CameraGrab();
+    GetLastCameraFileNumber();
+//    char saveFile[500];
+//    strcpy(saveFile,path);
+//    strcat(saveFile,fileName);
+    GetCapturedFileExtension(fileName);
+    strcpy(capturedFileName, path);
+    strcat(capturedFileName,fileName);
+    int fd = open (capturedFileName, O_CREAT | O_WRONLY, 0644);
+//    int fd = open (saveFile, O_CREAT | O_WRONLY, 0644);
+    retval = gp_file_new_from_fd(&canonFile, fd);
+    retval = gp_camera_file_get(canonCamera, currentCameraFolder.toLatin1(), lastCameraFileName.toLatin1(), GP_FILE_TYPE_NORMAL, canonFile, canonContext);
+    return 1;
+}
+
+int DslrCameraControl::ShootAndTether(char *path, char *fileNameNoExtension, int exposureTime)
+{ // shoot and save file in "path/fileNameNoExtension.extension"
+    // "path/fileNameNoExtension.extension" wil be saved in "capturedFileName" (last captured file)
+    // file extension will be saved in "capturedFileExtension". It is given by the camera.
+   if(!isCamera && !isCameraFile)
+    {
+        dslrMessage="DSLR Camera not connected!";
+        return 0;
+    }
+    if(!ShootOn())
+        return 0;
+    sleep(exposureTime);
+    if(!ShootRelease())
+        return 0;
+    char tFileName[100];
+    CameraTether(canonCamera, canonContext, path, tFileName);
+    MoveTetheredFile(tFileName, path, fileNameNoExtension);
+    return 1;
+}
+
+int DslrCameraControl::ReleaseAndTether(char *path, char *fileNameNoExtension)
+{ // release shutter and save file in "/path/fileNameNoExtension.extension"
+    // "path/fileNameNoExtension.extension" wil be saved in "capturedFileName" (last captured file)
+    // file extension will be saved in "capturedFileExtension". It is given by the camera.
     if(!isCamera && !isCameraFile)
     {
         dslrMessage="DSLR Camera not connected!";
         return 0;
     }
-    if(SetConfigValueString(canonCamera, "eosremoterelease", "Immediate", canonContext) < GP_OK)
+    if(!ShootRelease())
         return 0;
-    sleep(exposureTime);
-    if(SetConfigValueString(canonCamera, "eosremoterelease", "Release Full", canonContext) < GP_OK)
-        return 0;
-    CameraTether(canonCamera, canonContext, path, fileName);
-    GetCaptureFileExtension(fileName);
+    char tFileName[100];
+    CameraTether(canonCamera, canonContext, path, tFileName);
+    MoveTetheredFile(tFileName, path, fileNameNoExtension);
     return 1;
 }
+
+void DslrCameraControl::MoveTetheredFile(char *tetheredFileName, char *destinationPath, char *destinationFileNameNoExtension)
+{ // renames the tethered file from "tetheredFileName" to "destinatonFileNameNoExtension.extension"
+  // "destinationPath/destinatonFileNameNoExtension.extension" wil be saved in "capturedFileName"
+  // destination extension will be saved in "capturedFileExtension", It is given by the camera.
+    GetCapturedFileExtension(tetheredFileName);
+    char systemCommand[300];
+    strcpy(capturedFileName, destinationPath);
+    strcat(capturedFileName, destinationFileNameNoExtension);
+    strcat(capturedFileName, capturedFileExtension);
+    strcpy(systemCommand, "mv ");
+    strcat(systemCommand, destinationPath);
+    strcat(systemCommand, tetheredFileName);
+    strcat(systemCommand, " ");
+    strcat(systemCommand, capturedFileName);
+    system(systemCommand);
+}
+
 
 int DslrCameraControl::Connect()
 {
@@ -291,6 +372,20 @@ int DslrCameraControl::Disconnect()
     return 0;
 }
 
+int DslrCameraControl::SetCaptureTargetToMemory()
+{
+    if(SetCaptureTarget(canonCamera, canonContext, (char*)"Internal RAM"))
+        return 1;
+    return 0;
+}
+
+int DslrCameraControl::SetCaptureTargetToSD()
+{
+    if(SetCaptureTarget(canonCamera, canonContext, (char*)"Memory card"))
+        return 1;
+    return 0;
+}
+
 int DslrCameraControl::GetCameraListItem(CameraList *list, int selector, const char** foundItem, QString itemNameForErrorMessage)
 {
     if(!isCamera && !isCameraFile)
@@ -308,7 +403,7 @@ int DslrCameraControl::GetCameraListItem(CameraList *list, int selector, const c
     return 1;
 }
 
-int DslrCameraControl::GetCameraLastFile(Camera *camera, GPContext *context, const char *folder)
+int DslrCameraControl::GetLastCameraFileName(Camera *camera, GPContext *context, const char *folder)
 {
     if(!isCamera && !isCameraFile)
     {
@@ -325,19 +420,19 @@ int DslrCameraControl::GetCameraLastFile(Camera *camera, GPContext *context, con
     {
         const char* fileName=0;
         gp_list_get_name(list, listDim-1, &fileName);
-        lastCameraFile=fileName;
+        lastCameraFileName=fileName;
     }
     else
     {
-        lastCameraFile="";
+        lastCameraFileName="";
         dslrMessage="The camera folder is empty!";
-        lastFileNumber=0;
+        lastCameraFileNumber=0;
     }
     return 1;
     gp_list_free(list);
 }
 
-int DslrCameraControl::SetCameraLastFileNumber()
+int DslrCameraControl::GetLastCameraFileNumber()
 {
     if(!GetCameraFolder(canonCamera, canonContext,  "/", "ROOT", &rootCameraFolder))
         return 0;
@@ -345,17 +440,18 @@ int DslrCameraControl::SetCameraLastFileNumber()
         return 0;
     if(!GetCameraFolder(canonCamera, canonContext,  dcimCameraFolder.toLatin1(), "LAST", &currentCameraFolder))
             return 0;
-    if(!GetCameraLastFile(canonCamera, canonContext, currentCameraFolder.toLatin1()))
+    if(!GetLastCameraFileName(canonCamera, canonContext, currentCameraFolder.toLatin1()))
        return 0;
-    if(lastCameraFile.length()==0)
+    if(lastCameraFileName.length()==0)
     {
-        lastFileNumber=0;
+        lastCameraFileNumber=0;
         return 1;
     }
-    int lastPoint = lastCameraFile.lastIndexOf(".");
-    QString lastFilenameNoExtension = lastCameraFile.left(lastPoint);
+    int lastPoint = lastCameraFileName.lastIndexOf(".");
+    lastCameraFileExtension=lastCameraFileName.section('.',-1, -1);
+    QString lastFilenameNoExtension = lastCameraFileName.left(lastPoint);
     lastFilenameNoExtension = lastFilenameNoExtension.right(4);
-    lastFileNumber=lastFilenameNoExtension.toInt();
+    lastCameraFileNumber=lastFilenameNoExtension.toInt();
     return 1;
 }
 
@@ -593,17 +689,13 @@ int DslrCameraControl::SetCaptureTarget(Camera *canon, GPContext *canoncontext, 
 
 
 void DslrCameraControl::CameraTether(Camera *camera, GPContext *context,  char *destinationFolder, char *fileName)
-{
+{ // Saves the captured file under the name: "fileName", given by the camera and in "destinationFolder"
     int fd, retval;
-//    CameraFile *file;
     CameraEventType	evttype;
     CameraFilePath	*path;
     void	*evtdata;
     char saveFile[500];
-//    strcpy (saveFile,"/run/shm/");
-        strcpy (saveFile,(const char*)destinationFolder);
-//        saveFile[strlen(destinationFolder)]=0;
-
+    strcpy (saveFile,(const char*)destinationFolder);
     printf("Tethering...\n");
 
     while (1)
@@ -618,23 +710,12 @@ void DslrCameraControl::CameraTether(Camera *camera, GPContext *context,  char *
             path = (CameraFilePath*)evtdata;
             strcat(saveFile,path->name);
             printf("File added on the camera: %s/%s\n", path->folder, path->name);
-
-//            if(fn)
-//                fd = open(fn, O_CREAT | O_WRONLY, 0644);
-//            else
-//                fd = open(fn, O_CREAT | O_WRONLY, 0644);
             fd = open (saveFile, O_CREAT | O_WRONLY, 0644);
             retval = gp_file_new_from_fd(&canonFile, fd);
             printf("  Downloading %s...\n", path->name);
             strcpy(fileName, path->name);
-            retval = gp_camera_file_get(camera, path->folder, path->name,
-                     GP_FILE_TYPE_NORMAL, canonFile, context);
-
-//            printf("  Deleting %s on camera...\n", path->name);
-//            retval = gp_camera_file_delete(camera, path->folder, path->name, context);
-//            gp_file_free(file);
+            retval = gp_camera_file_get(camera, path->folder, path->name, GP_FILE_TYPE_NORMAL, canonFile, context);
             free(evtdata);
-
             return;
             break;
 
@@ -643,16 +724,20 @@ void DslrCameraControl::CameraTether(Camera *camera, GPContext *context,  char *
             printf("Folder added on camera: %s / %s\n", path->folder, path->name);
             free(evtdata);
             break;
+
 //        case GP_EVENT_FILE_CHANGED:
 //            path = (CameraFilePath*)evtdata;
 //            printf("File changed on camera: %s / %s\n", path->folder, path->name);
 //            free(evtdata);
 //            break;
+
         case GP_EVENT_CAPTURE_COMPLETE:
             printf("Capture Complete.\n");
+            free(evtdata);
             break;
         case GP_EVENT_TIMEOUT:
             printf("Timeout.\n");
+            free(evtdata);
             break;
         case GP_EVENT_UNKNOWN:
             if (evtdata) {
@@ -660,9 +745,11 @@ void DslrCameraControl::CameraTether(Camera *camera, GPContext *context,  char *
             } else {
                 printf("Unknown event.\n");
             }
+            free(evtdata);
             break;
         default:
             printf("Type %d?\n", evttype);
+            free(evtdata);
             break;
         }
     }

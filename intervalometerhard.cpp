@@ -36,15 +36,12 @@ IntervalometerHard::~IntervalometerHard()
 
 void IntervalometerHard::Init()
 {
-    lsas.ReadData("params.cfg" ,"params-default.cfg",false);
     iterations1=lsas.hwIterations1.value;
     iterations2=lsas.hwIterations2.value;
-
     jobDelayPeriod1=lsas.hwJobDelayPeriod1.value;
     restPeriod1=lsas.hwRestPeriod1.value;
     focusPeriod1=lsas.hwFocusPeriod1.value;
     exposurePeriod1=lsas.hwExposurePeriod1.value;
-
     jobDelayPeriod2=lsas.hwJobDelayPeriod2.value;
     restPeriod2=lsas.hwRestPeriod2.value;
     focusPeriod2=lsas.hwFocusPeriod2.value;
@@ -52,12 +49,10 @@ void IntervalometerHard::Init()
 
     iterationsCount1=iterations1;
     iterationsCount2=iterations2;
-
     jobDelayPeriodCount1=jobDelayPeriod1;
     restPeriodCount1=restPeriod1;
     focusPeriodCount1=focusPeriod1;
     exposurePeriodCount1=exposurePeriod1;
-
     jobDelayPeriodCount2=jobDelayPeriod2;
     restPeriodCount2=restPeriod2;
     focusPeriodCount2=focusPeriod2;
@@ -89,6 +84,8 @@ void IntervalometerHard::UpdateStatus()
         SetIntervalometer1ButtonImage(false);
         SetIntervalometer2ButtonImage(false);
         SetEnableButtonImage(false);
+        PeriodsToHMS();
+        DisplayCounterValues();
     }
 }
 

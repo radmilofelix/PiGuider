@@ -495,7 +495,7 @@
   <widget class="QLabel" name="labelH_8">
    <property name="geometry">
     <rect>
-     <x>319</x>
+     <x>209</x>
      <y>142</y>
      <width>21</width>
      <height>17</height>
@@ -518,7 +518,7 @@
   <widget class="QLabel" name="labelIntervalometer1">
    <property name="geometry">
     <rect>
-     <x>163</x>
+     <x>53</x>
      <y>10</y>
      <width>271</width>
      <height>30</height>
@@ -549,7 +549,7 @@
   <widget class="QLabel" name="focusHoursLabel1">
    <property name="geometry">
     <rect>
-     <x>309</x>
+     <x>199</x>
      <y>340</y>
      <width>40</width>
      <height>40</height>
@@ -575,7 +575,7 @@
   <widget class="QLabel" name="labelH_5">
    <property name="geometry">
     <rect>
-     <x>168</x>
+     <x>58</x>
      <y>232</y>
      <width>21</width>
      <height>17</height>
@@ -598,7 +598,7 @@
   <widget class="QLineEdit" name="jobDelaySecondsLineEdit1">
    <property name="geometry">
     <rect>
-     <x>252</x>
+     <x>142</x>
      <y>160</y>
      <width>40</width>
      <height>40</height>
@@ -636,7 +636,7 @@
   <widget class="QLabel" name="restHoursLabel1">
    <property name="geometry">
     <rect>
-     <x>309</x>
+     <x>199</x>
      <y>250</y>
      <width>40</width>
      <height>40</height>
@@ -662,7 +662,7 @@
   <widget class="QLabel" name="labelS_8">
    <property name="geometry">
     <rect>
-     <x>414</x>
+     <x>304</x>
      <y>142</y>
      <width>21</width>
      <height>17</height>
@@ -685,7 +685,7 @@
   <widget class="QLabel" name="restSecondsLabel1">
    <property name="geometry">
     <rect>
-     <x>403</x>
+     <x>293</x>
      <y>250</y>
      <width>40</width>
      <height>40</height>
@@ -711,7 +711,7 @@
   <widget class="QLabel" name="exposureSecondsLabel1">
    <property name="geometry">
     <rect>
-     <x>403</x>
+     <x>293</x>
      <y>430</y>
      <width>40</width>
      <height>40</height>
@@ -737,7 +737,7 @@
   <widget class="QLabel" name="label_9">
    <property name="geometry">
     <rect>
-     <x>246</x>
+     <x>136</x>
      <y>430</y>
      <width>5</width>
      <height>40</height>
@@ -760,7 +760,7 @@
   <widget class="QLabel" name="labelS_2">
    <property name="geometry">
     <rect>
-     <x>414</x>
+     <x>304</x>
      <y>412</y>
      <width>21</width>
      <height>17</height>
@@ -783,7 +783,7 @@
   <widget class="QLineEdit" name="jobDelayHoursLineEdit1">
    <property name="geometry">
     <rect>
-     <x>158</x>
+     <x>48</x>
      <y>160</y>
      <width>40</width>
      <height>40</height>
@@ -818,7 +818,7 @@
   <widget class="QLabel" name="labelM">
    <property name="geometry">
     <rect>
-     <x>215</x>
+     <x>105</x>
      <y>412</y>
      <width>21</width>
      <height>17</height>
@@ -841,7 +841,7 @@
   <widget class="QLabel" name="restMinutesLabel1">
    <property name="geometry">
     <rect>
-     <x>356</x>
+     <x>246</x>
      <y>250</y>
      <width>40</width>
      <height>40</height>
@@ -867,7 +867,7 @@
   <widget class="QLabel" name="labelS_5">
    <property name="geometry">
     <rect>
-     <x>261</x>
+     <x>151</x>
      <y>232</y>
      <width>21</width>
      <height>17</height>
@@ -890,7 +890,7 @@
   <widget class="QLabel" name="labelM_2">
    <property name="geometry">
     <rect>
-     <x>366</x>
+     <x>256</x>
      <y>412</y>
      <width>21</width>
      <height>17</height>
@@ -913,7 +913,7 @@
   <widget class="QLabel" name="label_4">
    <property name="geometry">
     <rect>
-     <x>199</x>
+     <x>89</x>
      <y>160</y>
      <width>5</width>
      <height>40</height>
@@ -936,7 +936,7 @@
   <widget class="QLabel" name="labelS_7">
    <property name="geometry">
     <rect>
-     <x>261</x>
+     <x>151</x>
      <y>142</y>
      <width>21</width>
      <height>17</height>
@@ -959,7 +959,7 @@
   <widget class="QLabel" name="labelDetails1">
    <property name="geometry">
     <rect>
-     <x>163</x>
+     <x>53</x>
      <y>40</y>
      <width>271</width>
      <height>30</height>
@@ -981,7 +981,7 @@
     <enum>QFrame::Box</enum>
    </property>
    <property name="text">
-    <string>Programmed:           TO GO:</string>
+    <string>Programmed:        TO GO:</string>
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
@@ -990,7 +990,7 @@
   <widget class="QLabel" name="labelH_3">
    <property name="geometry">
     <rect>
-     <x>168</x>
+     <x>58</x>
      <y>322</y>
      <width>21</width>
      <height>17</height>
@@ -1013,7 +1013,7 @@
   <widget class="QLabel" name="labelH_7">
    <property name="geometry">
     <rect>
-     <x>168</x>
+     <x>58</x>
      <y>142</y>
      <width>21</width>
      <height>17</height>
@@ -1036,7 +1036,7 @@
   <widget class="QLabel" name="jobDelayMinutesLabel1">
    <property name="geometry">
     <rect>
-     <x>356</x>
+     <x>246</x>
      <y>160</y>
      <width>40</width>
      <height>40</height>
@@ -1062,7 +1062,7 @@
   <widget class="QLabel" name="labelFocus">
    <property name="geometry">
     <rect>
-     <x>226</x>
+     <x>116</x>
      <y>300</y>
      <width>151</width>
      <height>21</height>
@@ -1088,7 +1088,7 @@
   <widget class="QLabel" name="jobDelaySecondsLabel1">
    <property name="geometry">
     <rect>
-     <x>403</x>
+     <x>293</x>
      <y>160</y>
      <width>40</width>
      <height>40</height>
@@ -1114,7 +1114,7 @@
   <widget class="QLabel" name="label_7">
    <property name="geometry">
     <rect>
-     <x>246</x>
+     <x>136</x>
      <y>250</y>
      <width>5</width>
      <height>40</height>
@@ -1137,7 +1137,7 @@
   <widget class="QLabel" name="labelM_4">
    <property name="geometry">
     <rect>
-     <x>366</x>
+     <x>256</x>
      <y>322</y>
      <width>21</width>
      <height>17</height>
@@ -1160,7 +1160,7 @@
   <widget class="QLabel" name="labelS_3">
    <property name="geometry">
     <rect>
-     <x>261</x>
+     <x>151</x>
      <y>322</y>
      <width>21</width>
      <height>17</height>
@@ -1183,7 +1183,7 @@
   <widget class="QLabel" name="intervalometer1LedLabel">
    <property name="geometry">
     <rect>
-     <x>397</x>
+     <x>287</x>
      <y>18</y>
      <width>16</width>
      <height>16</height>
@@ -1196,7 +1196,7 @@
   <widget class="QLabel" name="focusMinutesLabel1">
    <property name="geometry">
     <rect>
-     <x>356</x>
+     <x>246</x>
      <y>340</y>
      <width>40</width>
      <height>40</height>
@@ -1222,7 +1222,7 @@
   <widget class="QLineEdit" name="restHoursLineEdit1">
    <property name="geometry">
     <rect>
-     <x>158</x>
+     <x>48</x>
      <y>250</y>
      <width>40</width>
      <height>40</height>
@@ -1257,7 +1257,7 @@
   <widget class="QLabel" name="labelH_2">
    <property name="geometry">
     <rect>
-     <x>319</x>
+     <x>209</x>
      <y>412</y>
      <width>21</width>
      <height>17</height>
@@ -1280,7 +1280,7 @@
   <widget class="QLineEdit" name="exposureSecondsLineEdit1">
    <property name="geometry">
     <rect>
-     <x>252</x>
+     <x>142</x>
      <y>430</y>
      <width>40</width>
      <height>40</height>
@@ -1315,7 +1315,7 @@
   <widget class="QLabel" name="jobDelayHoursLabel1">
    <property name="geometry">
     <rect>
-     <x>309</x>
+     <x>199</x>
      <y>160</y>
      <width>40</width>
      <height>40</height>
@@ -1341,7 +1341,7 @@
   <widget class="QLabel" name="label_17">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>240</x>
      <y>340</y>
      <width>5</width>
      <height>40</height>
@@ -1364,7 +1364,7 @@
   <widget class="QLabel" name="labelM_8">
    <property name="geometry">
     <rect>
-     <x>366</x>
+     <x>256</x>
      <y>142</y>
      <width>21</width>
      <height>17</height>
@@ -1387,7 +1387,7 @@
   <widget class="QLabel" name="label_14">
    <property name="geometry">
     <rect>
-     <x>293</x>
+     <x>183</x>
      <y>353</y>
      <width>16</width>
      <height>16</height>
@@ -1411,7 +1411,7 @@
   <widget class="QLabel" name="label_15">
    <property name="geometry">
     <rect>
-     <x>293</x>
+     <x>183</x>
      <y>443</y>
      <width>16</width>
      <height>16</height>
@@ -1435,7 +1435,7 @@
   <widget class="QLabel" name="label_20">
    <property name="geometry">
     <rect>
-     <x>397</x>
+     <x>287</x>
      <y>340</y>
      <width>5</width>
      <height>40</height>
@@ -1458,7 +1458,7 @@
   <widget class="QLabel" name="focusSecondsLabel1">
    <property name="geometry">
     <rect>
-     <x>403</x>
+     <x>293</x>
      <y>340</y>
      <width>40</width>
      <height>40</height>
@@ -1484,7 +1484,7 @@
   <widget class="QLineEdit" name="exposureHoursLineEdit1">
    <property name="geometry">
     <rect>
-     <x>158</x>
+     <x>48</x>
      <y>430</y>
      <width>40</width>
      <height>40</height>
@@ -1519,7 +1519,7 @@
   <widget class="QLabel" name="label_5">
    <property name="geometry">
     <rect>
-     <x>246</x>
+     <x>136</x>
      <y>160</y>
      <width>5</width>
      <height>40</height>
@@ -1542,7 +1542,7 @@
   <widget class="QLabel" name="label_11">
    <property name="geometry">
     <rect>
-     <x>199</x>
+     <x>89</x>
      <y>430</y>
      <width>5</width>
      <height>40</height>
@@ -1565,7 +1565,7 @@
   <widget class="QLabel" name="labelM_6">
    <property name="geometry">
     <rect>
-     <x>366</x>
+     <x>256</x>
      <y>232</y>
      <width>21</width>
      <height>17</height>
@@ -1588,7 +1588,7 @@
   <widget class="QLabel" name="label_8">
    <property name="geometry">
     <rect>
-     <x>199</x>
+     <x>89</x>
      <y>340</y>
      <width>5</width>
      <height>40</height>
@@ -1611,7 +1611,7 @@
   <widget class="QLabel" name="exposureMinutesLabel1">
    <property name="geometry">
     <rect>
-     <x>356</x>
+     <x>246</x>
      <y>430</y>
      <width>40</width>
      <height>40</height>
@@ -1637,7 +1637,7 @@
   <widget class="QLabel" name="label_13">
    <property name="geometry">
     <rect>
-     <x>293</x>
+     <x>183</x>
      <y>262</y>
      <width>16</width>
      <height>16</height>
@@ -1661,7 +1661,7 @@
   <widget class="QLabel" name="labelS_6">
    <property name="geometry">
     <rect>
-     <x>414</x>
+     <x>304</x>
      <y>232</y>
      <width>21</width>
      <height>17</height>
@@ -1684,7 +1684,7 @@
   <widget class="QLabel" name="labelH">
    <property name="geometry">
     <rect>
-     <x>168</x>
+     <x>58</x>
      <y>412</y>
      <width>21</width>
      <height>17</height>
@@ -1707,7 +1707,7 @@
   <widget class="QLabel" name="labelJobDelay">
    <property name="geometry">
     <rect>
-     <x>226</x>
+     <x>116</x>
      <y>120</y>
      <width>151</width>
      <height>21</height>
@@ -1733,7 +1733,7 @@
   <widget class="QLabel" name="label_18">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>240</x>
      <y>430</y>
      <width>5</width>
      <height>40</height>
@@ -1756,7 +1756,7 @@
   <widget class="QLabel" name="labelM_3">
    <property name="geometry">
     <rect>
-     <x>215</x>
+     <x>105</x>
      <y>322</y>
      <width>21</width>
      <height>17</height>
@@ -1779,7 +1779,7 @@
   <widget class="QLabel" name="labelS">
    <property name="geometry">
     <rect>
-     <x>261</x>
+     <x>151</x>
      <y>412</y>
      <width>21</width>
      <height>17</height>
@@ -1802,7 +1802,7 @@
   <widget class="QLabel" name="label_16">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>240</x>
      <y>250</y>
      <width>5</width>
      <height>40</height>
@@ -1825,7 +1825,7 @@
   <widget class="QLabel" name="iterationsLabel1">
    <property name="geometry">
     <rect>
-     <x>373</x>
+     <x>263</x>
      <y>75</y>
      <width>60</width>
      <height>40</height>
@@ -1851,7 +1851,7 @@
   <widget class="QLabel" name="label_10">
    <property name="geometry">
     <rect>
-     <x>246</x>
+     <x>136</x>
      <y>340</y>
      <width>5</width>
      <height>40</height>
@@ -1874,7 +1874,7 @@
   <widget class="QLineEdit" name="exposureMinutesLineEdit1">
    <property name="geometry">
     <rect>
-     <x>205</x>
+     <x>95</x>
      <y>430</y>
      <width>40</width>
      <height>40</height>
@@ -1909,7 +1909,7 @@
   <widget class="QLineEdit" name="focusMinutesLineEdit1">
    <property name="geometry">
     <rect>
-     <x>205</x>
+     <x>95</x>
      <y>340</y>
      <width>40</width>
      <height>40</height>
@@ -1944,7 +1944,7 @@
   <widget class="QLabel" name="label_6">
    <property name="geometry">
     <rect>
-     <x>199</x>
+     <x>89</x>
      <y>250</y>
      <width>5</width>
      <height>40</height>
@@ -1967,7 +1967,7 @@
   <widget class="QLabel" name="label_22">
    <property name="geometry">
     <rect>
-     <x>397</x>
+     <x>287</x>
      <y>430</y>
      <width>5</width>
      <height>40</height>
@@ -1990,7 +1990,7 @@
   <widget class="QLabel" name="label_23">
    <property name="geometry">
     <rect>
-     <x>397</x>
+     <x>287</x>
      <y>250</y>
      <width>5</width>
      <height>40</height>
@@ -2013,7 +2013,7 @@
   <widget class="QLineEdit" name="jobDelayMinutesLineEdit1">
    <property name="geometry">
     <rect>
-     <x>205</x>
+     <x>95</x>
      <y>160</y>
      <width>40</width>
      <height>40</height>
@@ -2051,7 +2051,7 @@
   <widget class="QLabel" name="labelM_5">
    <property name="geometry">
     <rect>
-     <x>215</x>
+     <x>105</x>
      <y>232</y>
      <width>21</width>
      <height>17</height>
@@ -2074,7 +2074,7 @@
   <widget class="QLabel" name="label_12">
    <property name="geometry">
     <rect>
-     <x>293</x>
+     <x>183</x>
      <y>173</y>
      <width>16</width>
      <height>16</height>
@@ -2098,7 +2098,7 @@
   <widget class="QLabel" name="labelIterations1">
    <property name="geometry">
     <rect>
-     <x>256</x>
+     <x>146</x>
      <y>80</y>
      <width>91</width>
      <height>21</height>
@@ -2124,7 +2124,7 @@
   <widget class="QLabel" name="labelH_4">
    <property name="geometry">
     <rect>
-     <x>319</x>
+     <x>209</x>
      <y>322</y>
      <width>21</width>
      <height>17</height>
@@ -2147,7 +2147,7 @@
   <widget class="QLabel" name="exposureHoursLabel1">
    <property name="geometry">
     <rect>
-     <x>309</x>
+     <x>199</x>
      <y>430</y>
      <width>40</width>
      <height>40</height>
@@ -2173,7 +2173,7 @@
   <widget class="QLineEdit" name="restMinutesLineEdit1">
    <property name="geometry">
     <rect>
-     <x>205</x>
+     <x>95</x>
      <y>250</y>
      <width>40</width>
      <height>40</height>
@@ -2208,7 +2208,7 @@
   <widget class="QLineEdit" name="focusSecondsLineEdit1">
    <property name="geometry">
     <rect>
-     <x>252</x>
+     <x>142</x>
      <y>340</y>
      <width>40</width>
      <height>40</height>
@@ -2243,7 +2243,7 @@
   <widget class="QLabel" name="labelM_7">
    <property name="geometry">
     <rect>
-     <x>215</x>
+     <x>105</x>
      <y>142</y>
      <width>21</width>
      <height>17</height>
@@ -2266,7 +2266,7 @@
   <widget class="QLabel" name="labelRest">
    <property name="geometry">
     <rect>
-     <x>205</x>
+     <x>95</x>
      <y>210</y>
      <width>191</width>
      <height>21</height>
@@ -2292,7 +2292,7 @@
   <widget class="QLineEdit" name="restSecondsLineEdit1">
    <property name="geometry">
     <rect>
-     <x>252</x>
+     <x>142</x>
      <y>250</y>
      <width>40</width>
      <height>40</height>
@@ -2327,7 +2327,7 @@
   <widget class="QLabel" name="labelS_4">
    <property name="geometry">
     <rect>
-     <x>414</x>
+     <x>304</x>
      <y>322</y>
      <width>21</width>
      <height>17</height>
@@ -2350,7 +2350,7 @@
   <widget class="QLabel" name="labelExposure">
    <property name="geometry">
     <rect>
-     <x>256</x>
+     <x>146</x>
      <y>390</y>
      <width>91</width>
      <height>21</height>
@@ -2376,7 +2376,7 @@
   <widget class="QLabel" name="label_21">
    <property name="geometry">
     <rect>
-     <x>397</x>
+     <x>287</x>
      <y>160</y>
      <width>5</width>
      <height>40</height>
@@ -2399,7 +2399,7 @@
   <widget class="QLineEdit" name="focusHoursLineEdit1">
    <property name="geometry">
     <rect>
-     <x>158</x>
+     <x>48</x>
      <y>340</y>
      <width>40</width>
      <height>40</height>
@@ -2437,7 +2437,7 @@
   <widget class="QLabel" name="labelH_6">
    <property name="geometry">
     <rect>
-     <x>319</x>
+     <x>209</x>
      <y>232</y>
      <width>21</width>
      <height>17</height>
@@ -2460,7 +2460,7 @@
   <widget class="QLineEdit" name="iterationsLineEdit1">
    <property name="geometry">
     <rect>
-     <x>170</x>
+     <x>60</x>
      <y>75</y>
      <width>60</width>
      <height>40</height>
@@ -2483,7 +2483,7 @@
   <widget class="QLabel" name="label_19">
    <property name="geometry">
     <rect>
-     <x>350</x>
+     <x>240</x>
      <y>160</y>
      <width>5</width>
      <height>40</height>
@@ -2506,8 +2506,8 @@
   <widget class="QPushButton" name="toggleVirtualNumpadButton">
    <property name="geometry">
     <rect>
-     <x>710</x>
-     <y>400</y>
+     <x>730</x>
+     <y>410</y>
      <width>70</width>
      <height>70</height>
     </rect>
@@ -2532,8 +2532,8 @@
   <widget class="QLabel" name="labelJobDelay1">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>295</y>
+     <x>700</x>
+     <y>257</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -2558,8 +2558,8 @@
   <widget class="QLabel" name="labelExposure1">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>398</y>
+     <x>700</x>
+     <y>360</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -2584,8 +2584,8 @@
   <widget class="QLabel" name="labelFocus1">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>364</y>
+     <x>700</x>
+     <y>326</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -2610,24 +2610,34 @@
   <widget class="QPushButton" name="pushButton">
    <property name="geometry">
     <rect>
-     <x>551</x>
-     <y>232</y>
+     <x>660</x>
+     <y>410</y>
      <width>50</width>
      <height>50</height>
     </rect>
    </property>
    <property name="styleSheet">
-    <string notr="true"/>
+    <string notr="true">#pushButton
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/arrowDown.png);
+}
+#pushButton:pressed
+{
+	border-image: url(:/media/icons/tools-512x512/arrowDown-pressed.png);
+}</string>
    </property>
    <property name="text">
-    <string>PBTN</string>
+    <string/>
    </property>
   </widget>
   <widget class="QLabel" name="labelRest1">
    <property name="geometry">
     <rect>
-     <x>540</x>
-     <y>330</y>
+     <x>700</x>
+     <y>292</y>
      <width>90</width>
      <height>31</height>
     </rect>
@@ -2652,7 +2662,7 @@
   <widget class="QPushButton" name="connectButton">
    <property name="geometry">
     <rect>
-     <x>450</x>
+     <x>490</x>
      <y>10</y>
      <width>70</width>
      <height>70</height>
@@ -2678,10 +2688,10 @@
   <widget class="QLabel" name="labelMessages">
    <property name="geometry">
     <rect>
-     <x>460</x>
+     <x>360</x>
      <y>110</y>
-     <width>321</width>
-     <height>41</height>
+     <width>421</width>
+     <height>81</height>
     </rect>
    </property>
    <property name="styleSheet">
@@ -2699,6 +2709,28 @@
    </property>
    <property name="alignment">
     <set>Qt::AlignCenter</set>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="captureMediaButton">
+   <property name="geometry">
+    <rect>
+     <x>500</x>
+     <y>390</y>
+     <width>70</width>
+     <height>70</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">#captureMediaButton
+{
+	background-color: transparent;
+	background: none;
+	background-repeat: none;
+	border-image: url(:/media/icons/tools-512x512/neutralSquare.png);
+}</string>
+   </property>
+   <property name="text">
+    <string/>
    </property>
   </widget>
  </widget>

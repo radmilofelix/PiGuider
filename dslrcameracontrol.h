@@ -6,6 +6,7 @@
 #include <gphoto2/gphoto2-filesys.h>
 #include <QString>
 
+
 class DslrCameraControl
 {
 public:
@@ -17,13 +18,13 @@ public:
     bool fromCamera;
     int cameraFocus;
     QString dslrMessage;
-    QString rootCameraFolder, dcimCameraFolder, currentCameraFolder, lastCameraFile;
-    int lastFileNumber;
+    QString rootCameraFolder, dcimCameraFolder, currentCameraFolder, lastCameraFileName, lastCameraFileExtension;
+    int lastCameraFileNumber;
     Camera	*canonCamera;
     GPContext *canonContext;
     CameraFile *canonFile;
-    char *sourceFileName;
-    char *captureFileExtension;
+    char *capturedFileExtension;
+    char *capturedFileName;
 
     void CameraGrab();
     void CameraRelease();
@@ -35,16 +36,21 @@ public:
     int SetMagnification(char* magnification);
     int ShootOn();
     int ShootRelease();
-    void GetCaptureFileExtension(char *inputString);
+    void GetCapturedFileExtension(char *inputString);
     int ShootAndCapture(char *path, char *fileName, int exposureTime);
+    int ShootAndTether(char *path, char *fileNameNoExtension, int exposureTime);
+    int ReleaseAndTether(char *path, char *fileNameNoExtension);
+    void MoveTetheredFile(char* capturedFileName, char* destinationPath, char* destinationFileNameNoExtension);
     int Connect();
     int Disconnect();
+    int SetCaptureTargetToMemory();
+    int SetCaptureTargetToSD();
 
     int GetCameraListItem(CameraList *list, int selector, const char** foundItem, QString itemNameForErrorMessage);
     int GetCameraFolder(Camera *camera, GPContext *context, const char *folderPrefix, QString selection, QString *cameraFolder);
-    int GetCameraLastFile(Camera *camera, GPContext *context, const char *folder);
-    int SetCameraLastFileNumber();
-    int SetCaptureTarget(Camera *canon, GPContext *canoncontext, char* option);
+    int GetLastCameraFileName(Camera *camera, GPContext *context, const char *folder);
+    int GetLastCameraFileNumber();
+
 
 private:
     int GetConfigValueString(Camera *camera, const char *key, char **str, GPContext *context);
@@ -52,6 +58,7 @@ private:
     int CameraManualFocus (Camera *camera, int xx, GPContext *context);
     static int LookupWidget(CameraWidget*widget, const char *key, CameraWidget **child);
     void CameraTether(Camera *camera, GPContext *context,  char *destinationFolder, char *fileName);
+    int SetCaptureTarget(Camera *canon, GPContext *canoncontext, char* option);
 //    static void capture_to_file(Camera *canon, GPContext *canoncontext, char *fn);
 //    static void errordumper(GPLogLevel level, const char *domain, const char *str, void *data);
 //    int canon_enable_capture (Camera *camera, int onoff, GPContext *context);

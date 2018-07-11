@@ -29,9 +29,7 @@ Guider::Guider(QWidget *parent) :
     connect(ui->guiderImageLabel, SIGNAL(Mouse_Pos()), this, SLOT(Mouse_current_pos()));
     connect(ui->guiderImageLabel, SIGNAL(Mouse_Pressed()), this, SLOT(Mouse_pressed()));
     connect(ui->guiderImageLabel, SIGNAL(Mouse_Left()), this, SLOT(Mouse_left()));
-    lsas.ReadData("settings.cfg","", true);
-    lsas.ReadData("params.cfg", "params-default.cfg",false);
-    lsas.DisplayData();
+//    lsas.DisplayData();
     buttonSize.setHeight(50);
     buttonSize.setWidth(50);
     enabled=false;
@@ -48,6 +46,8 @@ Guider::Guider(QWidget *parent) :
     refreshEnabled=false;
     calibrationStatus=lsas.paramCalibrationStatus.value;
     interfaceWindowOpen=false;
+    ascensionGuiding=0;
+    declinationGuiding=0;
     if(lsas.paramSlopeVertical.value)
         slopeVertical=true;
     else
@@ -57,26 +57,23 @@ Guider::Guider(QWidget *parent) :
     normalTrackingSpeed=lsas.setNormalTrackingSpeed.value; // arcsec per second (Earth angular rotation speed)
     acceleratedTrackingSpeed=normalTrackingSpeed*(1+lsas.setGuidingSpeed.value); // = 22.5 arcsec/sec (measured on SW-SA)
     deceleratedTrackingSpeed=normalTrackingSpeed*(1-lsas.setGuidingSpeed.value); // = 7.5 arcsec/sec (measured on SW-SA)
-//    acceleratedTrackingSpeed=normalTrackingSpeed*1.5; // = 22.5 arcsec/sec (measured on SW-SA)
-//    deceleratedTrackingSpeed=normalTrackingSpeed*0.5; // = 7.5 arcsec/sec (measured on SW-SA)
-
     raDrift=0;
     declDrift=0;
     raDriftArcsec=0;
     declDriftArcsec=0;
-//    raDriftScaled=0;
-//    declDriftScaled=0;
     ui->horizontalGammaSlider->setRange(0, 2000);
     ui->horizontalGammaSlider->setValue(1000);
     ui->horizontalGammaSlider->setVisible(true);
+    SetSlowButtonImage_2(false);
+    SetFastButtonImage_2(false);
     SetNormalButtonImage(true);
 
-#ifdef DEBUG
+#ifdef CAPTUREGUIDING
     captureIndex=0;
     captureFlag=false;
 #endif
+
 #ifdef CAPTUREFROMFILE
-//    fileIndex=59;
     fileIndex=0;
 #else
 //    cap.open(0);// 0 = first camera, 1 = second camera...
@@ -132,6 +129,7 @@ void Guider::on_refreshButton_clicked()
         SetRefreshButtonImage(true);
         SetEnableButtonImage(false);
 
+        lsas.ReadParams();
         starsDetected=0;
         targetSelected=false;
         guideStarSelected=false;
@@ -165,10 +163,6 @@ void Guider::on_refreshButton_clicked()
         this->repaint();
     }
 }
-
-
-
-
 
 void Guider::Flush(cv::VideoCapture& camera)
 { // flush the camera capture buffer to minimize the delay between 2 captured frames
@@ -284,9 +278,9 @@ void Guider::RefreshData() // called by main interface if enabled=true or refres
         Calibration();
         DoGuide();
     }
-#ifdef DEBUG
-//    if(captureFlag)
-//        CaptureImagesToFiles(); // capture guide scope images for simulation purposes
+#ifdef CAPTUREGUIDING
+    if(captureFlag)
+        CaptureImagesToFiles(); // capture guide scope images for simulation purposes
 #endif
 }
 
@@ -350,20 +344,22 @@ void Guider::NewCapture()
 #else
 
 //#include "capture-00-Miscellaneous.h" // miscellaneous sky photos
-#include "capture-01-Arcturus-CNE-CWC3.h" // Arcturus Canyon-CNE-CWC3-webcam - 1332 files - 20 min simulation
+//#include "capture-01-Arcturus-CNE-CWC3.h" // Arcturus Canyon-CNE-CWC3-webcam - 1332 files - 20 min simulation
 //#include "capture-02-Arcturus-CNE-HWC1.h" // Arcturus Canyon-CNE-HWC1-webcam - 123 files
 //#include "capture-03-Arcturus-Trust-16429.h" // Arcturus Trust-16429-webcam - 41 files
 //#include "capture-04-Jupiter-CNE-HWC1.h" // Jupiter Canyon-CNE-HWC1-webcam - 27 files
 //#include "capture-05-Jupiter-Trust-16429.h" // Jupiter Trust-16429-webcam - 42 files
 //#include "capture-06-Polaris-CNE-CWC3.h" // Polaris Canyon-CNE-CWC3-webcam - 52 files
 //#include "capture-07-Polaris-Trust-16429.h" // Polaris Trust-16429-webcam - 24 files
-
+//#include "capture-08-Alkaid-CNE-CWC3.h" // Alkaid - Canyon-CNE-CWC3-webcam-calibration - 512 files
+//#include "capture-09-Alkaid-CNE-CWC3.h" // Alkaid - Canyon-CNE-CWC3-webcam-calibration - 404 files
+#include "capture-10-Arcturus-CNE-CWC3.h" // Arcturus - Canyon-CNE-CWC3-webcam-RA & Declination drift (with clouds) - 2040 files
+//#include "capture-11-Vega-CNE-CWC3.h" // Vega - Canyon-CNE-CWC3-webcam-RA & Declination drift (with clouds) - 1335 files
     if(srcImage.empty())
     {
         ui->labelMessages->setText("Could not open or find the image");
         ui->labelMessages->adjustSize();
         LoadFromQrc("://media/NightSky.png",IMREAD_COLOR);
-//        srcImage = imread("media/NightSky.png");
         return;
     }
 #endif
@@ -384,13 +380,17 @@ void Guider::NewCapture()
     if(interfaceWindowOpen)
         DisplayData();
 
+#ifndef CAPTUREFROMFILE
+//        cvtColor(srcImage, srcImage, CV_BGR2RGB);
+#endif
+
     imwrite("/run/shm/GuiderSourceImage.jpg", srcImage);
     GammaCorrection(myImage, (double)ui->horizontalGammaSlider->value()/1000, &myImage);
     if(targetSelected)
     {
         SetReticle(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, Scalar(0,255,0));
         if(!refreshEnabled)
-            SetSlopeLine(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, slopeVertical, raSlope, Scalar(0,0,255));
+            SetSlopeLine(&myImage, dgeometry.relativeTargetX, dgeometry.relativeTargetY, slopeVertical, raSlope, Scalar(255,0,0));
     }
     else
     {
@@ -398,11 +398,10 @@ void Guider::NewCapture()
     }
     if(starsDetected==0 || refreshEnabled)
     {
-//        cvtColor(myImage, myImage, CV_BGR2RGB);
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
+        cvtColor(myImage, myImage, CV_BGR2RGB);
         if(interfaceWindowOpen)
             ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888)));
-        cvtColor(myImage, myImage, CV_BGR2RGB);
-        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
     }
     if(interfaceWindowOpen)
         this->repaint();
@@ -597,23 +596,21 @@ void Guider::StarDetector()
     SimpleBlobDetector::Params params;
 
     // Change thresholds
-//    params.minThreshold = maxPixelValue*.1;
-//    params.minThreshold = 50;
-    params.minThreshold = 25;
-    params.thresholdStep=10;
-    params.maxThreshold = 255;
-
-//        cout << "Max pixel value: " << maxPixelValue << endl;
-//    cout << "params.minThreshold: " << params.minThreshold << endl;
-//    cout << "params.tresholdStep: " << params.thresholdStep << endl;
+//    params.minThreshold = 25;
+//    params.thresholdStep = 10;
+//    params.maxThreshold = 255;
+    params.minThreshold = lsas.paramsMinThreshold.value;
+    params.thresholdStep = lsas.paramsThresholdStep.value;
+    params.maxThreshold = lsas.paramsMaxThreshold.value;
 
     // Filter by Area.
     params.filterByArea = true;
-    params.minArea =1; // scope f=240mm, sensor width=2.5mm
-//    params.minArea =1; // scope f=300mm (4197), sensor width=22.8mm
-//    params.minArea =2; // scope f=135mm (0399), sensor width=22.8mm
-//    params.minArea =1; // scope f=27mm (0432), sensor width=22.8mm
-    //   params.maxArea=40;
+    params.minArea = lsas.paramsMinArea.value;
+//    params.minArea = 1; // scope f=240mm, sensor width=2.5mm
+//    params.minArea = 1; // scope f=300mm (4197), sensor width=22.8mm
+//    params.minArea = 2; // scope f=135mm (0399), sensor width=22.8mm
+//    params.minArea = 1; // scope f=27mm (0432), sensor width=22.8mm
+      params.maxArea = lsas.paramsMaxArea.value;
 
     // filter my min distance
 //    params.minDistBetweenBlobs=5;
@@ -621,7 +618,7 @@ void Guider::StarDetector()
 
     // Filter by Circularity
     params.filterByCircularity = true;
-    params.minCircularity = 0.6;
+    params.minCircularity = 0.7;
 
     // Filter by Convexity
     params.filterByConvexity = true;
@@ -748,8 +745,11 @@ void Guider::FindAndTrackStar()
     if(!targetSelected)
         return;
     im=processImage; // search will be done in the intermediary file (rectangle having the same scale as the original)
-    GammaCorrection(im, (double)ui->horizontalGammaSlider->value()/1000, &im);
     cvtColor(im, im, CV_BGR2GRAY);
+    GammaCorrection(im, (double)ui->horizontalGammaSlider->value()/1000, &im);
+//#ifdef CAPTUREFROMFILE
+//    cvtColor(im, im, CV_BGR2GRAY);
+//#endif
 //    ImageBlur(2,3);
 
 //    int contrast=8;
@@ -769,19 +769,17 @@ void Guider::FindAndTrackStar()
         ComputeDrift();
     if(interfaceWindowOpen)
         DisplayData();
-//    if(oldStarsDetected==0)
-//        cvtColor(myImage, myImage, CV_BGR2RGB);
-    if(guideStarSelected)
-        SetReticle(&myImage, dgeometry.relativeStarX, dgeometry.relativeStarY, Scalar(255,0,0));
     if(starsDetected)
     {
+        if(guideStarSelected)
+            SetReticle(&myImage, dgeometry.relativeStarX, dgeometry.relativeStarY, Scalar(0,0,255));
+        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
         if(interfaceWindowOpen)
         {
+            cvtColor(myImage, myImage, CV_BGR2RGB);
             ui->guiderImageLabel->setPixmap(QPixmap::fromImage(QImage(myImage.data, myImage.cols, myImage.rows, myImage.step, QImage::Format_RGB888))); // colour
             this->repaint();
         }
-        cvtColor(myImage, myImage, CV_BGR2RGB);
-        imwrite("/run/shm/GuiderWorkingImage.jpg", myImage);
     }
 }
 
@@ -820,20 +818,28 @@ void Guider::ComputeRaSlope()
 
 void Guider::ComputeDrift()
 {
-    double yq;
-    if(slopeVertical)
+    if(!starsDetected)
     {
-        raDrift=dgeometry.absoluteStarY-dgeometry.absoluteTargetY;
-        declDrift=-(dgeometry.absoluteStarX-dgeometry.absoluteTargetX)*sin(alpha);
+        raDrift=0;
+        declDrift=0;
     }
     else
     {
-        yq = raSlope*(dgeometry.absoluteStarX-dgeometry.absoluteTargetX);
-        double sq = dgeometry.absoluteStarY-dgeometry.absoluteTargetY-yq;
-        declDrift = sq * cos(alpha);
-        double qd = sq * sin(alpha);
-        double tq = (dgeometry.absoluteStarX-dgeometry.absoluteTargetX)/cos(alpha);
-        raDrift = tq+qd;
+        double yq;
+        if(slopeVertical)
+        {
+            raDrift=dgeometry.absoluteStarY-dgeometry.absoluteTargetY;
+            declDrift=-(dgeometry.absoluteStarX-dgeometry.absoluteTargetX)*sin(alpha);
+        }
+        else
+        {
+            yq = raSlope*(dgeometry.absoluteStarX-dgeometry.absoluteTargetX);
+            double sq = dgeometry.absoluteStarY-dgeometry.absoluteTargetY-yq;
+            declDrift = sq * cos(alpha);
+            double qd = sq * sin(alpha);
+            double tq = (dgeometry.absoluteStarX-dgeometry.absoluteTargetX)/cos(alpha);
+            raDrift = tq+qd;
+        }
     }
     raDriftArcsec=raDrift*arcsecPerPixel;
     declDriftArcsec=declDrift*arcsecPerPixel;
@@ -861,6 +867,9 @@ void Guider::Calibration()
         break;
     case 2:
         moveFactor=0.6;
+#ifdef DEBUG
+        moveFactor*=0.8;
+#endif
         if( (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1+moveFactor)) || \
             (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1-moveFactor)) || \
             (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1+moveFactor)) || \
@@ -890,11 +899,14 @@ void Guider::Calibration()
             calibrationStatus=4;
             resolutionComputeX=dgeometry.sourceStarX;
             resolutionComputeY=dgeometry.sourceStarY;
-            guideTimer.start();
+            ascensionGuideTimer.start();
         }
         break;
     case 4:
         moveFactor=0.6;
+#ifdef DEBUG
+        moveFactor*=0.9;
+#endif
         if( (dgeometry.absoluteStarX >  dgeometry.absoluteTargetX*(1+moveFactor)) || \
             (dgeometry.absoluteStarX <  dgeometry.absoluteTargetX*(1-moveFactor)) || \
             (dgeometry.absoluteStarY >  dgeometry.absoluteTargetY*(1+moveFactor)) || \
@@ -911,11 +923,11 @@ void Guider::Calibration()
             dgeometry.RecalculateTarget();
             double resolutionDistance=sqrt((resolutionComputeX-dgeometry.sourceStarX) * (resolutionComputeX-dgeometry.sourceStarX) \
                         + (resolutionComputeY-dgeometry.sourceStarY) * (resolutionComputeY-dgeometry.sourceStarY));
-            arcsecPerPixel=guideTimer.elapsed()*normalTrackingSpeed/resolutionDistance/1000;
+            arcsecPerPixel=ascensionGuideTimer.elapsed()*normalTrackingSpeed/resolutionDistance/1000;
             lsas.paramArcsecPerPixel.value=arcsecPerPixel;
             lsas.paramRaSlope.value=raSlope;
             lsas.paramSlopeVertical.value=slopeVertical;
-            lsas.paramCalibrationStatus.value=calibrationStatus;
+            lsas.paramCalibrationStatus.value=0;
             lsas.paramAlpha.value=alpha;
             lsas.SaveParams();
             QString rezMessage="C A L I B R A T I O N\nResolution: ";
@@ -950,21 +962,96 @@ void Guider::DoGuide()
         return;
     if(raDriftArcsec > triggerGuide)
     {
-        timeToGuide=raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
-        on_normalButton_clicked();
+        ascTimeToGuide=raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
+//        on_normalButton_clicked();
+        StopGuiders(true,false);
         if(starsDetected)
             on_fastButton_clicked();
-        guideTimer.start();
+        ascensionGuideTimer.start();
     }
     if(raDriftArcsec < -triggerGuide)
     {
-        timeToGuide=-raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
-        on_normalButton_clicked();
+        ascTimeToGuide=-raDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
+//        on_normalButton_clicked();
+        StopGuiders(true,false);
         if(starsDetected)
             on_slowButton_clicked();
-        guideTimer.start();
+        ascensionGuideTimer.start();
     }
-    if(guideTimer.elapsed()/1000 > timeToGuide)
+    if(ascensionGuideTimer.elapsed()/1000 > ascTimeToGuide)
+        StopGuiders(true,false);
+    if(lsas.iSDeclinationTracked.value)
+    {
+        if(declDriftArcsec > triggerGuide)
+        {
+            declTimeToGuide=declDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
+            StopGuiders(false,true);
+            if(starsDetected)
+                on_fastButton_2_clicked();
+            declinationGuideTimer.start();
+        }
+        if(declDriftArcsec < -triggerGuide)
+        {
+            declTimeToGuide=-declDriftArcsec/acceleratedTrackingSpeed*reductionCoefficient;
+            StopGuiders(false,true);
+            if(starsDetected)
+                on_slowButton_2_clicked();
+            declinationGuideTimer.start();
+        }
+        if(declinationGuideTimer.elapsed()/1000 > declTimeToGuide)
+            StopGuiders(false,true);
+    }
+}
+
+void Guider::StopGuiders(bool ascension, bool declination)
+{
+    if(lsas.iSDeclinationTracked.value)
+    {
+        if(ascension)
+        {
+            if(declination)
+            {
+                on_normalButton_clicked();
+            }
+            else
+            {
+                ascensionGuiding=0;
+//                declinationGuiding=false;
+                pincontrol.AscensionRelease();
+//                pincontrol.DeclinationRelease();
+                if(interfaceWindowOpen)
+                {
+                    SetSlowButtonImage(false);
+//                    SetNormalButtonImage(true);
+                    SetFastButtonImage(false);
+//                    SetSlowButtonImage_2(false);
+//                    SetFastButtonImage_2(false);
+                }
+            }
+        }
+        else
+        {
+            if(declination)
+            {
+//                ascensionGuiding=0;
+                declinationGuiding=0;
+//                pincontrol.AscensionRelease();
+                pincontrol.DeclinationRelease();
+                if(interfaceWindowOpen)
+                {
+//                    SetSlowButtonImage(false);
+//                    SetNormalButtonImage(true);
+//                    SetFastButtonImage(false);
+                    SetSlowButtonImage_2(false);
+                    SetFastButtonImage_2(false);
+                }
+            }
+//            else
+//            {
+//            }
+        }
+    }
+    else
         on_normalButton_clicked();
 }
 
@@ -1010,10 +1097,30 @@ void Guider::SetSlowButtonImage(bool on)
 void Guider::SetNormalButtonImage(bool on)
 {
     QIcon buttonIcon;
-    if(on)
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral-on.png");
+    if(lsas.iSDeclinationTracked.value)
+    {
+        if(ascensionGuiding)
+        {
+            if(declinationGuiding)
+                changingButtonsPixmap.load("://media/icons/tools-512x512/gearBlue.png");
+            else
+                changingButtonsPixmap.load("://media/icons/tools-512x512/gearGrey.png");
+        }
+        else
+        {
+            if(declinationGuiding)
+                changingButtonsPixmap.load("://media/icons/tools-512x512/gearGrey.png");
+            else
+                changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral-on.png");
+        }
+    }
     else
-        changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral.png");
+    {
+        if(on)
+            changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral-on.png");
+        else
+            changingButtonsPixmap.load("://media/icons/tools-512x512/gearNeutral.png");
+    }
     buttonIcon.addPixmap(changingButtonsPixmap);
     ui->normalButton->setIcon(buttonIcon);
     ui->normalButton->setIconSize(buttonSize);
@@ -1033,6 +1140,45 @@ void Guider::SetFastButtonImage(bool on)
     ui->fastButton->setFixedSize(buttonSize);
 }
 
+void Guider::SetSlowButtonImage_2(bool on)
+{
+    QIcon buttonIcon;
+    if(lsas.iSDeclinationTracked.value)
+    {
+        if(on)
+            changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus-on.png");
+        else
+            changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinus.png");
+    }
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearMinusGrey.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->slowButton_2->setIcon(buttonIcon);
+    ui->slowButton_2->setIconSize(buttonSize);
+    ui->slowButton_2->setFixedSize(buttonSize);
+}
+
+void Guider::SetFastButtonImage_2(bool on)
+{
+    QIcon buttonIcon;
+    if(lsas.iSDeclinationTracked.value)
+    {
+        if(on)
+            changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus-on.png");
+        else
+            changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlus.png");
+    }
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/gearPlusGrey.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->fastButton_2->setIcon(buttonIcon);
+    ui->fastButton_2->setIconSize(buttonSize);
+    ui->fastButton_2->setFixedSize(buttonSize);
+}
+
+
+
+
 void Guider::SetCalibrateButtonImage(bool on)
 {
     QIcon buttonIcon;
@@ -1046,20 +1192,66 @@ void Guider::SetCalibrateButtonImage(bool on)
     ui->calibrateButton->setFixedSize(buttonSize);
 }
 
-#ifdef DEBUG
+#ifdef CAPTUREGUIDING
 void Guider::CaptureImagesToFiles()
 {
-    if(captureIndex%2)
+    if(!lsas.IsUSBFolder())
     {
-        time_t currentTime=time(0);
-        char fileSuffix[90];
-        snprintf(fileSuffix, sizeof(fileSuffix), "%d", (int)currentTime);
-        char filename[500];
-        strcpy(filename, fileSuffix);
-        strcat(filename,".jpg");
-        imwrite(filename, srcImage);
+        ui->labelMessages->setText("Capture media absent!\n(USB flash mem)\nCan not capture.");
+        ui->labelMessages->adjustSize();
+        return;
     }
-    captureIndex++;
+    char fileName[500];
+    FILE* dataFile;
+    if(!targetSelected || refreshEnabled)
+    {
+        ui->labelMessages->setText("Target star is not selected\nor capture is in refresh mode!\nData recording disabled.");
+        ui->labelMessages->adjustSize();
+    }
+    else
+    {
+        strcpy(fileName, lsas.usbFlashMemoryPath.value);
+        strcat(fileName, "GuiderData.csv");
+        bool fileExists=false;
+        if(lsas.IsFile(fileName))
+            fileExists=true;
+        if( !(dataFile=fopen(fileName, "a+")))
+        {
+            cout << "Unable to open data file " << fileName << endl;
+            return;
+        }
+        QString buff;
+        if(!fileExists)
+        {
+            buff= "epochTime,relativeTime,raDrift, declDrift, x, y\n";
+            fwrite(buff.toLatin1(), buff.length(), 1, dataFile);
+        }
+        time_t currTime=time(0);
+        buff = QString::number((time_t)currTime) + ",0,";
+        buff += QString::number((double)raDriftArcsec) + ",";
+        buff += QString::number((double)declDriftArcsec) + ",";
+        buff += QString::number((double)dgeometry.absoluteStarX) + ",";
+        buff += QString::number((double)dgeometry.absoluteStarY);
+        fwrite(buff.toLatin1(), buff.length(), 1, dataFile);
+        buff="\n";
+        fwrite(buff.toLatin1(), buff.length(), 1, dataFile);
+        fclose(dataFile);
+    }
+    if(!lsas.captureJustGuiderData.value)
+    {
+        if(captureIndex%2)
+        {
+            lsas.SetChronologicFileName();
+            char chronoFile[100];
+            strcpy(chronoFile, lsas.chronologicFilename.toLatin1());
+            strcpy(fileName, lsas.usbFlashMemoryPath.value);
+            strcat(fileName, lsas.GuiderFolder.value);
+            strcat(fileName, lsas.chronologicFilename.toLatin1());
+            strcat(fileName,".jpg");
+            imwrite(fileName, srcImage);
+        }
+        captureIndex++;
+    }
 }
 #endif
 
@@ -1175,7 +1367,7 @@ void Guider::on_horizontalGammaSlider_sliderReleased()
 
 void Guider::on_saveButton_clicked()
 {
-#ifdef DEBUG
+#ifdef CAPTUREGUIDING
     if(captureFlag)
     {
         captureFlag=false;
@@ -1196,6 +1388,7 @@ void Guider::on_saveButton_clicked()
 
 void Guider::on_slowButton_clicked()
 {
+    ascensionGuiding=1;
     pincontrol.AscensionMinus();
     if(interfaceWindowOpen)
     {
@@ -1207,6 +1400,17 @@ void Guider::on_slowButton_clicked()
 
 void Guider::on_normalButton_clicked()
 {
+    if(lsas.iSDeclinationTracked.value)
+    {
+        declinationGuiding=0;
+        pincontrol.DeclinationRelease();
+        if(interfaceWindowOpen)
+        {
+            SetSlowButtonImage_2(false);
+            SetFastButtonImage_2(false);
+        }
+    }
+    ascensionGuiding=0;
     pincontrol.AscensionRelease();
     if(interfaceWindowOpen)
     {
@@ -1218,12 +1422,41 @@ void Guider::on_normalButton_clicked()
 
 void Guider::on_fastButton_clicked()
 {
+    ascensionGuiding=-1;
     pincontrol.AscensionPlus();
     if(interfaceWindowOpen)
     {
         SetSlowButtonImage(false);
         SetNormalButtonImage(false);
         SetFastButtonImage(true);
+    }
+}
+
+void Guider::on_fastButton_2_clicked()
+{
+    if(!lsas.iSDeclinationTracked.value)
+        return;
+    declinationGuiding=-1;
+    pincontrol.DeclinationPlus();
+    if(interfaceWindowOpen)
+    {
+        SetSlowButtonImage_2(false);
+        SetNormalButtonImage(false);
+        SetFastButtonImage_2(true);
+    }
+}
+
+void Guider::on_slowButton_2_clicked()
+{
+    if(!lsas.iSDeclinationTracked.value)
+        return;
+    declinationGuiding=1;
+    pincontrol.DeclinationMinus();
+    if(interfaceWindowOpen)
+    {
+        SetSlowButtonImage_2(true);
+        SetNormalButtonImage(false);
+        SetFastButtonImage_2(false);
     }
 }
 
@@ -1269,3 +1502,4 @@ void Guider::on_calibrateButton_clicked()
         on_normalButton_clicked();
     }
 }
+

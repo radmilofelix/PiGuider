@@ -10,22 +10,12 @@
 #include <fcntl.h>
 #include <stdio.h>
 #include <stdarg.h>
-//#include <string.h>
 #include "globalsettings.h"
+#include <time.h>
 
 #include <iostream>
 #include <string>
 
-//#include <chrono>
-//#include <math.h>
-
-/*
-#include <opencv2/opencv.hpp>
-#include <opencv2/core.hpp>
-#include <opencv2/highgui.hpp>
-#include <opencv2/imgcodecs.hpp>
-#include <opencv2/imgproc/imgproc.hpp>
-*/
 
 #include <QMouseEvent>
 #include "imagelabel.h"
@@ -43,13 +33,21 @@ DSLR::DSLR(QWidget *parent) :
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Pos()), this, SLOT(Mouse_current_pos()));
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Pressed()), this, SLOT(Mouse_pressed()));
     connect(ui->dslrImageLabel, SIGNAL(Mouse_Left()), this, SLOT(Mouse_left()));
+    connect(&numpad, SIGNAL(ReturnClickedSignal()), this, SLOT(NumpadReturnClicked()));
     buttonSize.setHeight(70);
     buttonSize.setWidth(70);
     cameraFocus=0;
     targetPosition.setX(478/2);
     targetPosition.setY(478/2);
     enabled=false;
+    enableShot=false;
     targetSelected=false;
+//    lsas.ReadData("settings.cfg","", true);
+    if(lsas.captureTethered.value)
+        tethered=true;
+    else
+        tethered=false;
+    usbStoreLocation=lsas.usbFlashMemoryPath.value;
     magnification=1;
     eosZoomScale=EOSZOOMSCALEDEFAULT;
     eosZoomWindowWidth=1065;
@@ -65,6 +63,12 @@ DSLR::DSLR(QWidget *parent) :
     ui->horizontalZoomSlider->setRange(10, 1000);
     ui->horizontalZoomSlider->setValue((int)dgeometry.scaleX);
     ui->horizontalZoomSlider->setVisible(true);
+    editEnabled=true;
+    captureModePreview=true;
+    enableConnect=true;
+    SetCaptureModeButtonImage(captureModePreview);
+    exposureSeconds=1;
+    ui->exposureSecondsLineEdit->setText(QString::number((int)exposureSeconds));
 }
 
 DSLR::~DSLR()
@@ -90,14 +94,12 @@ void DSLR::NewCapture(bool fromCamera)
 {
     if(!fromCamera)
         LoadFromQrc("://media/NightSky.png",IMREAD_COLOR);
-//        srcImage = imread("media/NightSky.png", CV_LOAD_IMAGE_UNCHANGED);
     else
-        srcImage = imread(dslrCamera.sourceFileName, CV_LOAD_IMAGE_UNCHANGED);
-//        srcImage = imread("/run/shm/DSLR-SourceImage.jpg", CV_LOAD_IMAGE_UNCHANGED);
+        srcImage = imread(dslrCamera.capturedFileName, CV_LOAD_IMAGE_UNCHANGED);
     if(srcImage.empty())
     {
-        ui->labelMessages->setText("Could not open or find camera image");
-        ui->labelMessages->adjustSize();
+//        ui->labelMessages->setText("Could not open or find camera image");
+//        ui->labelMessages->adjustSize();
         return;
     }
     dgeometry.CheckSourceDimensions(srcImage);
@@ -136,6 +138,24 @@ void DSLR::Mouse_left()
 
 }
 
+void DSLR::NumpadReturnClicked()
+{
+    ui->exposureSecondsLineEdit->setText(numpad.inputResult);
+    exposureSeconds=ui->exposureSecondsLineEdit->text().toInt();
+    if(exposureSeconds < 0)
+    {
+        exposureSeconds=0;
+        ui->exposureSecondsLineEdit->setText("0");
+    }    if(exposureSeconds > 59)
+    {
+        exposureSeconds=59;
+        ui->exposureSecondsLineEdit->setText("59");
+    }
+    editEnabled=true;
+}
+
+
+
 void DSLR::on_closeButton_clicked()
 {
     if(dslrCamera.isCamera && dslrCamera.isCameraFile)
@@ -152,6 +172,11 @@ void DSLR::on_enableButton_clicked()
     }
     else
     {
+        if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
+        {
+            FrameMessage("Can not enable capture.\nDSLR Camera not connected");
+            return;
+        }
         enabled=true;
         SetEnableButtonImage(true);
     }
@@ -159,28 +184,8 @@ void DSLR::on_enableButton_clicked()
 
 void DSLR::on_CaptureImage_clicked()
 {
-    char fileName[100];
-    char systemCommand[100];
-    if(dslrCamera.ShootAndCapture("/run/shm/", fileName, 1))
-    {
-        strcpy(dslrCamera.sourceFileName, "/run/shm/");
-        strcat(dslrCamera.sourceFileName, "DSLR-SourceImage");
-        strcat(dslrCamera.sourceFileName, dslrCamera.captureFileExtension);
-        strcpy(systemCommand, "mv ");
-        strcat(systemCommand, "/run/shm/");
-        strcat(systemCommand, fileName);
-        strcat(systemCommand, " ");
-        strcat(systemCommand, dslrCamera.sourceFileName);
-        system(systemCommand);
-        NewCapture(dslrCamera.fromCamera);
-        ui->labelMessages->setText(fileName);
-        ui->labelMessages->adjustSize();
-    }
-    else
-    {
-        FrameMessage(dslrCamera.dslrMessage);
-        NewCapture(false);
-    }
+    tethered=true;
+    TakeShot(tethered);
 }
 
 void DSLR::on_targetButton_clicked()
@@ -248,31 +253,43 @@ void DSLR::on_horizontalGammaSlider_sliderReleased()
 void DSLR::on_focusMinus3Button_clicked()
 {
     MoveCameraFocus(-2); // near 3
+    if(!captureModePreview)
+        enableShot=true;
 }
 
 void DSLR::on_focusMinus2Button_clicked()
 {
     MoveCameraFocus(-3); // near 2
+    if(!captureModePreview)
+        enableShot=true;
 }
 
 void DSLR::on_focusMinus1Button_clicked()
 {
     MoveCameraFocus(-4); // near 1
+    if(!captureModePreview)
+        enableShot=true;
 }
 
 void DSLR::on_focusPlus1Button_clicked()
 {
     MoveCameraFocus(0); // Far 1
+    if(!captureModePreview)
+        enableShot=true;
 }
 
 void DSLR::on_focusPlus2Button_clicked()
 {
     MoveCameraFocus(1); // Far 2
+    if(!captureModePreview)
+        enableShot=true;
 }
 
 void DSLR::on_focusPlus3Button_clicked()
 {
     MoveCameraFocus(2); // Far 3
+    if(!captureModePreview)
+        enableShot=true;
 }
 
 
@@ -317,8 +334,16 @@ void DSLR::RefreshData()
 {
     if(!enabled)
         return;
-    GetCameraPreview();
-    //    NewCapture(dslrCamera.fromCamera);
+    if(captureModePreview)
+        GetCameraPreview();
+    else
+    {
+        if(enableShot)
+        {
+            TakeShot(tethered);
+            enableShot=false;
+        }
+    }
 }
 
 void DSLR::LoadFromQrc(QString qrc, int flag)
@@ -331,6 +356,58 @@ void DSLR::LoadFromQrc(QString qrc, int flag)
         file.read((char*)buf.data(), sz);
         srcImage = imdecode(buf, flag);
     }
+}
+
+void DSLR::NumPadCaller()
+{
+    if(!numpad.busy)// && enableVirtualKeyboard)
+    {
+        numpad.busy=true;
+        numpad.inputResult="0";
+        numpad.Refresh();
+        numpad.show();
+    }
+    else
+        NumpadReturnClicked();
+}
+
+void DSLR::TakeShot(bool isTethered)
+{
+    if(isTethered)
+    {
+        if(!dslrCamera.SetCaptureTargetToMemory())
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            return;
+        }
+        if(dslrCamera.ShootAndTether("/run/shm/", "DSLR-T-SourceImage", exposureSeconds))
+        {
+            dslrCamera.fromCamera=true;
+            FrameMessage(dslrCamera.capturedFileName);
+        }
+        else
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            dslrCamera.fromCamera=false;
+        }
+    }
+    else
+    {
+        if(!dslrCamera.SetCaptureTargetToSD())
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            return;
+        }
+
+        if(!dslrCamera.ShootAndCapture("/run/shm/", "DSLR-C-SourceImage.jpg", exposureSeconds))
+        {
+            FrameMessage(dslrCamera.dslrMessage);
+            dslrCamera.fromCamera=false;
+        }
+        else
+            dslrCamera.fromCamera=true;
+    }
+    NewCapture(dslrCamera.fromCamera);
 }
 
 void DSLR::SetEnableButtonImage(bool on)
@@ -372,6 +449,24 @@ void DSLR::SetX1X10ButtonImage(bool on)
     ui->x1x10Button->setFixedSize(buttonSize);
 }
 
+void DSLR::SetCaptureModeButtonImage(bool preview)
+{
+    QIcon buttonIcon;
+    changingButtonsPixmap.load("://media/icons/tools-512x512/neutralSquareBright.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->captureModeButton->setIcon(buttonIcon);
+    ui->captureModeButton->setIconSize(buttonSize);
+    ui->captureModeButton->setFixedSize(buttonSize);
+    if(preview)
+        changingButtonsPixmap.load("://media/icons/tools-512x512/preview.png");
+    else
+        changingButtonsPixmap.load("://media/icons/tools-512x512/shoot.png");
+    buttonIcon.addPixmap(changingButtonsPixmap);
+    ui->captureModeButton->setIcon(buttonIcon);
+    ui->captureModeButton->setIconSize(buttonSize);
+    ui->captureModeButton->setFixedSize(buttonSize);
+}
+
 
 void DSLR::on_resetButton_clicked()
 {
@@ -386,9 +481,11 @@ void DSLR::on_resetButton_clicked()
 
 void DSLR::on_connectButton_clicked()
 {
+    if(!enableConnect)
+        return;
     if(dslrCamera.isCamera && dslrCamera.isCameraFile)
     {
-        if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Memory card"))
+        if(!dslrCamera.SetCaptureTargetToSD())
             FrameMessage(dslrCamera.dslrMessage);
         if(!dslrCamera.Disconnect())
         {
@@ -397,17 +494,21 @@ void DSLR::on_connectButton_clicked()
         }
         FrameMessage((dslrCamera.dslrMessage));
         SetConnectButtonImage(false);
+        enabled=false;
+        SetEnableButtonImage(false);
+        SetX1X10ButtonImage(false);
     }
     else
     {
         if(!dslrCamera.Connect())
         {
             FrameMessage(dslrCamera.dslrMessage);
-            return;
+        return;
         }
         FrameMessage((dslrCamera.dslrMessage));
-        dslrCamera.SetCameraLastFileNumber();
-        if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Internal RAM"))
+        dslrCamera.GetLastCameraFileNumber();
+        if(!dslrCamera.SetCaptureTargetToSD())
+//        if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Internal RAM"))
             FrameMessage(dslrCamera.dslrMessage);
         SetConnectButtonImage(true);
         GetCameraPreview();
@@ -458,8 +559,7 @@ void DSLR::on_x1x10Button_clicked()
 
 void DSLR::on_onButton_clicked()
 {
-//    if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Memory card"))
-//    if(!dslrCamera.SetCaptureTarget(dslrCamera.canonCamera, dslrCamera.canonContext, "Internal RAM"))
+    if(!dslrCamera.SetCaptureTargetToSD())
     {
         FrameMessage(dslrCamera.dslrMessage);
         return;
@@ -476,6 +576,41 @@ void DSLR::on_offButton_clicked()
 
 void DSLR::on_testButton_clicked()
 {
-    if(!dslrCamera.SetCameraLastFileNumber())
-        FrameMessage(dslrCamera.dslrMessage);
+    NewCapture(true);
+//    if(!dslrCamera.GetLastCameraFileNumber())
+//        FrameMessage(dslrCamera.dslrMessage);
+//    tethered=false;
+//    TakeShot(tethered);
+}
+
+void DSLR::on_exposureSecondsLineEdit_cursorPositionChanged(int arg1, int arg2)
+{
+    if(editEnabled)
+    {
+        editEnabled=false;
+        NumPadCaller();
+    }
+}
+
+void DSLR::on_captureModeButton_clicked()
+{
+    if(!dslrCamera.isCamera || !dslrCamera.isCameraFile)
+    {
+        FrameMessage("Can not change capture mode.\nDSLR Camera not connected");
+        return;
+    }
+    if(captureModePreview)
+    {
+        captureModePreview=false;
+        SetCaptureModeButtonImage(captureModePreview);
+        dslrCamera.Disconnect();
+        dslrCamera.Connect();
+    }
+    else
+    {
+        captureModePreview=true;
+        SetCaptureModeButtonImage(captureModePreview);
+        dslrCamera.Disconnect();
+        dslrCamera.Connect();
+    }
 }

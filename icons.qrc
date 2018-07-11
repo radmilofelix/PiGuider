@@ -199,5 +199,25 @@
         <file>media/icons/tools-512x512/shutdown-on.png</file>
         <file>media/NightSky.png</file>
         <file>media/icons/sections-512x512/ManualFocus-on.png</file>
+        <file>media/icons/tools-512x512/dslr-preview.png</file>
+        <file>media/icons/tools-512x512/dslr-shoot.png</file>
+        <file>media/icons/tools-512x512/neutralSquare.png</file>
+        <file>media/icons/tools-512x512/neutralSquareBright.png</file>
+        <file>media/icons/tools-512x512/neutralSquareRounded.png</file>
+        <file>media/icons/tools-512x512/neutralSquareRoundedBright.png</file>
+        <file>media/icons/tools-512x512/preview.png</file>
+        <file>media/icons/tools-512x512/sdCard.png</file>
+        <file>media/icons/tools-512x512/shoot.png</file>
+        <file>media/icons/tools-512x512/usbKey.png</file>
+        <file>media/icons/tools-512x512/arrowDownGrey.png</file>
+        <file>media/icons/tools-512x512/arrowUpGrey.png</file>
+        <file>media/icons/tools-512x512/gearBlue.png</file>
+        <file>media/icons/tools-512x512/gearGrey.png</file>
+        <file>media/icons/tools-512x512/gearMinusGrey.png</file>
+        <file>media/icons/tools-512x512/gearPlusGrey.png</file>
+        <file>media/icons/tools-32x32/arrowDownGrey.png</file>
+        <file>media/icons/tools-32x32/arrowLeftGrey.png</file>
+        <file>media/icons/tools-32x32/arrowRightGrey.png</file>
+        <file>media/icons/tools-32x32/arrowUpGrey.png</file>
     </qresource>
 </RCC>

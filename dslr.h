@@ -14,6 +14,7 @@
 #include <opencv2/features2d/features2d.hpp>
 #include "displaygeometry.h"
 #include "loadsaveandsettings.h"
+#include "numpad.h"
 
 #define EOSZOOMSCALEDEFAULT 6
 
@@ -32,19 +33,28 @@ public:
     DslrCameraControl dslrCamera;
     bool enabled;
     bool targetSelected;
+    bool tethered;
+    bool enableShot;
     int cameraFocus;
     int magnification;
     float eosZoomScale;
     double eosZoomPositionX, eosZoomPositionY;
     double eosZoomWindowWidth, eosZoomWindowHeight;
+    QString usbStoreLocation;
     QString eosZoomPositionString;
     cv::Mat myImage, srcImage, processImage;
     DisplayGeometry dgeometry;
+    NumPad numpad;
     QPoint targetPosition;
     QString dslrMessage;
     QPixmap changingButtonsPixmap;
     QSize buttonSize;
     LoadSaveAndSettings lsas;
+    int exposureSeconds;
+    bool editEnabled;
+    bool captureModePreview;
+    bool enableConnect;
+
     void GammaCorrection(const cv::Mat &img, const double gamma_, cv::Mat *result);
     void NewCapture(bool fromCamera);
     void FrameMessage(QString message);
@@ -53,15 +63,19 @@ public:
     void ComputeEosZoomOrigin();
     void RefreshData();
     void LoadFromQrc(QString qrc, int flag);
+    void NumPadCaller();
+    void TakeShot(bool isTethered);
 
     void SetEnableButtonImage(bool on);
     void SetConnectButtonImage(bool on);
     void SetX1X10ButtonImage(bool on);
+    void SetCaptureModeButtonImage(bool preview);
 
 private slots:
     void Mouse_current_pos();
     void Mouse_pressed();
     void Mouse_left();
+    void NumpadReturnClicked();
 
     void on_closeButton_clicked();
     void on_enableButton_clicked();
@@ -84,7 +98,11 @@ private slots:
 
     void on_onButton_clicked();
     void on_offButton_clicked();
+
+
     void on_testButton_clicked();
+    void on_exposureSecondsLineEdit_cursorPositionChanged(int arg1, int arg2);
+    void on_captureModeButton_clicked();
 
 private:
     Ui::DSLR *ui;
